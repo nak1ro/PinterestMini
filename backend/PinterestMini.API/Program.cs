@@ -8,6 +8,7 @@ using PinterestMini.API.Interfaces;
 using PinterestMini.API.Models;
 using PinterestMini.API.Services;
 using System.Text;
+using PinterestMini.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders()
 .AddRoles<IdentityRole<Guid>>(); 
+
+builder.Services.ConfigureCors();
 
 var jwtSection = builder.Configuration.GetSection("JWT");
 builder.Services.AddAuthentication(options =>
@@ -64,6 +67,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication(); 
 app.UseAuthorization();
