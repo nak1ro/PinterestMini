@@ -8,9 +8,17 @@ using PinterestMini.API.Interfaces;
 using PinterestMini.API.Models;
 using PinterestMini.API.Services;
 using System.Text;
+using FluentValidation;
 using PinterestMini.API.Extensions;
+using PinterestMini.API.Interfaces.Boards;
+using PinterestMini.API.Interfaces.Pins;
+using PinterestMini.API.Interfaces.Tags;
+using PinterestMini.API.Repositories;
+using PinterestMini.API.Services.Pins;
+using PinterestMini.API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseWebRoot("wwwroot");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -52,19 +60,21 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPinRepository, PinRepository>();
+builder.Services.AddScoped<IPinService, PinService>();
+builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreatePinDtoValidator>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseStaticFiles(); 
 
 app.UseHttpsRedirection();
 

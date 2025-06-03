@@ -6,9 +6,10 @@ public class Pin
     public string Title { get; set; }
     public string? Description { get; set; }
     public string ImageUrl { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public bool AllowComments { get; set; }
 
-    public Guid UserId { get; set; }
+    public string OwnerId { get; set; }
     public User User { get; set; }
 
     public ICollection<Comment> Comments { get; set; }

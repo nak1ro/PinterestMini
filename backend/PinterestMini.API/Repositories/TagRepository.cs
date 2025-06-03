@@ -1,0 +1,33 @@
+using Microsoft.EntityFrameworkCore;
+using PinterestMini.API.Data;
+using PinterestMini.API.Interfaces.Tags;
+using PinterestMini.API.Models;
+
+namespace PinterestMini.API.Repositories;
+
+public class TagRepository : ITagRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public TagRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<List<Tag>> GetByIdsAsync(List<Guid> tagIds)
+    {
+        return await _context.Tags
+            .Where(t => tagIds.Contains(t.Id))
+            .ToListAsync();
+    }
+
+    public async Task<Tag?> GetByNameAsync(string name)
+    {
+        return await _context.Tags.FirstOrDefaultAsync(t => t.Name == name);
+    }
+
+    public async Task AddAsync(Tag tag)
+    {
+        await _context.Tags.AddAsync(tag);
+    }
+}

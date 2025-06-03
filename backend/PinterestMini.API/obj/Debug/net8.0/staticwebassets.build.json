@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "cbcpG50kg/ZQVs9lVPHsvKD0Wb/3KYR/xGqQzCvmWy0=",
+  "Hash": "VIc/HABQsbtwZv8IBBZxBoqhMF/eNZDsbHXziDUicLc=",
   "Source": "PinterestMini.API",
   "BasePath": "_content/PinterestMini.API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "PinterestMini.API\\wwwroot",
+      "Source": "PinterestMini.API",
+      "ContentRoot": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\wwwroot\\",
+      "BasePath": "_content/PinterestMini.API",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

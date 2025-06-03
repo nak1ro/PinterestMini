@@ -30,5 +30,6 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
         builder.ApplyConfiguration(new FollowConfiguration());
         builder.ApplyConfiguration(new PinTagConfiguration());
         builder.ApplyConfiguration(new PinBoardConfiguration());
+        builder.ApplyConfiguration(new CommentConfiguration());
     }
 }
