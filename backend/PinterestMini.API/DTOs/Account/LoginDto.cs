@@ -4,7 +4,6 @@ namespace PinterestMini.API.DTOs.Account;
 
 public class LoginDto
 {
-    [Required]
     public string Username { get; set; }
 
     [Required]

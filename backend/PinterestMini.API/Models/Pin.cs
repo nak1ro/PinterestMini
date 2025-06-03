@@ -9,8 +9,7 @@ public class Pin
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool AllowComments { get; set; }
 
-    public string OwnerId { get; set; }
-    public User User { get; set; }
+    public Guid OwnerId { get; set; }
 
     public ICollection<Comment> Comments { get; set; }
     public ICollection<Like> Likes { get; set; }

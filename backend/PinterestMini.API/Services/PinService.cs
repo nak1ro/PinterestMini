@@ -1,33 +1,33 @@
 using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using PinterestMini.API.DTOs.Pins;
-using PinterestMini.API.Helpers;
 using PinterestMini.API.Interfaces;
-using PinterestMini.API.Interfaces.Pins;
 using PinterestMini.API.Models;
 using PinterestMini.API.Services.Pins;
-using Microsoft.EntityFrameworkCore;
 
 namespace PinterestMini.API.Services;
 
 public class PinService : IPinService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _env;
+    private readonly UserManager<User> _userManager;
 
-    public PinService(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment env)
+    public PinService(IUnitOfWork unitOfWork, IWebHostEnvironment env, UserManager<User> userManager)
     {
         _unitOfWork = unitOfWork;
-        _mapper = mapper;
         _env = env;
+        _userManager = userManager;
     }
 
     public async Task<Guid> CreatePinAsync(CreatePinDto dto, ClaimsPrincipal user)
     {
-        var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = GetUserIdFromClaims(user);
+        var owner = await _userManager.FindByIdAsync(userId.ToString());
+        if (owner == null)
+            throw new UnauthorizedAccessException("User not found.");
 
-        // Save image
         var imageUrl = await SaveImageAsync(dto.Image);
 
         var pin = new Pin
@@ -40,19 +40,8 @@ public class PinService : IPinService
             OwnerId = userId
         };
 
-        // Assign tags (if any)
-        if (dto.TagIds != null && dto.TagIds.Count != 0)
-        {
-            var tags = await _unitOfWork.Tags.GetByIdsAsync(dto.TagIds);
-            pin.PinTags = tags.Select(t => new PinTag { Tag = t, Pin = pin }).ToList();
-        }
-
-        // Assign boards (if any)
-        if (dto.BoardIds != null && dto.BoardIds.Count != 0)
-        {
-            var boards = await _unitOfWork.Boards.GetByIdsAsync(dto.BoardIds);
-            pin.PinBoards = boards.Select(b => new PinBoard { Board = b, Pin = pin }).ToList();
-        }
+        await AttachTagsAsync(pin, dto.TagIds);
+        await AttachBoardsAsync(pin, dto.BoardIds);
 
         await _unitOfWork.Pins.AddAsync(pin);
         await _unitOfWork.SaveChangesAsync();
@@ -63,49 +52,89 @@ public class PinService : IPinService
     public async Task UpdatePinAsync(Guid pinId, UpdatePinDto dto, ClaimsPrincipal user)
     {
         var pin = await _unitOfWork.Pins.GetByIdWithTagsAndBoardsAsync(pinId);
-        if (pin == null) throw new KeyNotFoundException("Pin not found");
+        if (pin == null)
+            throw new KeyNotFoundException("Pin not found");
 
-        var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (pin.OwnerId != userId) throw new UnauthorizedAccessException("You don't own this pin");
+        var userId = GetUserIdFromClaims(user);
+        if (pin.OwnerId != userId)
+            throw new UnauthorizedAccessException("You don't own this pin");
 
-        // Update fields if provided
-        if (dto.Title != null) pin.Title = dto.Title;
-        if (dto.Description != null) pin.Description = dto.Description;
-        if (dto.AllowComments.HasValue) pin.AllowComments = dto.AllowComments.Value;
+        UpdateFields(pin, dto);
+        await ReplaceBoardsAsync(pin, dto.BoardIds);
+        await UpdateTagsAsync(pin, dto.TagIdsToAdd, dto.TagIdsToRemove);
 
-        // Replace boards
-        if (dto.BoardIds != null)
+        _unitOfWork.Pins.Update(pin);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    private Guid GetUserIdFromClaims(ClaimsPrincipal user)
+    {
+        var idStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(idStr))
+            throw new UnauthorizedAccessException("User ID claim not found.");
+        return Guid.Parse(idStr);
+    }
+
+    private async Task AttachTagsAsync(Pin pin, List<Guid>? tagIds)
+    {
+        if (tagIds is not { Count: > 0 }) return;
+
+        var tags = await _unitOfWork.Tags.GetByIdsAsync(tagIds);
+        pin.PinTags = tags.Select(t => new PinTag { TagId = t.Id, Pin = pin }).ToList();
+    }
+
+    private async Task AttachBoardsAsync(Pin pin, List<Guid>? boardIds)
+    {
+        if (boardIds is not { Count: > 0 }) return;
+
+        var boards = await _unitOfWork.Boards.GetByIdsAsync(boardIds);
+        pin.PinBoards = boards.Select(b => new PinBoard { BoardId = b.Id, Pin = pin }).ToList();
+    }
+
+    private async Task ReplaceBoardsAsync(Pin pin, List<Guid>? boardIds)
+    {
+        if (boardIds == null) return;
+
+        var boards = await _unitOfWork.Boards.GetByIdsAsync(boardIds);
+        pin.PinBoards = boards.Select(b => new PinBoard { BoardId = b.Id, PinId = pin.Id }).ToList();
+    }
+
+    private async Task UpdateTagsAsync(Pin pin, List<Guid>? tagsToAdd, List<Guid>? tagsToRemove)
+    {
+        if (tagsToAdd != null)
         {
-            var boards = await _unitOfWork.Boards.GetByIdsAsync(dto.BoardIds);
-            pin.PinBoards = boards.Select(b => new PinBoard { BoardId = b.Id, PinId = pin.Id }).ToList();
-        }
-
-        // Tags: Add and Remove
-        if (dto.TagIdsToAdd != null)
-        {
-            var newTags = await _unitOfWork.Tags.GetByIdsAsync(dto.TagIdsToAdd);
+            var newTags = await _unitOfWork.Tags.GetByIdsAsync(tagsToAdd);
             foreach (var tag in newTags.Where(tag => pin.PinTags.All(pt => pt.TagId != tag.Id)))
             {
                 pin.PinTags.Add(new PinTag { TagId = tag.Id, PinId = pin.Id });
             }
         }
 
-        if (dto.TagIdsToRemove != null)
+        if (tagsToRemove != null)
         {
             pin.PinTags = pin.PinTags
-                .Where(pt => !dto.TagIdsToRemove.Contains(pt.TagId))
+                .Where(pt => !tagsToRemove.Contains(pt.TagId))
                 .ToList();
         }
+    }
 
-        _unitOfWork.Pins.Update(pin);
-        await _unitOfWork.SaveChangesAsync();
+    private void UpdateFields(Pin pin, UpdatePinDto dto)
+    {
+        if (!string.IsNullOrWhiteSpace(dto.Title))
+            pin.Title = dto.Title;
+
+        if (!string.IsNullOrWhiteSpace(dto.Description))
+            pin.Description = dto.Description;
+
+        if (dto.AllowComments.HasValue)
+            pin.AllowComments = dto.AllowComments.Value;
     }
 
     private async Task<string> SaveImageAsync(IFormFile image)
     {
-        var webRoot = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+        var webRoot = _env.WebRootPath;
         var uploadsFolder = Path.Combine(webRoot, "images", "pins");
-        
+
         if (!Directory.Exists(uploadsFolder))
             Directory.CreateDirectory(uploadsFolder);
 

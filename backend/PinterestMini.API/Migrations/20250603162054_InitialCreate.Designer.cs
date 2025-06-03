@@ -12,7 +12,7 @@ using PinterestMini.API.Data;
 namespace PinterestMini.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250531183642_InitialCreate")]
+    [Migration("20250603162054_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -251,6 +251,9 @@ namespace PinterestMini.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("AllowComments")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -261,11 +264,14 @@ namespace PinterestMini.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -512,13 +518,9 @@ namespace PinterestMini.API.Migrations
 
             modelBuilder.Entity("PinterestMini.API.Models.Pin", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.User", "User")
+                    b.HasOne("PinterestMini.API.Models.User", null)
                         .WithMany("Pins")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("PinterestMini.API.Models.PinBoard", b =>

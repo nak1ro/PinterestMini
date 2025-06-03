@@ -9,13 +9,13 @@ using PinterestMini.API.Models;
 using PinterestMini.API.Services;
 using System.Text;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using PinterestMini.API.Extensions;
 using PinterestMini.API.Interfaces.Boards;
 using PinterestMini.API.Interfaces.Pins;
 using PinterestMini.API.Interfaces.Tags;
 using PinterestMini.API.Repositories;
 using PinterestMini.API.Services.Pins;
-using PinterestMini.API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseWebRoot("wwwroot");
@@ -65,12 +65,16 @@ builder.Services.AddScoped<IPinService, PinService>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreatePinDtoValidator>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
