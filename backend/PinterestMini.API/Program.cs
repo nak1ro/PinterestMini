@@ -12,6 +12,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using PinterestMini.API.Extensions;
 using PinterestMini.API.Interfaces.Boards;
+using PinterestMini.API.Interfaces.Comments;
 using PinterestMini.API.Interfaces.Pins;
 using PinterestMini.API.Interfaces.Tags;
 using PinterestMini.API.Repositories;
@@ -64,6 +65,8 @@ builder.Services.AddScoped<IPinRepository, PinRepository>();
 builder.Services.AddScoped<IPinService, PinService>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

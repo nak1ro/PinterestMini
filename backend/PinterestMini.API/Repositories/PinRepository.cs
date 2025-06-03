@@ -16,6 +16,11 @@ public class PinRepository : IPinRepository
         _context = context;
     }
 
+    public async Task<Pin?> GetByIdAsync(Guid id)
+    {
+        return await _context.Pins.FindAsync(id);
+    }
+
     public async Task<Pin?> GetByIdWithTagsAndBoardsAsync(Guid id)
     {
         return await _context.Pins

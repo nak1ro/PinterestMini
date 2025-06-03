@@ -5,6 +5,7 @@ namespace PinterestMini.API.Interfaces.Pins;
 
 public interface IPinRepository
 {
+    Task<Pin?> GetByIdAsync(Guid id);
     Task<Pin?> GetByIdWithTagsAndBoardsAsync(Guid id);
     Task AddAsync(Pin pin);
     void Update(Pin pin);
