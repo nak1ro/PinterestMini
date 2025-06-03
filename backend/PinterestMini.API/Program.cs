@@ -15,6 +15,7 @@ using PinterestMini.API.Interfaces.Boards;
 using PinterestMini.API.Interfaces.Comments;
 using PinterestMini.API.Interfaces.Pins;
 using PinterestMini.API.Interfaces.Tags;
+using PinterestMini.API.Middlewares;
 using PinterestMini.API.Repositories;
 using PinterestMini.API.Services.Pins;
 
@@ -82,6 +83,8 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 app.UseStaticFiles(); 
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

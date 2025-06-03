@@ -1,0 +1,92 @@
+/* Модальное затемнение */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Само окно */
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    min-width: 320px;
+    max-width: 90%;
+    position: relative;
+    animation: popIn 0.25s ease-out;
+}
+
+/* Закрывающая кнопка */
+.auth-close-button {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+/* Кнопки */
+.authButton {
+    background-color: #e60023;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.2s ease;
+}
+
+.authButton:hover {
+    background-color: #c4001f;
+}
+
+/* Инпуты */
+.authInput {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: border 0.2s ease;
+}
+
+.authInput:focus {
+    border-color: #e60023;
+    outline: none;
+}
+
+.close-button:hover {
+    color: #e60023; /* Pinterest Red */
+}

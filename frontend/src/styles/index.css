@@ -830,3 +830,26 @@ button {
 .zoom-in {
   animation: zoomIn 0.3s ease-out;
 }
+
+.auth-buttons {
+
+}
+.login-btn {
+  background-color: #e60023;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+.signup-btn {
+  background-color: #f7fbff;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+.signup-btn:hover {
+  background-color: #f0f0f0;
+}

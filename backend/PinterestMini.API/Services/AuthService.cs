@@ -19,39 +19,43 @@ public class AuthService : IAuthService
         _tokenService = tokenService;
     }
 
-    public async Task<(bool IsSuccess, IEnumerable<IdentityError>? Errors, NewUserDto? User)> RegisterAsync(RegisterDto dto)
+    public async Task<NewUserDto> RegisterAsync(RegisterDto dto)
     {
         var user = new User { UserName = dto.Username, Email = dto.Email };
-        var userResult = await _userManager.CreateAsync(user, dto.Password);
-        if (!userResult.Succeeded) return (false, userResult.Errors, null);
+        var result = await _userManager.CreateAsync(user, dto.Password);
+
+        if (!result.Succeeded)
+        {
+            var errorMessages = string.Join("; ", result.Errors.Select(e => e.Description));
+            throw new InvalidOperationException(errorMessages);
+        }
 
         await _userManager.AddToRoleAsync(user, "User");
 
-        var userDto = new NewUserDto
+        return new NewUserDto
         {
             Username = user.UserName,
             Email = user.Email,
             Token = await _tokenService.CreateToken(user)
         };
-
-        return (true, null, userDto);
     }
 
-    public async Task<(bool IsSuccess, string? ErrorMessage, NewUserDto? User)> LoginAsync(LoginDto dto)
+    public async Task<NewUserDto> LoginAsync(LoginDto dto)
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == dto.Username);
-        if (user == null) return (false, "Invalid username", null);
+        if (user == null)
+            throw new UnauthorizedAccessException("Invalid username");
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
-        if (!result.Succeeded) return (false, "Invalid credentials", null);
+        if (!result.Succeeded)
+            throw new UnauthorizedAccessException("Invalid credentials");
 
-        var userDto = new NewUserDto
+        return new NewUserDto
         {
             Username = user.UserName,
             Email = user.Email,
             Token = await _tokenService.CreateToken(user)
         };
-
-        return (true, null, userDto);
     }
 }
+

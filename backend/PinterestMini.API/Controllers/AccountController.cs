@@ -20,22 +20,14 @@ public class AccountController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        var (isSuccess, errors, user) = await _authService.RegisterAsync(dto);
-        if (!isSuccess) return BadRequest(errors);
-
-        return Ok(user);
+        var userDto = await _authService.RegisterAsync(dto);
+        return Ok(userDto);
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        var (isSuccess, errorMessage, user) = await _authService.LoginAsync(dto);
-        if (!isSuccess) return Unauthorized(errorMessage);
-
-        return Ok(user);
+        var userDto = await _authService.LoginAsync(dto);
+        return Ok(userDto);
     }
 }

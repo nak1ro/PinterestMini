@@ -6,6 +6,6 @@ namespace PinterestMini.API.Interfaces;
 
 public interface IAuthService
 {
-    Task<(bool IsSuccess, IEnumerable<IdentityError>? Errors, NewUserDto? User)> RegisterAsync(RegisterDto dto);
-    Task<(bool IsSuccess, string? ErrorMessage, NewUserDto? User)> LoginAsync(LoginDto dto);
+    public Task<NewUserDto> RegisterAsync(RegisterDto dto);
+    public Task<NewUserDto> LoginAsync(LoginDto dto);
 }

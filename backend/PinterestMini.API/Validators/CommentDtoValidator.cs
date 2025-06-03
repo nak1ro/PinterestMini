@@ -10,9 +10,6 @@ public class CreateCommentDtoValidator : AbstractValidator<CreateCommentDto>
         RuleFor(x => x.Content)
             .NotEmpty()
             .MaximumLength(500).WithMessage("Comment cannot exceed 500 characters.");
-
-        RuleFor(x => x.PinId)
-            .NotEmpty().WithMessage("PinId is required.");
     }
 }
 

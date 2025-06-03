@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 import CreatePinModal from './CreatePinModal';
+import AuthButtons from './Auth/AuthButtons';
 
 const Header = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const { searchPins } = useAppContext();
   const [searchTerm, setSearchTerm] = useState('');
@@ -54,10 +56,13 @@ const Header = () => {
             />
           </form>
         </div>
-        
-        <div className="nav-links">
-          <Link to="/profile" className={`nav-link ${location.pathname.includes('/profile') ? 'active' : ''}`}>Profile</Link>
-        </div>
+        {!isLoggedIn ?(
+          <AuthButtons />
+            ):(
+            <div className="nav-links">
+              <Link to="/profile" className={`nav-link ${location.pathname.includes('/profile') ? 'active' : ''}`}>Profile</Link>
+            </div>
+        )}
       </motion.header>
 
       {showCreateModal && (

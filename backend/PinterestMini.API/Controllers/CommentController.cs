@@ -19,7 +19,7 @@ public class CommentController : ControllerBase
     // Create comment
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Create(Guid pinId, [FromBody] CreateCommentDto dto)
+    public async Task<IActionResult> Create([FromRoute] Guid pinId, [FromBody] CreateCommentDto dto)
     {
         var commentId = await _commentService.CreateCommentAsync(pinId, dto, User);
         return CreatedAtAction(nameof(GetForPin), new { pinId }, new { commentId });
@@ -27,7 +27,7 @@ public class CommentController : ControllerBase
 
     // Get comments for a pin (paginated)
     [HttpGet]
-    public async Task<IActionResult> GetForPin(Guid pinId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetForPin([FromRoute] Guid pinId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
         var comments = await _commentService.GetCommentsForPinAsync(pinId, page, pageSize);
         return Ok(comments);
@@ -36,7 +36,7 @@ public class CommentController : ControllerBase
     // Update comment
     [HttpPut("{commentId:guid}")]
     [Authorize]
-    public async Task<IActionResult> Update(Guid pinId, Guid commentId, [FromBody] UpdateCommentDto dto)
+    public async Task<IActionResult> Update([FromRoute] Guid commentId, [FromBody] UpdateCommentDto dto)
     {
         await _commentService.UpdateCommentAsync(commentId, dto, User);
         return NoContent();
@@ -45,7 +45,7 @@ public class CommentController : ControllerBase
     // Delete comment
     [HttpDelete("{commentId:guid}")]
     [Authorize]
-    public async Task<IActionResult> Delete(Guid pinId, Guid commentId)
+    public async Task<IActionResult> Delete([FromRoute] Guid commentId)
     {
         await _commentService.DeleteCommentAsync(commentId, User);
         return NoContent();
