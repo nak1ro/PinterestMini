@@ -24,12 +24,9 @@ public class CommentService : ICommentService
     public async Task<Guid> CreateCommentAsync(Guid pinId, CreateCommentDto dto, ClaimsPrincipal user)
     {
         var userId = GetUserId(user);
-        var owner = await _userManager.FindByIdAsync(userId.ToString());
-        if (owner == null) throw new UnauthorizedAccessException("User not found.");
+        await EnsureUserExists(userId);
 
-        var pin = await _unitOfWork.Pins.GetByIdAsync(pinId);
-        if (pin == null) throw new KeyNotFoundException("Pin not found.");
-        if (!pin.AllowComments) throw new InvalidOperationException("Comments are disabled for this pin.");
+        var pin = await GetPinIfCommentingAllowed(pinId);
 
         var comment = new Comment
         {
@@ -47,28 +44,25 @@ public class CommentService : ICommentService
 
     public async Task UpdateCommentAsync(Guid commentId, UpdateCommentDto dto, ClaimsPrincipal user)
     {
-        var comment = await _unitOfWork.Comments.GetByIdWithUserAsync(commentId);
-        if (comment == null) throw new KeyNotFoundException("Comment not found.");
-
+        var comment = await GetCommentWithUser(commentId);
         var userId = GetUserId(user);
-        if (comment.UserId != userId)
-            throw new UnauthorizedAccessException("You can only edit your own comments.");
+
+        if (!EnsureCommentOwner(comment.UserId, userId))
+            throw new UnauthorizedAccessException("You are not allowed to update this comment.");
 
         comment.Content = dto.Content;
+        comment.UpdatedAt = DateTime.UtcNow;
+
         await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeleteCommentAsync(Guid commentId, ClaimsPrincipal user)
     {
-        var comment = await _unitOfWork.Comments.GetByIdWithUserAndPinAsync(commentId);
-        if (comment == null) throw new KeyNotFoundException("Comment not found.");
-
+        var comment = await GetCommentWithUserAndPin(commentId);
         var userId = GetUserId(user);
-        var isOwner = comment.UserId == userId;
-        var isPinOwner = comment.Pin.OwnerId == userId;
 
-        if (!isOwner && !isPinOwner)
-            throw new UnauthorizedAccessException("You can't delete this comment.");
+        if (!EnsureCommentOwner(comment.UserId, userId) && !IsPinOwner(comment.Pin.OwnerId, userId))
+            throw new UnauthorizedAccessException("You are not allowed to delete this comment.");
 
         _unitOfWork.Comments.Remove(comment);
         await _unitOfWork.SaveChangesAsync();
@@ -80,11 +74,49 @@ public class CommentService : ICommentService
         return _mapper.Map<IEnumerable<CommentDto>>(comments);
     }
 
+    // 🔽 Helper Methods
+
     private Guid GetUserId(ClaimsPrincipal user)
     {
-        var idStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(idStr))
-            throw new UnauthorizedAccessException("User ID claim not found.");
+        var idStr = user.FindFirstValue(ClaimTypes.NameIdentifier)
+                    ?? throw new UnauthorizedAccessException("User ID claim not found.");
         return Guid.Parse(idStr);
     }
+
+    private async Task EnsureUserExists(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            throw new UnauthorizedAccessException("User not found.");
+    }
+
+    private async Task<Pin> GetPinIfCommentingAllowed(Guid pinId)
+    {
+        var pin = await _unitOfWork.Pins.GetByIdAsync(pinId)
+                  ?? throw new KeyNotFoundException("Pin not found.");
+
+        if (!pin.AllowComments)
+            throw new InvalidOperationException("Comments are disabled for this pin.");
+
+        return pin;
+    }
+
+    private async Task<Comment> GetCommentWithUser(Guid commentId)
+    {
+        return await _unitOfWork.Comments.GetByIdWithUserAsync(commentId)
+               ?? throw new KeyNotFoundException("Comment not found.");
+    }
+
+    private async Task<Comment> GetCommentWithUserAndPin(Guid commentId)
+    {
+        return await _unitOfWork.Comments.GetByIdWithUserAndPinAsync(commentId)
+               ?? throw new KeyNotFoundException("Comment not found.");
+    }
+
+    private static bool EnsureCommentOwner(Guid commentUserId, Guid currentUserId)
+    {
+        return commentUserId != currentUserId;
+    }
+
+    private static bool IsPinOwner(Guid pinOwnerId, Guid currentUserId) => pinOwnerId == currentUserId;
 }

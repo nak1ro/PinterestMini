@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace PinterestMini.API.Models;
 
 public class Board
@@ -8,6 +10,7 @@ public class Board
     public DateTime CreatedAt { get; set; }
 
     public Guid UserId { get; set; }
+    [ForeignKey("UserId")]
     public User User { get; set; }
 
     public ICollection<PinBoard> PinBoards { get; set; }

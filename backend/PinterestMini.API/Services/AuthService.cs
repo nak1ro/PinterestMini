@@ -42,9 +42,11 @@ public class AuthService : IAuthService
 
     public async Task<NewUserDto> LoginAsync(LoginDto dto)
     {
-        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == dto.Username);
+        var user = await _userManager.Users
+            .FirstOrDefaultAsync(u => u.UserName == dto.Login || u.Email == dto.Login);
+        
         if (user == null)
-            throw new UnauthorizedAccessException("Invalid username");
+            throw new UnauthorizedAccessException("Invalid username or email");
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
         if (!result.Succeeded)
