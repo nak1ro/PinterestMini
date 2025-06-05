@@ -1,4 +1,4 @@
-import React, {createContext, useState, useContext} from 'react';
+import React, {createContext, useState, useContext, useEffect} from 'react';
 import pins from '../data/pins';
 
 const AppContext = createContext();
@@ -6,9 +6,34 @@ const AppContext = createContext();
 export const useAppContext = () => useContext(AppContext);
 
 export const AppProvider = ({children}) => {
+    const [user, setUser] = useState(null);
+    const [token, setToken] = useState(null);
     const [allPins, setAllPins] = useState(pins);
     const [savedPins, setSavedPins] = useState([]);
     const [searchResults, setSearchResults] = useState(pins);
+
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        const storedToken = localStorage.getItem('token');
+        if (storedUser && storedToken) {
+            setUser(storedUser);
+            setToken(storedToken);
+        }
+    }, []);
+
+    const login = (userData, jwtToken) => {
+        setUser(userData);
+        setToken(jwtToken);
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('token', jwtToken);
+    };
+
+    const logout = () => {
+        setUser(null);
+        setToken(null);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+    };
 
     // Search functionality
     const searchPins = (searchTerm) => {
@@ -57,7 +82,12 @@ export const AppProvider = ({children}) => {
             searchPins,
             savePin,
             unsavePin,
-            isPinSaved
+            isPinSaved,
+            user,
+            token,
+            isAuthenticated: !!user,
+            login,
+            logout
         }}>
             {children}
         </AppContext.Provider>
