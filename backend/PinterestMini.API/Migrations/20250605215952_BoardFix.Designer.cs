@@ -12,8 +12,8 @@ using PinterestMini.API.Data;
 namespace PinterestMini.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250605190637_BoardUpdate")]
-    partial class BoardUpdate
+    [Migration("20250605215952_BoardFix")]
+    partial class BoardFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

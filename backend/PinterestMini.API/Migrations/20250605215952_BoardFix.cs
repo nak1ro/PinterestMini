@@ -5,7 +5,7 @@
 namespace PinterestMini.API.Migrations
 {
     /// <inheritdoc />
-    public partial class BoardUpdate : Migration
+    public partial class BoardFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

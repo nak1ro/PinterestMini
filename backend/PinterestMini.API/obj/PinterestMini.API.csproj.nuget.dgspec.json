@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\PinterestMini.API.csproj": {}
+    "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.api\\PinterestMini.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\PinterestMini.API.csproj": {
+    "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.api\\PinterestMini.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\PinterestMini.API.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.api\\PinterestMini.API.csproj",
         "projectName": "PinterestMini.API",
-        "projectPath": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\PinterestMini.API.csproj",
+        "projectPath": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.api\\PinterestMini.API.csproj",
         "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\obj\\",
+        "outputPath": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config"
