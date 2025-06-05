@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PinterestMini.API.DTOs.Account;
@@ -29,5 +30,13 @@ public class AccountController : ControllerBase
     {
         var userDto = await _authService.LoginAsync(dto);
         return Ok(userDto);
+    }
+    
+    [HttpGet("user-id/{login}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetUserIdByLogin(string login)
+    {
+        var user = await _authService.GetUserByLoginAsync(login);
+        return Ok(new { user.Id });
     }
 }

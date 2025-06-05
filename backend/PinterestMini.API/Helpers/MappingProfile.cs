@@ -1,4 +1,5 @@
 using AutoMapper;
+using PinterestMini.API.DTOs.Boards;
 using PinterestMini.API.DTOs.Comments;
 using PinterestMini.API.Models;
 
@@ -15,6 +16,10 @@ public class MappingProfile : Profile
 
         // Create: CreateCommentDto → Comment
         CreateMap<CreateCommentDto, Comment>();
+        
+        CreateMap<Board, BoardDto>()
+            .ForMember(dest => dest.OwnerUsername, opt => opt.MapFrom(src => src.User.UserName))
+            .ForMember(dest => dest.CoverImageUrl, opt => opt.MapFrom(src => src.CoverImageUrl));
 
         // Update: UpdateCommentDto → Comment (not always used, but ready)
         CreateMap<UpdateCommentDto, Comment>();

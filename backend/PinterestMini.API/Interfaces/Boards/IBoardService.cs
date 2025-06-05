@@ -1,0 +1,13 @@
+using System.Security.Claims;
+using PinterestMini.API.DTOs.Boards;
+
+namespace PinterestMini.API.Interfaces.Boards;
+
+public interface IBoardService
+{
+    Task<Guid> CreateBoardAsync(CreateBoardDto dto, ClaimsPrincipal user);
+    Task UpdateBoardAsync(Guid boardId, UpdateBoardDto dto, ClaimsPrincipal user);
+    Task DeleteBoardAsync(Guid boardId, ClaimsPrincipal user);
+    Task<IEnumerable<BoardDto>> GetMyBoardsAsync(ClaimsPrincipal user);
+    Task<IEnumerable<BoardDto>> GetBoardsByUserAsync(Guid userId);
+}

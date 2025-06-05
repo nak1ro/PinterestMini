@@ -59,5 +59,19 @@ public class AuthService : IAuthService
             Token = await _tokenService.CreateToken(user)
         };
     }
+    
+    public async Task<User> GetUserByLoginAsync(string login)
+    {
+        if (string.IsNullOrWhiteSpace(login))
+            throw new InvalidOperationException("Login (username or email) must be provided.");
+
+        var user = await _userManager.FindByNameAsync(login)
+                   ?? await _userManager.FindByEmailAsync(login);
+
+        if (user == null)
+            throw new KeyNotFoundException("User not found.");
+
+        return user;
+    }
 }
 

@@ -12,21 +12,18 @@ public class PinService : IPinService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IWebHostEnvironment _env;
-    private readonly UserManager<User> _userManager;
+    private readonly IUserContextService _userContext;
 
-    public PinService(IUnitOfWork unitOfWork, IWebHostEnvironment env, UserManager<User> userManager)
+    public PinService(IUnitOfWork unitOfWork, IWebHostEnvironment env, IUserContextService userContext)
     {
         _unitOfWork = unitOfWork;
         _env = env;
-        _userManager = userManager;
+        _userContext = userContext;
     }
 
     public async Task<Guid> CreatePinAsync(CreatePinDto dto, ClaimsPrincipal user)
     {
-        var userId = GetUserIdFromClaims(user);
-        var owner = await _userManager.FindByIdAsync(userId.ToString());
-        if (owner == null)
-            throw new UnauthorizedAccessException("User not found.");
+        var userId = _userContext.GetUserId(user);
 
         var imageUrl = await SaveImageAsync(dto.Image);
 
@@ -55,7 +52,7 @@ public class PinService : IPinService
         if (pin == null)
             throw new KeyNotFoundException("Pin not found");
 
-        var userId = GetUserIdFromClaims(user);
+        var userId = _userContext.GetUserId(user);
         if (pin.OwnerId != userId)
             throw new UnauthorizedAccessException("You don't own this pin");
 
@@ -65,14 +62,6 @@ public class PinService : IPinService
 
         _unitOfWork.Pins.Update(pin);
         await _unitOfWork.SaveChangesAsync();
-    }
-
-    private Guid GetUserIdFromClaims(ClaimsPrincipal user)
-    {
-        var idStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(idStr))
-            throw new UnauthorizedAccessException("User ID claim not found.");
-        return Guid.Parse(idStr);
     }
 
     private async Task AttachTagsAsync(Pin pin, List<Guid>? tagIds)

@@ -12,19 +12,18 @@ public class CommentService : ICommentService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly UserManager<User> _userManager;
+    private readonly IUserContextService _userContext;
 
-    public CommentService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager)
+    public CommentService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContext)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _userManager = userManager;
+        _userContext = userContext;
     }
 
     public async Task<Guid> CreateCommentAsync(Guid pinId, CreateCommentDto dto, ClaimsPrincipal user)
     {
-        var userId = GetUserId(user);
-        await EnsureUserExists(userId);
+        var userId = _userContext.GetUserId(user);
 
         var pin = await GetPinIfCommentingAllowed(pinId);
 
@@ -45,7 +44,7 @@ public class CommentService : ICommentService
     public async Task UpdateCommentAsync(Guid commentId, UpdateCommentDto dto, ClaimsPrincipal user)
     {
         var comment = await GetCommentWithUser(commentId);
-        var userId = GetUserId(user);
+        var userId = _userContext.GetUserId(user);
 
         if (!EnsureCommentOwner(comment.UserId, userId))
             throw new UnauthorizedAccessException("You are not allowed to update this comment.");
@@ -59,7 +58,7 @@ public class CommentService : ICommentService
     public async Task DeleteCommentAsync(Guid commentId, ClaimsPrincipal user)
     {
         var comment = await GetCommentWithUserAndPin(commentId);
-        var userId = GetUserId(user);
+        var userId = _userContext.GetUserId(user);
 
         if (!EnsureCommentOwner(comment.UserId, userId) && !IsPinOwner(comment.Pin.OwnerId, userId))
             throw new UnauthorizedAccessException("You are not allowed to delete this comment.");
@@ -72,22 +71,6 @@ public class CommentService : ICommentService
     {
         var comments = await _unitOfWork.Comments.GetForPinPaginatedAsync(pinId, page, pageSize);
         return _mapper.Map<IEnumerable<CommentDto>>(comments);
-    }
-
-    // 🔽 Helper Methods
-
-    private Guid GetUserId(ClaimsPrincipal user)
-    {
-        var idStr = user.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new UnauthorizedAccessException("User ID claim not found.");
-        return Guid.Parse(idStr);
-    }
-
-    private async Task EnsureUserExists(Guid userId)
-    {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
-        if (user == null)
-            throw new UnauthorizedAccessException("User not found.");
     }
 
     private async Task<Pin> GetPinIfCommentingAllowed(Guid pinId)

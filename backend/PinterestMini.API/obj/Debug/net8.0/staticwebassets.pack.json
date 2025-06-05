@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\wwwroot\\images\\boards\\688ee393-9ae8-4750-91a8-f308fc6f73db.png",
+      "PackagePath": "staticwebassets\\images\\boards\\688ee393-9ae8-4750-91a8-f308fc6f73db.png"
+    },
+    {
       "Id": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\wwwroot\\images\\pins\\416fc608-4c10-4926-af21-e200a7b4d34a.png",
       "PackagePath": "staticwebassets\\images\\pins\\416fc608-4c10-4926-af21-e200a7b4d34a.png"
     },

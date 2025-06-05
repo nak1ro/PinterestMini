@@ -20,4 +20,36 @@ public class BoardRepository : IBoardRepository
             .Where(b => boardIds.Contains(b.Id))
             .ToListAsync();
     }
+
+    public async Task<Board?> GetByIdAsync(Guid boardId)
+    {
+        return await _context.Boards
+            .FirstOrDefaultAsync(b => b.Id == boardId);
+    }
+
+    public async Task AddAsync(Board board)
+    {
+        await _context.Boards.AddAsync(board);
+    }
+
+    public void Delete(Board board)
+    {
+        _context.Boards.Remove(board);
+    }
+
+    public async Task<List<Board>> GetByUserIdAsync(Guid userId)
+    {
+        return await _context.Boards
+            .Include(b => b.User)
+            .Where(b => b.UserId == userId)
+            .ToListAsync();
+    }
+
+    public async Task<List<Board>> GetPublicBoardsByUserIdAsync(Guid userId)
+    {
+        return await _context.Boards
+            .Include(b => b.User)
+            .Where(b => b.UserId == userId && !b.IsPrivate)
+            .ToListAsync();
+    }
 }

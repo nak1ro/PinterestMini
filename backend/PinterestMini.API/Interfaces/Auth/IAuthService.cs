@@ -8,4 +8,5 @@ public interface IAuthService
 {
     public Task<NewUserDto> RegisterAsync(RegisterDto dto);
     public Task<NewUserDto> LoginAsync(LoginDto dto);
+    Task<User> GetUserByLoginAsync(string login);
 }

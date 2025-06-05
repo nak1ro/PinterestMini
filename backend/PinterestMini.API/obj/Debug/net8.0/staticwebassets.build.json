@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "/T+asSyyF1g8ecikPD1VVglcnwxvjFY+7jqmiw+ks5Q=",
+  "Hash": "3XEGqKvouR2/ypLH4a0yEyHM0rN1wVwRnCIjdB3v/tA=",
   "Source": "PinterestMini.API",
   "BasePath": "_content/PinterestMini.API",
   "Mode": "Default",
@@ -16,6 +16,25 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\wwwroot\\images\\boards\\688ee393-9ae8-4750-91a8-f308fc6f73db.png",
+      "SourceId": "PinterestMini.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\wwwroot\\",
+      "BasePath": "_content/PinterestMini.API",
+      "RelativePath": "images/boards/688ee393-9ae8-4750-91a8-f308fc6f73db.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\boards\\688ee393-9ae8-4750-91a8-f308fc6f73db.png"
+    },
     {
       "Identity": "C:\\Users\\Lenovo\\PinterestMini\\backend\\PinterestMini.API\\wwwroot\\images\\pins\\416fc608-4c10-4926-af21-e200a7b4d34a.png",
       "SourceId": "PinterestMini.API",
