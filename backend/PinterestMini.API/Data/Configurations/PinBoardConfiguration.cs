@@ -8,7 +8,7 @@ public class PinBoardConfiguration : IEntityTypeConfiguration<PinBoard>
 {
     public void Configure(EntityTypeBuilder<PinBoard> builder)
     {
-        builder.HasKey(pb => new { pb.BoardId, pb.PinId });
+        builder.HasKey(pb => new { pb.BoardId, pb.PinId, pb.UserId });
 
         builder.HasOne(pb => pb.Board)
             .WithMany(b => b.PinBoards)
@@ -17,5 +17,11 @@ public class PinBoardConfiguration : IEntityTypeConfiguration<PinBoard>
         builder.HasOne(pb => pb.Pin)
             .WithMany(p => p.PinBoards)
             .HasForeignKey(pb => pb.PinId);
+        
+        builder
+            .HasOne(pb => pb.User)
+            .WithMany()
+            .HasForeignKey(pb => pb.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

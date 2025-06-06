@@ -1,5 +1,6 @@
 using PinterestMini.API.Domain.Interfaces.Boards;
 using PinterestMini.API.Domain.Interfaces.Comments;
+using PinterestMini.API.Domain.Interfaces.PinBoards;
 using PinterestMini.API.Domain.Interfaces.Pins;
 using PinterestMini.API.Domain.Interfaces.Tags;
 
@@ -11,6 +12,7 @@ namespace PinterestMini.API.Domain.Interfaces
         ITagRepository Tags { get; }
         IBoardRepository Boards { get; }
         ICommentRepository Comments { get; set; }
+        IPinBoardRepository PinBoards { get; set; }
 
         Task SaveChangesAsync();
     }

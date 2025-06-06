@@ -21,6 +21,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
     public DbSet<PinTag> PinTags { get; set; }
     public DbSet<PinBoard> PinBoards { get; set; }
     public DbSet<Follow> Follows { get; set; }
+    public DbSet<SavedPin> SavedPins { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -31,5 +32,6 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
         builder.ApplyConfiguration(new PinTagConfiguration());
         builder.ApplyConfiguration(new PinBoardConfiguration());
         builder.ApplyConfiguration(new CommentConfiguration());
+        builder.ApplyConfiguration(new SavedPinConfiguration());
     }
 }

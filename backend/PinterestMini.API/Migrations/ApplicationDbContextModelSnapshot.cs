@@ -152,7 +152,7 @@ namespace PinterestMini.API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Board", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Board", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -184,7 +184,7 @@ namespace PinterestMini.API.Migrations
                     b.ToTable("Boards");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Comment", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Comment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -215,7 +215,7 @@ namespace PinterestMini.API.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Follow", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Follow", b =>
                 {
                     b.Property<Guid>("FollowerId")
                         .HasColumnType("uuid");
@@ -233,7 +233,7 @@ namespace PinterestMini.API.Migrations
                     b.ToTable("Follows");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Like", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Like", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -251,7 +251,7 @@ namespace PinterestMini.API.Migrations
                     b.ToTable("Likes");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Pin", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Pin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -277,17 +277,14 @@ namespace PinterestMini.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Pins");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.PinBoard", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.PinBoard", b =>
                 {
                     b.Property<Guid>("BoardId")
                         .HasColumnType("uuid");
@@ -295,14 +292,19 @@ namespace PinterestMini.API.Migrations
                     b.Property<Guid>("PinId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("BoardId", "PinId");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("BoardId", "PinId", "UserId");
 
                     b.HasIndex("PinId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("PinBoards");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.PinTag", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.PinTag", b =>
                 {
                     b.Property<Guid>("PinId")
                         .HasColumnType("uuid");
@@ -317,7 +319,30 @@ namespace PinterestMini.API.Migrations
                     b.ToTable("PinTags");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Tag", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.SavedPin", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PinId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PinId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("SavedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId", "PinId");
+
+                    b.HasIndex("PinId");
+
+                    b.HasIndex("PinId1");
+
+                    b.ToTable("SavedPins");
+                });
+
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Tag", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -332,7 +357,7 @@ namespace PinterestMini.API.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.User", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -414,7 +439,7 @@ namespace PinterestMini.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.User", null)
+                    b.HasOne("PinterestMini.API.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -423,7 +448,7 @@ namespace PinterestMini.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.User", null)
+                    b.HasOne("PinterestMini.API.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -438,7 +463,7 @@ namespace PinterestMini.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PinterestMini.API.Models.User", null)
+                    b.HasOne("PinterestMini.API.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -447,16 +472,16 @@ namespace PinterestMini.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.User", null)
+                    b.HasOne("PinterestMini.API.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Board", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Board", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.User", "User")
+                    b.HasOne("PinterestMini.API.Domain.Models.User", "User")
                         .WithMany("Boards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -465,15 +490,15 @@ namespace PinterestMini.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Comment", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Comment", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.Pin", "Pin")
+                    b.HasOne("PinterestMini.API.Domain.Models.Pin", "Pin")
                         .WithMany("Comments")
                         .HasForeignKey("PinId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PinterestMini.API.Models.User", "User")
+                    b.HasOne("PinterestMini.API.Domain.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -484,15 +509,15 @@ namespace PinterestMini.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Follow", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Follow", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.User", "Follower")
+                    b.HasOne("PinterestMini.API.Domain.Models.User", "Follower")
                         .WithMany("Following")
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PinterestMini.API.Models.User", "Following")
+                    b.HasOne("PinterestMini.API.Domain.Models.User", "Following")
                         .WithMany("Followers")
                         .HasForeignKey("FollowingId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -503,15 +528,15 @@ namespace PinterestMini.API.Migrations
                     b.Navigation("Following");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Like", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Like", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.Pin", "Pin")
+                    b.HasOne("PinterestMini.API.Domain.Models.Pin", "Pin")
                         .WithMany("Likes")
                         .HasForeignKey("PinId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PinterestMini.API.Models.User", "User")
+                    b.HasOne("PinterestMini.API.Domain.Models.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -522,41 +547,53 @@ namespace PinterestMini.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Pin", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Pin", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.User", null)
+                    b.HasOne("PinterestMini.API.Domain.Models.User", "Owner")
                         .WithMany("Pins")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.PinBoard", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.PinBoard", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.Board", "Board")
+                    b.HasOne("PinterestMini.API.Domain.Models.Board", "Board")
                         .WithMany("PinBoards")
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PinterestMini.API.Models.Pin", "Pin")
+                    b.HasOne("PinterestMini.API.Domain.Models.Pin", "Pin")
                         .WithMany("PinBoards")
                         .HasForeignKey("PinId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PinterestMini.API.Domain.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Board");
 
                     b.Navigation("Pin");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.PinTag", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.PinTag", b =>
                 {
-                    b.HasOne("PinterestMini.API.Models.Pin", "Pin")
+                    b.HasOne("PinterestMini.API.Domain.Models.Pin", "Pin")
                         .WithMany("PinTags")
                         .HasForeignKey("PinId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PinterestMini.API.Models.Tag", "Tag")
+                    b.HasOne("PinterestMini.API.Domain.Models.Tag", "Tag")
                         .WithMany("PinTags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -567,12 +604,35 @@ namespace PinterestMini.API.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Board", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.SavedPin", b =>
+                {
+                    b.HasOne("PinterestMini.API.Domain.Models.Pin", "Pin")
+                        .WithMany()
+                        .HasForeignKey("PinId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PinterestMini.API.Domain.Models.Pin", null)
+                        .WithMany("SavedPins")
+                        .HasForeignKey("PinId1");
+
+                    b.HasOne("PinterestMini.API.Domain.Models.User", "User")
+                        .WithMany("SavedPins")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pin");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Board", b =>
                 {
                     b.Navigation("PinBoards");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Pin", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Pin", b =>
                 {
                     b.Navigation("Comments");
 
@@ -581,14 +641,16 @@ namespace PinterestMini.API.Migrations
                     b.Navigation("PinBoards");
 
                     b.Navigation("PinTags");
+
+                    b.Navigation("SavedPins");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.Tag", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.Tag", b =>
                 {
                     b.Navigation("PinTags");
                 });
 
-            modelBuilder.Entity("PinterestMini.API.Models.User", b =>
+            modelBuilder.Entity("PinterestMini.API.Domain.Models.User", b =>
                 {
                     b.Navigation("Boards");
 
@@ -601,6 +663,8 @@ namespace PinterestMini.API.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("Pins");
+
+                    b.Navigation("SavedPins");
                 });
 #pragma warning restore 612, 618
         }

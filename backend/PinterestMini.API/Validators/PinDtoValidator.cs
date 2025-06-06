@@ -34,9 +34,10 @@ public class CreatePinDtoValidator : AbstractValidator<CreatePinDto>
             .MaximumLength(100).WithMessage("Title cannot exceed 100 characters.");
 
         RuleFor(x => x.Image)
-            .NotNull().WithMessage("Image is required.")
-            .Must(file => file.ContentType.StartsWith("image/"))
-            .WithMessage("Uploaded file must be an image.");
+            .NotNull()
+            .WithMessage("Image is required.")
+            .Must(file => file != null && file.Length < 5_000_000)
+            .WithMessage("Image must be smaller than 5MB.");
 
         RuleForEach(x => x.TagIds)
             .Must(tagId => tagId != Guid.Empty)

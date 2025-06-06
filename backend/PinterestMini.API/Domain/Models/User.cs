@@ -14,4 +14,5 @@ public class User: IdentityUser<Guid>
 
     public ICollection<Follow> Followers { get; set; }
     public ICollection<Follow> Following { get; set; }
+    public ICollection<SavedPin> SavedPins { get; set; }
 }

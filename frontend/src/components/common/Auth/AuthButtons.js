@@ -10,12 +10,12 @@ const AuthButtons = () => {
     const closeModal = () => setAuthModalType(null);
 
     return (
-        <div className="auth-buttons">
-                <div className="auth-buttons-container">
-                    <button onClick={() => openModal('signin')} className="login-btn">
+        <div>
+                <div>
+                    <button onClick={() => openModal('signin')} className="btn btn-danger btn-sm fw-semibold">
                         Log In
                     </button>
-                    <button onClick={() => openModal('signup')} className="signup-btn">
+                    <button onClick={() => openModal('signup')} className="btn btn-sm btn-light fw-semibold ms-3">
                         Sign Up
                     </button>
                 </div>

@@ -6,7 +6,7 @@ using PinterestMini.API.DTOs.Comments;
 namespace PinterestMini.API.Controllers;
 
 [ApiController]
-[Route("api/pins/{pinId:guid}/comments")]
+[Route("api/pin/{pinId:guid}/comments")]
 public class CommentController : ControllerBase
 {
     private readonly ICommentService _commentService;

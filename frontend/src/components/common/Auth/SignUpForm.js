@@ -30,7 +30,7 @@ const SignUpForm = () => {
             <input
                 name="username"
                 type="text"
-                className="authInput"
+                className="form-control rounded-3 px-4 py-3 border border-light m-1 form-control shadow-none"
                 placeholder="Username"
                 value={form.username}
                 onChange={handleChange}
@@ -39,7 +39,7 @@ const SignUpForm = () => {
             <input
                 name="email"
                 type="email"
-                className="authInput"
+                className="form-control rounded-3 px-4 py-3 border border-light m-1 form-control shadow-none"
                 placeholder="Email"
                 value={form.email}
                 onChange={handleChange}
@@ -48,13 +48,13 @@ const SignUpForm = () => {
             <input
                 name="password"
                 type="password"
-                className="authInput"
+                className="form-control rounded-3 px-4 py-3 border border-light m-1 form-control shadow-none"
                 placeholder="Password"
                 value={form.password}
                 onChange={handleChange}
                 required
             />
-            <button className="authButton" type="submit">Register</button>
+            <button className="btn btn-danger btn-lg fw-semibold rounded-5" type="submit">Register</button>
         </form>
     );
 };

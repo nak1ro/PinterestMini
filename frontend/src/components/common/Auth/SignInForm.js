@@ -30,7 +30,7 @@ const SignInForm = () => {
             <input
                 name="login"
                 type="text"
-                className="authInput"
+                className="form-control rounded-3 px-4 py-3 border border-light m-1 form-control shadow-none"
                 placeholder="Username"
                 value={form.username}
                 onChange={handleChange}
@@ -39,13 +39,13 @@ const SignInForm = () => {
             <input
                 name="password"
                 type="password"
-                className="authInput"
+                className="form-control rounded-3 px-4 py-3 border border-light m-1 form-control shadow-none"
                 placeholder="Password"
                 value={form.password}
                 onChange={handleChange}
                 required
             />
-            <button className="authButton" type="submit">Log In</button>
+            <button className="btn btn-danger btn-lg fw-semibold rounded-5 m-1" type="submit">Log In</button>
         </form>
     );
 };

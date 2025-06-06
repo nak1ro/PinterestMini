@@ -6,7 +6,7 @@ using PinterestMini.API.DTOs.Boards;
 namespace PinterestMini.API.Controllers;
 
 [ApiController]
-[Route("api/boards")]
+[Route("api/[controller]")]
 public class BoardController : ControllerBase
 {
     private readonly IBoardService _boardService;
