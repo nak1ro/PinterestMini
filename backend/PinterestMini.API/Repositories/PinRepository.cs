@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using PinterestMini.API.Data;
+using PinterestMini.API.Domain.Interfaces.Pins;
+using PinterestMini.API.Domain.Models;
 using PinterestMini.API.Helpers;
-using PinterestMini.API.Interfaces;
-using PinterestMini.API.Interfaces.Pins;
-using PinterestMini.API.Models;
 
 namespace PinterestMini.API.Repositories;
 

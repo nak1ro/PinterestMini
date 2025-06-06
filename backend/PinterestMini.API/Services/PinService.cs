@@ -1,10 +1,10 @@
 using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using PinterestMini.API.Domain.Interfaces;
+using PinterestMini.API.Domain.Interfaces.Pins;
+using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Pins;
-using PinterestMini.API.Interfaces;
-using PinterestMini.API.Models;
-using PinterestMini.API.Services.Pins;
 
 namespace PinterestMini.API.Services;
 

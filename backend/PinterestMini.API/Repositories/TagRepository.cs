@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PinterestMini.API.Data;
-using PinterestMini.API.Interfaces.Tags;
-using PinterestMini.API.Models;
+using PinterestMini.API.Domain.Interfaces.Tags;
+using PinterestMini.API.Domain.Models;
 
 namespace PinterestMini.API.Repositories;
 

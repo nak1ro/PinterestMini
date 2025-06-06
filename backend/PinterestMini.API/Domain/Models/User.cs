@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace PinterestMini.API.Models;
+namespace PinterestMini.API.Domain.Models;
 
 public class User: IdentityUser<Guid>
 {

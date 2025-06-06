@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using PinterestMini.API.Interfaces;
-using PinterestMini.API.Models;
+using PinterestMini.API.Domain.Interfaces;
+using PinterestMini.API.Domain.Models;
 
 namespace PinterestMini.API.Services;
 

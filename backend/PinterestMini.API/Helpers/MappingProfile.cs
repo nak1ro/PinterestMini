@@ -1,7 +1,7 @@
 using AutoMapper;
+using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Boards;
 using PinterestMini.API.DTOs.Comments;
-using PinterestMini.API.Models;
 
 namespace PinterestMini.API.Helpers;
 

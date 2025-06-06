@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PinterestMini.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9ffc14c803ce051d051b87fbaba32c7f20547480")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7398441a50ef788e8d919a9c5f184937ba0aae82")]
 [assembly: System.Reflection.AssemblyProductAttribute("PinterestMini.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PinterestMini.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

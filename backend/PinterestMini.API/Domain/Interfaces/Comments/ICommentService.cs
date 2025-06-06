@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using PinterestMini.API.DTOs.Comments;
 
-namespace PinterestMini.API.Interfaces.Comments;
+namespace PinterestMini.API.Domain.Interfaces.Comments;
 
 public interface ICommentService
 {

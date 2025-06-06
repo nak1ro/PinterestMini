@@ -1,9 +1,9 @@
-using PinterestMini.API.Interfaces.Boards;
-using PinterestMini.API.Interfaces.Comments;
-using PinterestMini.API.Interfaces.Pins;
-using PinterestMini.API.Interfaces.Tags;
+using PinterestMini.API.Domain.Interfaces.Boards;
+using PinterestMini.API.Domain.Interfaces.Comments;
+using PinterestMini.API.Domain.Interfaces.Pins;
+using PinterestMini.API.Domain.Interfaces.Tags;
 
-namespace PinterestMini.API.Interfaces
+namespace PinterestMini.API.Domain.Interfaces
 {
     public interface IUnitOfWork
     {

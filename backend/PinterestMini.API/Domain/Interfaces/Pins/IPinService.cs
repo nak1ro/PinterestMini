@@ -1,8 +1,7 @@
 using System.Security.Claims;
 using PinterestMini.API.DTOs.Pins;
-using PinterestMini.API.Helpers;
 
-namespace PinterestMini.API.Services.Pins;
+namespace PinterestMini.API.Domain.Interfaces.Pins;
 
 public interface IPinService
 {

@@ -1,4 +1,4 @@
-namespace PinterestMini.API.Models;
+namespace PinterestMini.API.Domain.Models;
 
 public class Follow
 {

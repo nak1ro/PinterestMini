@@ -1,10 +1,10 @@
 using PinterestMini.API.Data;
-using PinterestMini.API.Interfaces;
 using System.Threading.Tasks;
-using PinterestMini.API.Interfaces.Boards;
-using PinterestMini.API.Interfaces.Comments;
-using PinterestMini.API.Interfaces.Pins;
-using PinterestMini.API.Interfaces.Tags;
+using PinterestMini.API.Domain.Interfaces;
+using PinterestMini.API.Domain.Interfaces.Boards;
+using PinterestMini.API.Domain.Interfaces.Comments;
+using PinterestMini.API.Domain.Interfaces.Pins;
+using PinterestMini.API.Domain.Interfaces.Tags;
 
 namespace PinterestMini.API.Repositories;
 

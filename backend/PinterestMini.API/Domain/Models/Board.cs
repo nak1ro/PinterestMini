@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PinterestMini.API.Models;
+namespace PinterestMini.API.Domain.Models;
 
 public class Board
 {

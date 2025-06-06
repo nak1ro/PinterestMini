@@ -1,9 +1,9 @@
 using System.Security.Claims;
 using AutoMapper;
+using PinterestMini.API.Domain.Interfaces;
+using PinterestMini.API.Domain.Interfaces.Boards;
+using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Boards;
-using PinterestMini.API.Interfaces;
-using PinterestMini.API.Interfaces.Boards;
-using PinterestMini.API.Models;
 
 public class BoardService : IBoardService
 {

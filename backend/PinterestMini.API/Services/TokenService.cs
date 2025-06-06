@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using PinterestMini.API.Interfaces;
-using PinterestMini.API.Models;
+using PinterestMini.API.Domain.Interfaces.Auth;
+using PinterestMini.API.Domain.Models;
 
 namespace PinterestMini.API.Services;
 

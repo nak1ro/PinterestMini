@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PinterestMini.API.Domain.Interfaces.Comments;
 using PinterestMini.API.DTOs.Comments;
-using PinterestMini.API.Interfaces.Comments;
 
 namespace PinterestMini.API.Controllers;
 

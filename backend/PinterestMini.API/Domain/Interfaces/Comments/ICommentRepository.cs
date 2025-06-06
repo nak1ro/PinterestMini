@@ -1,6 +1,6 @@
-using PinterestMini.API.Models;
+using PinterestMini.API.Domain.Models;
 
-namespace PinterestMini.API.Interfaces.Comments;
+namespace PinterestMini.API.Domain.Interfaces.Comments;
 
 public interface ICommentRepository
 {

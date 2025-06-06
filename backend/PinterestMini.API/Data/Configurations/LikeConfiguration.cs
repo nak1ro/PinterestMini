@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PinterestMini.API.Models;
+using PinterestMini.API.Domain.Models;
 
 namespace PinterestMini.API.Data.Configurations;
 

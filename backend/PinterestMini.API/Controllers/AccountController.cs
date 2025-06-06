@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PinterestMini.API.Domain.Interfaces.Auth;
 using PinterestMini.API.DTOs.Account;
-using PinterestMini.API.Interfaces;
-using PinterestMini.API.Models;
 
 namespace PinterestMini.API.Controllers;
 

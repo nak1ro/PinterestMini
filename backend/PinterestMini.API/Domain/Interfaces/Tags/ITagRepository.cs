@@ -1,6 +1,6 @@
-using PinterestMini.API.Models;
+using PinterestMini.API.Domain.Models;
 
-namespace PinterestMini.API.Interfaces.Tags;
+namespace PinterestMini.API.Domain.Interfaces.Tags;
 
 public interface ITagRepository
 {

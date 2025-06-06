@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PinterestMini.API.Data.Configurations;
-using PinterestMini.API.Models;
+using PinterestMini.API.Domain.Models;
 
 namespace PinterestMini.API.Data;
 

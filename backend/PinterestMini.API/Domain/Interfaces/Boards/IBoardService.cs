@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using PinterestMini.API.DTOs.Boards;
 
-namespace PinterestMini.API.Interfaces.Boards;
+namespace PinterestMini.API.Domain.Interfaces.Boards;
 
 public interface IBoardService
 {

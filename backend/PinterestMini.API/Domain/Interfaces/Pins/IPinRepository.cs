@@ -1,7 +1,6 @@
-using PinterestMini.API.Helpers;
-using PinterestMini.API.Models;
+using PinterestMini.API.Domain.Models;
 
-namespace PinterestMini.API.Interfaces.Pins;
+namespace PinterestMini.API.Domain.Interfaces.Pins;
 
 public interface IPinRepository
 {

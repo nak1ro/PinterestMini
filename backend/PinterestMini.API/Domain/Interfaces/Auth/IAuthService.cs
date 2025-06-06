@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Identity;
+using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Account;
-using PinterestMini.API.Models;
 
-namespace PinterestMini.API.Interfaces;
+namespace PinterestMini.API.Domain.Interfaces.Auth;
 
 public interface IAuthService
 {
