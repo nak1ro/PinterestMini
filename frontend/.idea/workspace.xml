@@ -5,19 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/PinterestMini.API.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/PinterestMini.API.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/PinterestMini.API.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/PinterestMini.API.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/rider.project.model.nuget.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.cache/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/.eslintcache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.cache/default-development/0.pack" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/default-development/0.pack" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.cache/default-development/2.pack" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/default-development/2.pack" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.cache/default-development/3.pack" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/default-development/3.pack" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.cache/default-development/4.pack" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/default-development/4.pack" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.cache/default-development/index.pack" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/default-development/index.pack" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.cache/default-development/index.pack.old" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/default-development/index.pack.old" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/bin/Debug/net8.0/PinterestMini.API.staticwebassets.runtime.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/bin/Debug/net8.0/PinterestMini.API.staticwebassets.runtime.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.build.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.build.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.development.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.development.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.pack.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.pack.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets/msbuild.PinterestMini.API.Microsoft.AspNetCore.StaticWebAssets.props" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets/msbuild.PinterestMini.API.Microsoft.AspNetCore.StaticWebAssets.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +88,8 @@
       <updated>1748999137210</updated>
       <workItem from="1748999137738" duration="16378000" />
       <workItem from="1749174879427" duration="8906000" />
-      <workItem from="1749249584942" duration="454000" />
+      <workItem from="1749249584942" duration="2820000" />
+      <workItem from="1749314041879" duration="4576000" />
     </task>
     <servers />
   </component>
