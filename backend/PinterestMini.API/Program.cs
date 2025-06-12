@@ -114,7 +114,11 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
-    await RoleSeeder.SeedAsync(serviceProvider);
+
+    var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.Migrate(); 
+
+    await RoleSeeder.SeedAsync(serviceProvider); 
 }
 
 app.Run();
