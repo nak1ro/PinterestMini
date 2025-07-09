@@ -21,45 +21,46 @@ using PinterestMini.API.Middlewares;
 using PinterestMini.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://0.0.0.0:5005");
 builder.WebHost.UseWebRoot("wwwroot");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 6;
-})
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders()
-.AddRoles<IdentityRole<Guid>>(); 
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 6;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders()
+    .AddRoles<IdentityRole<Guid>>();
 
 builder.Services.ConfigureCors();
 
 var jwtSection = builder.Configuration.GetSection("JWT");
 builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidIssuer = jwtSection["Issuer"],
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtSection["Issuer"],
 
-        ValidateAudience = true,
-        ValidAudience = jwtSection["Audience"],
+            ValidateAudience = true,
+            ValidAudience = jwtSection["Audience"],
 
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtSection["SigningKey"])),
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSection["SigningKey"])),
 
-        ValidateLifetime = true
-    };
-});
+            ValidateLifetime = true
+        };
+    });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -98,7 +99,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseStaticFiles(); 
+app.UseStaticFiles();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
@@ -106,7 +107,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowReactApp");
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -116,9 +117,9 @@ using (var scope = app.Services.CreateScope())
     var serviceProvider = scope.ServiceProvider;
 
     var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
-    context.Database.Migrate(); 
+    context.Database.Migrate();
 
-    await RoleSeeder.SeedAsync(serviceProvider); 
+    await RoleSeeder.SeedAsync(serviceProvider);
 }
 
 app.Run();
