@@ -21,47 +21,64 @@ using PinterestMini.API.Middlewares;
 using PinterestMini.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Kestrel will listen on 0.0.0.0:5005 for external access
 builder.WebHost.UseUrls("http://0.0.0.0:5005");
+
+// Serve static files like images from wwwroot
 builder.WebHost.UseWebRoot("wwwroot");
 
+// Database setup
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Identity setup with basic password rules
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
-    {
-        options.Password.RequireDigit = true;
-        options.Password.RequiredLength = 6;
-    })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders()
-    .AddRoles<IdentityRole<Guid>>();
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders()
+.AddRoles<IdentityRole<Guid>>();
 
-builder.Services.ConfigureCors();
-
+// JWT authentication
 var jwtSection = builder.Configuration.GetSection("JWT");
 builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
+        ValidateIssuer = true,
+        ValidIssuer = jwtSection["Issuer"],
+        ValidateAudience = true,
+        ValidAudience = jwtSection["Audience"],
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["SigningKey"])),
+        ValidateLifetime = true
+    };
+});
+
+// CORS for local React app (for friends too)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = jwtSection["Issuer"],
-
-            ValidateAudience = true,
-            ValidAudience = jwtSection["Audience"],
-
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSection["SigningKey"])),
-
-            ValidateLifetime = true
-        };
+        policy.AllowAnyOrigin() // you can add more origins here
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
+});
 
+// Dependency injection setup
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPinRepository, PinRepository>();
@@ -76,46 +93,31 @@ builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddAuthorization();
-builder.Services.AddEndpointsApiExplorer();
-
+// FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 
+// Controller and middleware registration
+builder.Services.AddAuthorization();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowReactApp", policy =>
-    {
-        policy.WithOrigins("http://localhost:3000") // React app's address
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
-});
-
 
 var app = builder.Build();
 
+// Middleware order matters
 app.UseStaticFiles();
-
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-
 app.UseHttpsRedirection();
-
 app.UseCors("AllowReactApp");
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
+// Ensure DB is created and roles are seeded
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
-
     var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
     context.Database.Migrate();
 
