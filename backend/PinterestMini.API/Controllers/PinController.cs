@@ -45,6 +45,16 @@ public class PinController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("followed")]
+    [Authorize]
+    public async Task<ActionResult<PaginatedResult<PinDto>>> GetFollowedCreatorsFeed(
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        var result = await _pinService.GetFollowedCreatorsFeedAsync(User, page, pageSize);
+        return Ok(result);
+    }
+
+
     [HttpPost("{pinId:guid}/save")]
     [Authorize]
     public async Task<IActionResult> Save(Guid pinId)
@@ -75,7 +85,7 @@ public class PinController : ControllerBase
         await _pinService.AssignPinToBoardAsync(pinId, boardId, User);
         return NoContent();
     }
-    
+
     [Authorize]
     [HttpGet("check")]
     public IActionResult Check()

@@ -12,6 +12,7 @@ import CreatePin from '../components/pages/CreatePin';
 import {useAppContext} from '../context/AppContext.js';
 import ProfileImage from '../components/common/layout/ProfileDropdown';
 import ProfileDropdown from "../components/common/layout/ProfileDropdown";
+import TestBoardTag from "../components/pages/TestBoardTag";
 
 const AppRoutes = () => {
     const [ isLoggedIn, setLogin ] = useState(0);
@@ -27,7 +28,6 @@ const AppRoutes = () => {
             <Router>
             <div>
             <Header />
-                <button onClick={() => login("smthng", null)}>Test logIn</button>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/explore" element={<Explore />} />
@@ -52,6 +52,7 @@ const AppRoutes = () => {
                         <Route path="/profile/:username" element={<Profile />} />
                         <Route path="/pin/:id" element={<PinDetail />} />
                         <Route path="create-pin" element={<CreatePin />} />
+                        <Route path="test" element={<TestBoardTag />} />
                     </Routes>
                 </Router>
             </>

@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 const Sidebar = () => {
     return (
         <div
-            className="d-flex flex-column align-items-center border p-2 position-fixed top-0 left-0 w-60 h-100"
+            className="d-flex flex-column align-items-center p-2 position-fixed top-0 left-0 w-60 h-100"
             style={{
                 zIndex: 1000
             }}

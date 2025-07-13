@@ -3,7 +3,6 @@ import AuthModal from './AuthModal';
 
 
 const AuthButtons = () => {
-    // Временный стейт для проверки залогинен ли пользователь
     const [authModalType, setAuthModalType] = useState(null); // 'signin' или 'signup'
 
     const openModal = (type) => setAuthModalType(type);

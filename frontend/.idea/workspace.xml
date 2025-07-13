@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/bin/Debug/net8.0/PinterestMini.API.staticwebassets.runtime.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/bin/Debug/net8.0/PinterestMini.API.staticwebassets.runtime.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.build.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.development.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.pack.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets.pack.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets/msbuild.PinterestMini.API.Microsoft.AspNetCore.StaticWebAssets.props" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/obj/Debug/net8.0/staticwebassets/msbuild.PinterestMini.API.Microsoft.AspNetCore.StaticWebAssets.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.sln.DotSettings.user" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/pin/PinCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinGrid.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/pin/PinGrid.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/pinService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/pinService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +37,9 @@
     &quot;accountId&quot;: &quot;c17493ff-685d-48b8-b9cb-26c491f8c5f4&quot;
   }
 }</component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/package.json" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -62,12 +62,14 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/max68/RiderProjects/PinterestMini/frontend&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2025.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -75,7 +77,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-WS-251.25410.117" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-WS-251.27812.50" />
       </set>
     </attachedChunks>
   </component>
@@ -90,6 +92,10 @@
       <workItem from="1749174879427" duration="8906000" />
       <workItem from="1749249584942" duration="2820000" />
       <workItem from="1749314041879" duration="4576000" />
+      <workItem from="1753668879837" duration="424000" />
+      <workItem from="1753669328890" duration="723000" />
+      <workItem from="1753825696676" duration="620000" />
+      <workItem from="1753900826476" duration="6625000" />
     </task>
     <servers />
   </component>

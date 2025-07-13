@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PinterestMini.API.Domain.Interfaces.Auth;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Account;
+using PinterestMini.API.Middlewares;
 
 namespace PinterestMini.API.Services;
 
@@ -21,13 +22,17 @@ public class AuthService : IAuthService
 
     public async Task<NewUserDto> RegisterAsync(RegisterDto dto)
     {
+        var existingUserByEmail = await _userManager.FindByEmailAsync(dto.Email);
+        if (existingUserByEmail != null)
+            throw new AppBadRequestException("This email is already in use.");
+
         var user = new User { UserName = dto.Username, Email = dto.Email };
         var result = await _userManager.CreateAsync(user, dto.Password);
 
         if (!result.Succeeded)
         {
             var errorMessages = string.Join("; ", result.Errors.Select(e => e.Description));
-            throw new InvalidOperationException(errorMessages);
+            throw new AppBadRequestException(errorMessages);
         }
 
         await _userManager.AddToRoleAsync(user, "User");
@@ -44,13 +49,13 @@ public class AuthService : IAuthService
     {
         var user = await _userManager.Users
             .FirstOrDefaultAsync(u => u.UserName == dto.Login || u.Email == dto.Login);
-        
+
         if (user == null)
-            throw new UnauthorizedAccessException("Invalid username or email");
+            throw new AppUnauthorizedException("Invalid username or email");
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
         if (!result.Succeeded)
-            throw new UnauthorizedAccessException("Invalid credentials");
+            throw new AppUnauthorizedException("Invalid credentials");
 
         return new NewUserDto
         {
@@ -59,19 +64,18 @@ public class AuthService : IAuthService
             Token = await _tokenService.CreateToken(user)
         };
     }
-    
+
     public async Task<User> GetUserByLoginAsync(string login)
     {
         if (string.IsNullOrWhiteSpace(login))
-            throw new InvalidOperationException("Login (username or email) must be provided.");
+            throw new AppBadRequestException("Login (username or email) must be provided.");
 
         var user = await _userManager.FindByNameAsync(login)
                    ?? await _userManager.FindByEmailAsync(login);
 
         if (user == null)
-            throw new KeyNotFoundException("User not found.");
+            throw new AppNotFoundException("User not found.");
 
         return user;
     }
 }
-

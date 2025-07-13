@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Models;
+using PinterestMini.API.Middlewares;
 
 namespace PinterestMini.API.Services;
 
@@ -18,7 +19,8 @@ public class UserContextService : IUserContextService
     {
         var idStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(idStr))
-            throw new UnauthorizedAccessException("User ID not found in claims.");
+            throw new AppUnauthorizedException("Authenticated user ID is missing from token.");
+        
         return Guid.Parse(idStr);
     }
 
@@ -26,6 +28,10 @@ public class UserContextService : IUserContextService
     {
         var userId = GetUserId(user);
         var foundUser = await _userManager.FindByIdAsync(userId.ToString());
-        return foundUser ?? throw new UnauthorizedAccessException("User not found.");
+
+        if (foundUser == null)
+            throw new AppUnauthorizedException("Authenticated user does not exist.");
+
+        return foundUser;
     }
 }

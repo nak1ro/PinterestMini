@@ -1,11 +1,20 @@
 import axiosClient from '../api/axiosClient';
+import { parseApiError } from '../utils/parseApiError';
 
-export const loginUser = async (credentials) => {
-    const response = await axiosClient.post('/account/login', credentials);
-    return response.data; // { username, email, token }
+export const loginUser = async ({ login, password }) => {
+    try {
+        const res = await axiosClient.post('/account/login', { login, password });
+        return { success: true, data: res.data };
+    } catch (err) {
+        return { success: false, error: parseApiError(err) };
+    }
 };
 
 export const registerUser = async (formData) => {
-    const response = await axiosClient.post('/account/register', formData);
-    return response.data; // { username, email, token }
+    try {
+        const res = await axiosClient.post('/account/register', formData);
+        return { success: true, data: res.data };
+    } catch (err) {
+        return { success: false, error: parseApiError(err) };
+    }
 };

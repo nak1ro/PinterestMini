@@ -32,9 +32,9 @@ const PinGrid = ({pins}) => {
                 className="masonry-grid m-auto"
                 style={{ margin: '0 auto', maxWidth: '1300px' }}
             >
-                {pins.map(pin => (
+                {(pins || []).map(pin => (
                     <div key={pin.id} className="masonry-item" style={{width: '250px'}}>
-                        <PinCard pin={pin}/>
+                        <PinCard pin={pin} />
                     </div>
                 ))}
             </div>

@@ -4,6 +4,7 @@ using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Boards;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Boards;
+using PinterestMini.API.Middlewares;
 
 public class BoardService : IBoardService
 {
@@ -44,11 +45,11 @@ public class BoardService : IBoardService
     public async Task UpdateBoardAsync(Guid boardId, UpdateBoardDto dto, ClaimsPrincipal user)
     {
         var board = await _unitOfWork.Boards.GetByIdAsync(boardId)
-                    ?? throw new KeyNotFoundException("Board not found");
+                    ?? throw new AppNotFoundException("Board not found");
 
         var userId = _userContext.GetUserId(user);
         if (board.UserId != userId)
-            throw new UnauthorizedAccessException("You can only update your own boards.");
+            throw new AppUnauthorizedException("You can only update your own boards.");
 
         board.Name = dto.Name ?? board.Name;
         board.Description = dto.Description ?? board.Description;
@@ -64,11 +65,11 @@ public class BoardService : IBoardService
     public async Task DeleteBoardAsync(Guid boardId, ClaimsPrincipal user)
     {
         var board = await _unitOfWork.Boards.GetByIdAsync(boardId)
-                    ?? throw new KeyNotFoundException("Board not found");
+                    ?? throw new AppNotFoundException("Board not found");
 
         var userId = _userContext.GetUserId(user);
         if (board.UserId != userId)
-            throw new UnauthorizedAccessException("You can only delete your own boards.");
+            throw new AppUnauthorizedException("You can only delete your own boards.");
 
         _unitOfWork.Boards.Delete(board);
         await _unitOfWork.SaveChangesAsync();

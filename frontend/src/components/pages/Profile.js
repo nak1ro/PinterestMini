@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
-import users from '../../data/users';
 import pins from '../../data/pins';
 import PinGrid from '../common/pin/PinGrid';
+import { useAppContext} from "../../context/AppContext";
 
 const Profile = () => {
   const { username } = useParams();
   const [activeTab, setActiveTab] = useState('created');
+  const { user: currentUser} = useAppContext();
 
-  const user = users.find(u => u.username === username) || users[0];
-
-  const userPins = pins.filter(pin => pin.user.id === user.id);
+  const userPins = pins;
   const savedPins = pins.filter((pin, index) => index % 3 === 0);
 
   return (
@@ -23,22 +22,21 @@ const Profile = () => {
       >
         <div className="d-flex flex-column align-items-center text-center mb-4">
           <img
-              src={user.avatar}
-              alt={user.name}
+              //src={avatar}
+              //alt={user.name}
               className="rounded-circle mb-3"
               style={{ width: '120px', height: '120px', objectFit: 'cover' }}
           />
-          <h1 className="fw-bold fs-2 mb-1">{user.name}</h1>
-          <p className="text-muted mb-2">@{user.username}</p>
-          <p className="text-center mx-auto" style={{ maxWidth: '500px' }}>{user.bio}</p>
+          <h1 className="fw-bold fs-2 mb-1">{currentUser}</h1>
+          <p className="text-center mx-auto" style={{ maxWidth: '500px' }}>{currentUser}</p>
 
           <div className="d-flex gap-4 mt-3">
             <div className="text-center">
-              <div className="fw-bold fs-5">{user.followers}</div>
+              <div className="fw-bold fs-5">{4}</div>
               <div className="text-muted small">followers</div>
             </div>
             <div className="text-center">
-              <div className="fw-bold fs-5">{user.following}</div>
+              <div className="fw-bold fs-5">{5}</div>
               <div className="text-muted small">following</div>
             </div>
           </div>

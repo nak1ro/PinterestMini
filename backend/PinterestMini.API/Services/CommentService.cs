@@ -5,6 +5,7 @@ using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Comments;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Comments;
+using PinterestMini.API.Middlewares;
 
 namespace PinterestMini.API.Services;
 
@@ -47,7 +48,7 @@ public class CommentService : ICommentService
         var userId = _userContext.GetUserId(user);
 
         if (!EnsureCommentOwner(comment.UserId, userId))
-            throw new UnauthorizedAccessException("You are not allowed to update this comment.");
+            throw new AppUnauthorizedException("You are not allowed to update this comment.");
 
         comment.Content = dto.Content;
         comment.UpdatedAt = DateTime.UtcNow;
@@ -61,7 +62,7 @@ public class CommentService : ICommentService
         var userId = _userContext.GetUserId(user);
 
         if (!EnsureCommentOwner(comment.UserId, userId) && !IsPinOwner(comment.Pin.OwnerId, userId))
-            throw new UnauthorizedAccessException("You are not allowed to delete this comment.");
+            throw new AppUnauthorizedException("You are not allowed to delete this comment.");
 
         _unitOfWork.Comments.Remove(comment);
         await _unitOfWork.SaveChangesAsync();
@@ -76,10 +77,10 @@ public class CommentService : ICommentService
     private async Task<Pin> GetPinIfCommentingAllowed(Guid pinId)
     {
         var pin = await _unitOfWork.Pins.GetByIdAsync(pinId)
-                  ?? throw new KeyNotFoundException("Pin not found.");
+                  ?? throw new AppNotFoundException("Pin not found.");
 
         if (!pin.AllowComments)
-            throw new InvalidOperationException("Comments are disabled for this pin.");
+            throw new AppBadRequestException("Comments are disabled for this pin.");
 
         return pin;
     }
@@ -87,18 +88,18 @@ public class CommentService : ICommentService
     private async Task<Comment> GetCommentWithUser(Guid commentId)
     {
         return await _unitOfWork.Comments.GetByIdWithUserAsync(commentId)
-               ?? throw new KeyNotFoundException("Comment not found.");
+               ?? throw new AppNotFoundException("Comment not found.");
     }
 
     private async Task<Comment> GetCommentWithUserAndPin(Guid commentId)
     {
         return await _unitOfWork.Comments.GetByIdWithUserAndPinAsync(commentId)
-               ?? throw new KeyNotFoundException("Comment not found.");
+               ?? throw new AppNotFoundException("Comment not found.");
     }
 
     private static bool EnsureCommentOwner(Guid commentUserId, Guid currentUserId)
     {
-        return commentUserId != currentUserId;
+        return commentUserId == currentUserId;
     }
 
     private static bool IsPinOwner(Guid pinOwnerId, Guid currentUserId) => pinOwnerId == currentUserId;

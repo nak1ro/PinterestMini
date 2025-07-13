@@ -40,6 +40,26 @@ public class PinRepository : IPinRepository
             .ToListAsync();
     }
 
+    public async Task<List<Pin>> GetPinsCreatedByFollowedUsersAsync(Guid userId, int page, int pageSize)
+    {
+        var skip = (page - 1) * pageSize;
+
+        var followedIds = _context.Follows
+            .Where(f => f.FollowerId == userId)
+            .Select(f => f.FollowingId);
+
+        return await _context.Pins
+            .Where(p => followedIds.Contains(p.OwnerId))
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip(skip)
+            .Take(pageSize + 1)
+            .Include(p => p.Owner)
+            .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
+            .Include(p => p.PinBoards).ThenInclude(pb => pb.Board)
+            .ToListAsync();
+    }
+
+
     public async Task<bool> IsPinSavedAsync(Guid userId, Guid pinId)
     {
         return await _context.SavedPins

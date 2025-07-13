@@ -5,6 +5,7 @@ using PinterestMini.API.Domain.Interfaces.Pins;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Common;
 using PinterestMini.API.DTOs.Pins;
+using PinterestMini.API.Middlewares;
 
 namespace PinterestMini.API.Services;
 
@@ -28,7 +29,6 @@ public class PinService : IPinService
         var userId = _userContext.GetUserId(user);
 
         var imageUrl = await SaveImageAsync(dto.Image);
-
         var pin = new Pin
         {
             Title = dto.Title,
@@ -48,23 +48,39 @@ public class PinService : IPinService
         return pin.Id;
     }
 
+    public async Task<PaginatedResult<PinDto>> GetFollowedCreatorsFeedAsync(ClaimsPrincipal user, int page, int pageSize)
+    {
+        var userId = _userContext.GetUserId(user);
+
+        var pins = await _unitOfWork.Pins.GetPinsCreatedByFollowedUsersAsync(userId, page, pageSize);
+        var items = _mapper.Map<List<PinDto>>(pins.Take(pageSize));
+
+        return new PaginatedResult<PinDto>
+        {
+            Items = items,
+            Page = page,
+            PageSize = pageSize,
+            HasMore = pins.Count > pageSize
+        };
+    }
+
     public async Task AssignPinToBoardAsync(Guid pinId, Guid boardId, ClaimsPrincipal user)
     {
         var userId = _userContext.GetUserId(user);
 
         var pin = await _unitOfWork.Pins.GetByIdAsync(pinId)
-                  ?? throw new KeyNotFoundException("Pin not found");
+                  ?? throw new AppNotFoundException("Pin not found.");
 
         var board = await _unitOfWork.Boards.GetByIdAsync(boardId)
-                    ?? throw new KeyNotFoundException("Board not found");
+                    ?? throw new AppNotFoundException("Board not found.");
 
         if (board.UserId != userId)
-            throw new UnauthorizedAccessException("You do not own this board");
+            throw new AppUnauthorizedException("You do not own this board.");
 
         var alreadyAssigned = await _unitOfWork.PinBoards.ExistsAsync(pinId, boardId, userId);
         if (alreadyAssigned)
             return;
-        
+
         await _unitOfWork.PinBoards.AddAsync(new PinBoard
         {
             PinId = pinId,
@@ -75,16 +91,15 @@ public class PinService : IPinService
         await _unitOfWork.SaveChangesAsync();
     }
 
-
     public async Task UpdatePinAsync(Guid pinId, UpdatePinDto dto, ClaimsPrincipal user)
     {
         var pin = await _unitOfWork.Pins.GetByIdWithTagsAndBoardsAsync(pinId);
         if (pin == null)
-            throw new KeyNotFoundException("Pin not found");
+            throw new AppNotFoundException("Pin not found.");
 
         var userId = _userContext.GetUserId(user);
         if (pin.OwnerId != userId)
-            throw new UnauthorizedAccessException("You don't own this pin");
+            throw new AppUnauthorizedException("You don't own this pin.");
 
         UpdateFields(pin, dto);
         await ReplaceBoardsAsync(pin, dto.BoardIds);
@@ -96,8 +111,7 @@ public class PinService : IPinService
 
     public async Task<PaginatedResult<PinDto>> GetRecentPinsPaginatedAsync(int page, int pageSize)
     {
-        var pins = await _unitOfWork.Pins.GetRecentPublicPinsAsync(page,
-            pageSize + 1); // Fetch 1 extra to check if more exists
+        var pins = await _unitOfWork.Pins.GetRecentPublicPinsAsync(page, pageSize + 1);
         var mapped = _mapper.Map<List<PinDto>>(pins.Take(pageSize));
 
         return new PaginatedResult<PinDto>
@@ -115,7 +129,7 @@ public class PinService : IPinService
 
         var pin = await _unitOfWork.Pins.GetByIdAsync(pinId);
         if (pin == null)
-            throw new KeyNotFoundException("Pin not found");
+            throw new AppNotFoundException("Pin not found.");
 
         var alreadySaved = await _unitOfWork.Pins.IsPinSavedAsync(userId, pinId);
         if (alreadySaved)
@@ -142,11 +156,8 @@ public class PinService : IPinService
         var userId = _userContext.GetUserId(user);
 
         var savedPins = await _unitOfWork.Pins.GetSavedPinsAsync(userId);
-        var mapped = _mapper.Map<List<PinDto>>(savedPins);
-
-        return mapped;
+        return _mapper.Map<List<PinDto>>(savedPins);
     }
-
 
     private async Task AttachTagsAsync(Pin pin, List<Guid>? tagIds)
     {

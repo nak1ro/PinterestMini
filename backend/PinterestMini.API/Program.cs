@@ -12,6 +12,7 @@ using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Auth;
 using PinterestMini.API.Domain.Interfaces.Boards;
 using PinterestMini.API.Domain.Interfaces.Comments;
+using PinterestMini.API.Domain.Interfaces.Follow;
 using PinterestMini.API.Domain.Interfaces.PinBoards;
 using PinterestMini.API.Domain.Interfaces.Pins;
 using PinterestMini.API.Domain.Interfaces.Tags;
@@ -60,6 +61,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSection["Issuer"],
         ValidateAudience = true,
         ValidAudience = jwtSection["Audience"],
+        
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["SigningKey"])),
         ValidateLifetime = true
@@ -89,6 +91,8 @@ builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IPinBoardRepository, PinBoardRepository>();
+builder.Services.AddScoped<IFollowService, FollowService>();
+builder.Services.AddScoped<IFollowRepository, FollowRepository>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
