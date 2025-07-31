@@ -9,7 +9,6 @@ const Home = () => {
     const { searchResults, searchPins, resetSearch } = useSearchPins(pins);
 
     useEffect(() => {
-        // Optionally reset search when pins change
         resetSearch();
     }, [pins]);
 

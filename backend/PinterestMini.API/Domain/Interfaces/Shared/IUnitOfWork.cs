@@ -5,7 +5,7 @@ using PinterestMini.API.Domain.Interfaces.PinBoards;
 using PinterestMini.API.Domain.Interfaces.Pins;
 using PinterestMini.API.Domain.Interfaces.Tags;
 
-namespace PinterestMini.API.Domain.Interfaces
+namespace PinterestMini.API.Domain.Interfaces.Shared
 {
     public interface IUnitOfWork
     {

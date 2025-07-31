@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using PinterestMini.API.Domain.Models;
 
-namespace PinterestMini.API.Domain.Interfaces;
+namespace PinterestMini.API.Domain.Interfaces.Shared;
 
 public interface IUserContextService
 {

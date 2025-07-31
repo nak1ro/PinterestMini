@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
     Container, Form, Row, Col, FloatingLabel, Image,
-    Button, Alert, ProgressBar, Spinner
+    Button, Alert, ProgressBar, Spinner, Card
 } from "react-bootstrap";
-import axios from 'axios';
+import { createPin } from '../../services/pinService';
+import { getMyBoards } from '../../services/boardService';
 
 const CreatePinPage = () => {
     const [title, setTitle] = useState('');
@@ -11,36 +12,27 @@ const CreatePinPage = () => {
     const [allowComments, setAllowComments] = useState(true);
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState('');
+    const [boards, setBoards] = useState([]);
+    const [selectedBoards, setSelectedBoards] = useState([]);
+    const [tags, setTags] = useState([]); // заглушка
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [error, setError] = useState(null);
     const [sending, setSending] = useState(false);
     const [uploadPct, setUploadPct] = useState(0);
-    const [error, setError] = useState(null);
-
-    const [boards, setBoards] = useState([]);        // список доступных досок
-    const [tags, setTags] = useState([]);            // список доступных тегов
-    const [selectedBoards, setSelectedBoards] = useState([]); // выбранные доски
-    const [selectedTags, setSelectedTags] = useState([]);     // выбранные теги
-
-    const token = localStorage.getItem('token'); // JWT доступ
 
     useEffect(() => {
-        const fetchBoardsAndTags = async () => {
-            try {
-                const [boardsRes, tagsRes] = await Promise.all([
-                    axios.get('/api/board/me', {
-                        headers: { Authorization: `Bearer ${token}` }
-                    }),
-                    axios.get('/api/tag/', {
-                        headers: { Authorization: `Bearer ${token}` }
-                    })
-                ]);
-                setBoards(boardsRes.data); // массив объектов досок
-                setTags(tagsRes.data);     // массив объектов тегов
-            } catch (err) {
-                setError('Ошибка загрузки досок или тегов');
-            }
-        };
-        fetchBoardsAndTags();
-    }, [token]);
+        fetchBoards();
+    }, []);
+
+    const fetchBoards = async () => {
+        try {
+            const res = await getMyBoards();
+            setBoards(res.data);
+        } catch (err) {
+            console.error(err);
+            setError('Ошибка при загрузке досок');
+        }
+    };
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -52,56 +44,70 @@ const CreatePinPage = () => {
         }
     };
 
+    const toggleItem = (id, list, setter) => {
+        if (list.includes(id)) {
+            setter(list.filter(i => i !== id));
+        } else {
+            setter([...list, id]);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
         setSending(true);
+        setError('');
         setUploadPct(0);
 
         try {
             const formData = new FormData();
-            formData.append("Title", title);
-            formData.append("AllowComments", allowComments.toString());
-            if (description) formData.append("Description", description);
-            if (selectedFile) formData.append("Image", selectedFile);
+            formData.append("title", title);
+            if (description) formData.append("description", description);
+            formData.append("allowComments", allowComments);
+            if (selectedFile) formData.append("image", selectedFile);
 
-            // Добавим ID досок
-            selectedBoards.forEach(id => formData.append("BoardIds", id));
-            // Добавим ID тегов
-            selectedTags.forEach(id => formData.append("TagIds", id));
 
-            const res = await axios.post('/api/pin', formData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data'
-                },
-                onUploadProgress: (progressEvent) => {
-                    const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    setUploadPct(percent);
-                }
+            if (selectedBoards.length > 0) {
+                selectedBoards.forEach(id => formData.append("boardIds", id));
+            }
+
+
+            if (selectedTags.length > 0) {
+                selectedTags.forEach(id => formData.append("tagIds", id));
+            }
+
+
+            const res = await createPin(formData, (progressEvent) => {
+                const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                setUploadPct(percent);
             });
 
             console.log('Pin created:', res.data);
+
+            // сброс формы
+            setTitle('');
+            setDescription('');
+            setAllowComments(true);
+            setSelectedFile(null);
+            setPreviewUrl('');
+            setSelectedBoards([]);
+            setSelectedTags([]);
+            setUploadPct(0);
         } catch (err) {
             console.error(err);
-            setError('Ошибка создания пина');
+            setError('Error occured');
         } finally {
             setSending(false);
         }
     };
 
-    const toggleItem = (id, list, setter) => {
-        setter(list.includes(id) ? list.filter(i => i !== id) : [...list, id]);
-    };
-
     return (
         <Container className="py-4">
-            <h2 className="mb-4">Create a New Pin</h2>
+            <h2 className="mb-4">Create new pin</h2>
             <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col md={5}>
                         <Form.Group controlId="pin-image" className="mb-3">
-                            <Form.Label>Pin image *</Form.Label>
+                            <Form.Label>Image *</Form.Label>
                             <Form.Control
                                 type="file"
                                 accept="image/*"
@@ -125,44 +131,48 @@ const CreatePinPage = () => {
                             />
                         </FloatingLabel>
 
-                        <FloatingLabel
-                            controlId="pin-description"
-                            label="Description (optional)"
-                            className="mb-3"
-                        >
+                        <FloatingLabel controlId="pin-description" label="Description (optional)" className="mb-3">
                             <Form.Control
                                 as="textarea"
                                 placeholder=" "
-                                style={{ height: "120px" }}
+                                style={{ height: '120px' }}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
                         </FloatingLabel>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Assign to Boards</Form.Label>
-                            {boards.map(board => (
-                                <Form.Check
-                                    key={board.id}
-                                    type="checkbox"
-                                    label={board.name}
-                                    checked={selectedBoards.includes(board.id)}
-                                    onChange={() => toggleItem(board.id, selectedBoards, setSelectedBoards)}
-                                />
-                            ))}
+                            <Form.Label>Choose boards (optional)</Form.Label>
+                            {boards.length > 0 ? (
+                                boards.map(board => (
+                                    <Form.Check
+                                        key={board.id}
+                                        type="checkbox"
+                                        label={board.name}
+                                        checked={selectedBoards.includes(board.id)}
+                                        onChange={() => toggleItem(board.id, selectedBoards, setSelectedBoards)}
+                                    />
+                                ))
+                            ) : (
+                                <div className="text-muted">You have no boards</div>
+                            )}
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Assign Tags</Form.Label>
-                            {tags.map(tag => (
-                                <Form.Check
-                                    key={tag.id}
-                                    type="checkbox"
-                                    label={tag.name}
-                                    checked={selectedTags.includes(tag.id)}
-                                    onChange={() => toggleItem(tag.id, selectedTags, setSelectedTags)}
-                                />
-                            ))}
+                            <Form.Label>Choose tags (zaglushka)</Form.Label>
+                            {tags.length > 0 ? (
+                                tags.map(tag => (
+                                    <Form.Check
+                                        key={tag.id}
+                                        type="checkbox"
+                                        label={tag.name}
+                                        checked={selectedTags.includes(tag.id)}
+                                        onChange={() => toggleItem(tag.id, selectedTags, setSelectedTags)}
+                                    />
+                                ))
+                            ) : (
+                                <div className="text-muted">You have no tags</div>
+                            )}
                         </Form.Group>
 
                         <Form.Check
@@ -180,9 +190,9 @@ const CreatePinPage = () => {
                 {sending && <ProgressBar now={uploadPct} animated className="mt-2" />}
 
                 <div className="mt-4 d-flex justify-content-end">
-                    <Button variant="danger" type="submit" disabled={sending}>
+                    <Button variant="primary" type="submit" disabled={sending}>
                         {sending && <Spinner size="sm" animation="border" className="me-2" />}
-                        Create Pin
+                        Create pin
                     </Button>
                 </div>
             </Form>

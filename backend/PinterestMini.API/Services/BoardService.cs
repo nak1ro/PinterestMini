@@ -1,25 +1,27 @@
 using System.Security.Claims;
 using AutoMapper;
-using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Boards;
+using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Boards;
+using PinterestMini.API.Helpers;
 using PinterestMini.API.Middlewares;
+
+namespace PinterestMini.API.Services;
 
 public class BoardService : IBoardService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly IWebHostEnvironment _env;
     private readonly IUserContextService _userContext;
+    private readonly ImageUploader _imageUploader;
 
-    public BoardService(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment env,
-        IUserContextService userContext)
+    public BoardService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContext, ImageUploader imageUploader)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _env = env;
         _userContext = userContext;
+        _imageUploader = imageUploader;
     }
 
     public async Task<Guid> CreateBoardAsync(CreateBoardDto dto, ClaimsPrincipal user)
@@ -90,18 +92,6 @@ public class BoardService : IBoardService
 
     private async Task<string> SaveImageAsync(IFormFile image)
     {
-        var webRoot = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-        var folderPath = Path.Combine(webRoot, "images", "boards");
-
-        if (!Directory.Exists(folderPath))
-            Directory.CreateDirectory(folderPath);
-
-        var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
-        var filePath = Path.Combine(folderPath, fileName);
-
-        await using var stream = new FileStream(filePath, FileMode.Create);
-        await image.CopyToAsync(stream);
-
-        return $"/images/boards/{fileName}";
+        return await _imageUploader.UploadAsync(image, "boards");
     }
 }

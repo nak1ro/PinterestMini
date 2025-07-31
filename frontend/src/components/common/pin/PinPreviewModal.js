@@ -4,6 +4,9 @@ import { motion } from 'framer-motion';
 const PinPreviewModal = ({ pin, onClose }) => {
   if (!pin) return null;
 
+  const avatarUrl = `/avatars/${pin.ownerId}.jpg`; // либо генерируем по ownerId
+  const username = pin.ownerId?.slice(0, 8); // псевдо-никнейм на основе GUID
+
   return (
       <motion.div
           className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-75"
@@ -30,7 +33,7 @@ const PinPreviewModal = ({ pin, onClose }) => {
 
           <div className="mb-4">
             <img
-                src={pin.image}
+                src={pin.imageUrl}
                 alt={pin.title}
                 className="img-fluid rounded w-100"
                 style={{ maxHeight: '400px', objectFit: 'cover' }}
@@ -43,19 +46,19 @@ const PinPreviewModal = ({ pin, onClose }) => {
 
             <div className="d-flex align-items-center mb-4">
               <img
-                  src={pin.user.avatar}
-                  alt={pin.user.username}
+                  src={avatarUrl}
+                  alt={username}
                   className="rounded-circle me-3"
                   style={{ width: '50px', height: '50px', objectFit: 'cover' }}
               />
               <div>
-                <div className="fw-bold">{pin.user.username}</div>
+                <div className="fw-bold">{username}</div>
                 <div className="text-muted small">1.2k followers</div>
               </div>
             </div>
 
             <div className="d-flex flex-wrap gap-2">
-              {pin.tags.map(tag => (
+              {(pin.tags || []).map(tag => (
                   <span key={tag} className="badge bg-secondary">#{tag}</span>
               ))}
             </div>

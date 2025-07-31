@@ -15,9 +15,11 @@ using PinterestMini.API.Domain.Interfaces.Comments;
 using PinterestMini.API.Domain.Interfaces.Follow;
 using PinterestMini.API.Domain.Interfaces.PinBoards;
 using PinterestMini.API.Domain.Interfaces.Pins;
+using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Interfaces.Tags;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.Extensions;
+using PinterestMini.API.Helpers;
 using PinterestMini.API.Middlewares;
 using PinterestMini.API.Repositories;
 
@@ -95,6 +97,8 @@ builder.Services.AddScoped<IFollowService, FollowService>();
 builder.Services.AddScoped<IFollowRepository, FollowRepository>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IBlobService, BlobService>();
+builder.Services.AddScoped<ImageUploader>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // FluentValidation

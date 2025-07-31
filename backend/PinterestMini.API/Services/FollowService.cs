@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Follow;
+using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.Middlewares;
 

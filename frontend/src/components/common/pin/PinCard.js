@@ -37,7 +37,7 @@ const PinCard = ({pin}) => {
             >
                 <div className="position-relative w-100">
                     <img
-                        src={pin.image}
+                        src={pin.imageUrl}
                         alt={pin.title}
                         className="img-fluid w-100"
                         style={{display: 'block'}}
@@ -92,18 +92,19 @@ const PinCard = ({pin}) => {
                                     transition={{duration: 0.3, ease: 'easeInOut'}}
                                 >
                                     <Link
-                                        to={`/profile/${pin.user.username}`}
+                                        to={`/profile/${pin.ownerId}`}
                                         className="d-flex align-items-center text-white text-decoration-none"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <img
-                                            src={pin.user.avatar}
-                                            alt={pin.user.username}
+                                            src={`/avatars/${pin.ownerId}.jpg`}
+                                            alt="User Avatar"
                                             className="rounded-circle me-2"
                                             style={{width: '24px', height: '24px', objectFit: 'cover'}}
                                         />
-                                        <span className="small">{pin.user.username}</span>
+                                        <span className="small">{pin.ownerId.slice(0, 8)}</span>
                                     </Link>
+
                                 </motion.div>
                             </motion.div>
                         )}

@@ -1,27 +1,27 @@
 import { useEffect, useState } from 'react';
-import localPins from '../data/pins'; // ⬅️ local fallback
+import axios from 'axios';
+import {getPublicPins} from '../services/pinService';
 
 const usePins = () => {
     const [pins, setPins] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error] = useState(null); // No need for error now
 
     useEffect(() => {
-        setLoading(true);
+        const fetchPins = async () => {
+            try {
+                const response = await getPublicPins();
+                setPins(response.data.items || []); // <- paginated: { items, totalCount, ... }
+            } catch (error) {
+                console.error('Failed to fetch pins:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        // Simulate async fetch
-        setTimeout(() => {
-            setPins(localPins);
-            setLoading(false);
-        }, 300); // optional delay for realism
+        fetchPins();
     }, []);
 
-    return {
-        pins,
-        loading,
-        error,
-        refetch: () => setPins(localPins)
-    };
+    return { pins, loading };
 };
 
 export default usePins;

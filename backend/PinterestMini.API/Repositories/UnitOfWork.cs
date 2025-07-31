@@ -5,6 +5,7 @@ using PinterestMini.API.Domain.Interfaces.Comments;
 using PinterestMini.API.Domain.Interfaces.Follow;
 using PinterestMini.API.Domain.Interfaces.PinBoards;
 using PinterestMini.API.Domain.Interfaces.Pins;
+using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Interfaces.Tags;
 
 namespace PinterestMini.API.Repositories;

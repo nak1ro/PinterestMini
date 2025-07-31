@@ -2,9 +2,11 @@ using System.Security.Claims;
 using AutoMapper;
 using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Pins;
+using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Common;
 using PinterestMini.API.DTOs.Pins;
+using PinterestMini.API.Helpers;
 using PinterestMini.API.Middlewares;
 
 namespace PinterestMini.API.Services;
@@ -12,16 +14,17 @@ namespace PinterestMini.API.Services;
 public class PinService : IPinService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IWebHostEnvironment _env;
     private readonly IUserContextService _userContext;
     private readonly IMapper _mapper;
+    private readonly ImageUploader _imageUploader;
 
-    public PinService(IUnitOfWork unitOfWork, IWebHostEnvironment env, IUserContextService userContext, IMapper mapper)
+    public PinService(IUnitOfWork unitOfWork, IUserContextService userContext, IMapper mapper,
+        ImageUploader imageUploader)
     {
         _unitOfWork = unitOfWork;
-        _env = env;
         _userContext = userContext;
         _mapper = mapper;
+        _imageUploader = imageUploader;
     }
 
     public async Task<Guid> CreatePinAsync(CreatePinDto dto, ClaimsPrincipal user)
@@ -48,7 +51,8 @@ public class PinService : IPinService
         return pin.Id;
     }
 
-    public async Task<PaginatedResult<PinDto>> GetFollowedCreatorsFeedAsync(ClaimsPrincipal user, int page, int pageSize)
+    public async Task<PaginatedResult<PinDto>> GetFollowedCreatorsFeedAsync(ClaimsPrincipal user, int page,
+        int pageSize)
     {
         var userId = _userContext.GetUserId(user);
 
@@ -202,7 +206,7 @@ public class PinService : IPinService
         }
     }
 
-    private void UpdateFields(Pin pin, UpdatePinDto dto)
+    private static void UpdateFields(Pin pin, UpdatePinDto dto)
     {
         if (!string.IsNullOrWhiteSpace(dto.Title))
             pin.Title = dto.Title;
@@ -216,18 +220,6 @@ public class PinService : IPinService
 
     private async Task<string> SaveImageAsync(IFormFile image)
     {
-        var webRoot = _env.WebRootPath;
-        var uploadsFolder = Path.Combine(webRoot, "images", "pins");
-
-        if (!Directory.Exists(uploadsFolder))
-            Directory.CreateDirectory(uploadsFolder);
-
-        var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        await using var fileStream = new FileStream(filePath, FileMode.Create);
-        await image.CopyToAsync(fileStream);
-
-        return $"/images/pins/{fileName}";
+        return await _imageUploader.UploadAsync(image, "pins");
     }
 }
