@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useAppContext } from '../../../context/AppContext';
-import CreatePinModal from '../pin/CreatePinModal';
 import AuthButtons from '../Auth/AuthButtons';
 import SearchBar from './SearchBar';
 
@@ -47,9 +46,8 @@ const Header = () => {
           </nav>
               <SearchBar />
               <AuthButtons />
-          {showCreateModal && (
-              <CreatePinModal onClose={() => setShowCreateModal(false)} />
-          )}
+
+
         </motion.header>
       </>
   );

@@ -10,7 +10,6 @@ public interface IPinService
     Task<PaginatedResult<PinDto>> GetRecentPinsPaginatedAsync(int page, int pageSize);
     Task<List<PinDto>> GetMyPinsAsync(ClaimsPrincipal user);
     Task<PaginatedResult<PinDto>> GetFollowedCreatorsFeedAsync(ClaimsPrincipal user, int page, int pageSize);
-    Task AssignPinToBoardAsync(Guid pinId, Guid boardId, ClaimsPrincipal user);
     Task UpdatePinAsync(Guid pinId, UpdatePinDto dto, ClaimsPrincipal user);
     Task SavePinAsync(Guid pinId, ClaimsPrincipal user);
     Task UnsavePinAsync(Guid pinId, ClaimsPrincipal user);

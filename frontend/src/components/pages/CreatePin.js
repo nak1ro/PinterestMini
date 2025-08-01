@@ -14,8 +14,7 @@ const CreatePinPage = () => {
     const [previewUrl, setPreviewUrl] = useState('');
     const [boards, setBoards] = useState([]);
     const [selectedBoards, setSelectedBoards] = useState([]);
-    const [tags, setTags] = useState([]); // заглушка
-    const [selectedTags, setSelectedTags] = useState([]);
+    const [tags, setTags] = useState([]); // now array of strings
     const [error, setError] = useState(null);
     const [sending, setSending] = useState(false);
     const [uploadPct, setUploadPct] = useState(0);
@@ -71,9 +70,10 @@ const CreatePinPage = () => {
             }
 
 
-            if (selectedTags.length > 0) {
-                selectedTags.forEach(id => formData.append("tagIds", id));
+            if (tags.length > 0) {
+                tags.forEach(tag => formData.append("tagNames", tag));
             }
+
 
 
             const res = await createPin(formData, (progressEvent) => {
@@ -90,7 +90,7 @@ const CreatePinPage = () => {
             setSelectedFile(null);
             setPreviewUrl('');
             setSelectedBoards([]);
-            setSelectedTags([]);
+            setTags([]);
             setUploadPct(0);
         } catch (err) {
             console.error(err);
@@ -157,23 +157,46 @@ const CreatePinPage = () => {
                                 <div className="text-muted">You have no boards</div>
                             )}
                         </Form.Group>
-
                         <Form.Group className="mb-3">
-                            <Form.Label>Choose tags (zaglushka)</Form.Label>
-                            {tags.length > 0 ? (
-                                tags.map(tag => (
-                                    <Form.Check
-                                        key={tag.id}
-                                        type="checkbox"
-                                        label={tag.name}
-                                        checked={selectedTags.includes(tag.id)}
-                                        onChange={() => toggleItem(tag.id, selectedTags, setSelectedTags)}
-                                    />
-                                ))
-                            ) : (
-                                <div className="text-muted">You have no tags</div>
-                            )}
+                            <Form.Label>Tags</Form.Label>
+                            <div className="d-flex flex-wrap gap-2 mb-2">
+                                {tags.map((tag, idx) => (
+                                    <span
+                                        key={idx}
+                                        className="badge bg-secondary d-flex align-items-center"
+                                        style={{ padding: '0.5em 0.75em' }}
+                                    >
+                            {tag}
+                                        <Button
+                                            variant="link"
+                                            size="sm"
+                                            onClick={() => setTags(tags.filter((_, i) => i !== idx))}
+                                            className="ms-2 p-0 text-white"
+                                            aria-label="Remove tag"
+                                            style={{ fontSize: '1rem', lineHeight: 1 }}
+                                        >
+                    ×
+                                        </Button>
+                                    </span>
+                                ))}
+                            </div>
+                            <Form.Control
+                                type="text"
+                                placeholder="Type and press Enter"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        const value = e.target.value.trim();
+                                        if (value && !tags.includes(value)) {
+                                            setTags([...tags, value]);
+                                        }
+                                        e.target.value = '';
+                                    }
+                                }}
+                            />
                         </Form.Group>
+
+
 
                         <Form.Check
                             type="switch"

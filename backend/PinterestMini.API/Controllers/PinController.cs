@@ -77,7 +77,7 @@ public class PinController : ControllerBase
     {
         return Ok(await _pinService.GetSavedPinsAsync(User));
     }
-    
+
     [HttpGet("mine")]
     [Authorize]
     public async Task<ActionResult<List<PinDto>>> GetMyPins()
@@ -85,22 +85,12 @@ public class PinController : ControllerBase
         return Ok(await _pinService.GetMyPinsAsync(User));
     }
 
-    [HttpPost("{pinId:guid}/boards/{boardId:guid}")]
-    [Authorize]
-    public async Task<IActionResult> AssignToBoard(Guid pinId, Guid boardId)
-    {
-        await _pinService.AssignPinToBoardAsync(pinId, boardId, User);
-        return NoContent();
-    }
-    
-
     [Authorize]
     [HttpGet("check")]
     public IActionResult Check()
     {
         return Ok("Token is valid and you are authenticated.");
     }
-
 
     // (Optional) Get method to support CreatedAtAction
     [HttpGet("{id:guid}")]

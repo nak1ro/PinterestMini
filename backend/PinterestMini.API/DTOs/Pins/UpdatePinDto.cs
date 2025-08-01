@@ -8,9 +8,7 @@ public class UpdatePinDto
 
     public bool? AllowComments { get; set; }
 
-    public List<Guid>? TagIdsToAdd { get; set; }
-
-    public List<Guid>? TagIdsToRemove { get; set; }
-
+    public List<string>? TagNames { get; set; }
+    
     public List<Guid>? BoardIds { get; set; }
 }

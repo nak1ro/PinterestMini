@@ -1,18 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import pins from '../../data/pins';
+import { usePopularTags, usePinsByTag } from '../../hooks/useTags';
 import PinGrid from '../common/pin/PinGrid';
+import { Link } from 'react-router-dom';
 
 const Explore = () => {
-  const categories = {};
-  pins.forEach(pin => {
-    pin.tags.forEach(tag => {
-      if (!categories[tag]) categories[tag] = [];
-      if (!categories[tag].find(p => p.id === pin.id)) {
-        categories[tag].push(pin);
-      }
-    });
-  });
+  const { tags, loading, error } = usePopularTags(5);
+
+  if (loading) return <div className="text-center mt-5">Loading...</div>;
+  if (error) return <div className="text-center mt-5 text-danger">Error loading tags</div>;
 
   return (
       <motion.div
@@ -24,16 +20,31 @@ const Explore = () => {
         <h1 className="text-center fw-bold mb-5" style={{ fontSize: '2rem' }}>Explore</h1>
 
         <div className="mt-4">
-          {Object.keys(categories).slice(0, 5).map(category => (
-              <div key={category} className="mb-5">
-                <h2 className="fw-semibold mb-4 ps-3" style={{ fontSize: '1.5rem' }}>
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </h2>
-                <PinGrid pins={categories[category].slice(0, 4)} />
-              </div>
+          {tags.map(tag => (
+              <TagSection key={tag} tag={tag} />
           ))}
         </div>
       </motion.div>
+  );
+};
+
+const TagSection = ({ tag }) => {
+  const { pins, loading, error } = usePinsByTag(tag);
+
+  if (loading || error || pins.length === 0) return null;
+
+  return (
+      <div className="mb-5">
+        <div className="d-flex justify-content-between align-items-center mb-3 px-3">
+          <h2 className="fw-semibold mb-0" style={{ fontSize: '1.5rem' }}>
+            {tag.charAt(0).toUpperCase() + tag.slice(1)}
+          </h2>
+          <Link to={`/tag/${encodeURIComponent(tag)}`} className="btn btn-outline-primary btn-sm">
+            View all
+          </Link>
+        </div>
+        <PinGrid pins={pins.slice(0, 4)} />
+      </div>
   );
 };
 

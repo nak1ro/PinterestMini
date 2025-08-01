@@ -10,6 +10,8 @@ export const AppProvider = ({ children }) => {
     const [mail, setMail] = useState(null);
     const [token, setToken] = useState(null);
 
+    const [searchResults, setSearchResults] = useState([])
+
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         const storedToken = localStorage.getItem('token');
@@ -38,6 +40,19 @@ export const AppProvider = ({ children }) => {
         localStorage.removeItem('token');
     };
 
+    const searchPins = async (term) => {
+       // try {
+       //     const res = await axios.get(`/api/pin/search?q=${term}`, {
+       //         headers: {
+       //             Authorization: `Bearer ${token}`
+       //         }
+       //     });
+       //     setSearchResults(res.data);
+       // } catch (err) {
+       //     console.error('Search error:', err);
+       // }
+    };
+
     return (
         <AppContext.Provider
             value={{
@@ -45,7 +60,9 @@ export const AppProvider = ({ children }) => {
                 token,
                 isAuthenticated: !!user,
                 login,
-                logout
+                logout,
+                searchPins,
+                searchResults
             }}
         >
             {children}

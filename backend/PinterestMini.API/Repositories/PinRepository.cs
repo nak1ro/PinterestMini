@@ -70,6 +70,17 @@ public class PinRepository : IPinRepository
             .ToListAsync();
     }
 
+    public async Task<List<Pin>> GetPinsByTagNameAsync(string tagName)
+    {
+        return await _context.Pins
+            .Where(p => p.PinTags.Any(pt => pt.Tag.Name.ToLower() == tagName.ToLower()))
+            .Include(p => p.PinTags)
+            .ThenInclude(pt => pt.Tag)
+            .Include(p => p.Owner)
+            .Include(p => p.PinBoards)
+            .ThenInclude(pb => pb.Board)
+            .ToListAsync();
+    }
 
     public async Task<bool> IsPinSavedAsync(Guid userId, Guid pinId)
     {

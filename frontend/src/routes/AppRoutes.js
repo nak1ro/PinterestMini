@@ -13,6 +13,9 @@ import {useAppContext} from '../context/AppContext.js';
 import ProfileImage from '../components/common/layout/ProfileDropdown';
 import ProfileDropdown from "../components/common/layout/ProfileDropdown";
 import TestBoardTag from "../components/pages/TestBoardTag";
+import TagPage from '../components/pages/Tag';
+
+
 
 const AppRoutes = () => {
     const [ isLoggedIn, setLogin ] = useState(0);
@@ -34,6 +37,7 @@ const AppRoutes = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile/:username" element={<Profile />} />
                 <Route path="/pin/:id" element={<PinDetail />} />
+                <Route path="/tag/:tagName" element={<TagPage />} />
             </Routes>
             </div>
             </Router>
@@ -53,6 +57,7 @@ const AppRoutes = () => {
                         <Route path="/pin/:id" element={<PinDetail />} />
                         <Route path="create-pin" element={<CreatePin />} />
                         <Route path="test" element={<TestBoardTag />} />
+                        <Route path="/tag/:tagName" element={<TagPage />} />
                     </Routes>
                 </Router>
             </>

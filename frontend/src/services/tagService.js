@@ -7,3 +7,8 @@ export const createTag = async (tagName) => {
 export const getAllTags = async () => {
     return axiosClient.get('/tag/');
 };
+
+export const getPopularTags = async (count) => {
+    return axiosClient.get(`/tag/popular?count=${count}`, {
+        skipAuth: true});
+}

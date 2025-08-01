@@ -5,6 +5,12 @@ export const getSavedPins = async () => {
     return res.data;
 };
 
+export const getCreatedPins = async () => {
+    const res = await axiosClient.get('/pin/mine');
+    return res.data;
+};
+
+
 export const savePin = async (pinId) => {
     await axiosClient.post(`/pin/${pinId}/save`);
 };
@@ -30,3 +36,8 @@ export const getPublicPins = (page = 1, pageSize = 20) => {
         }
     });
 };
+
+export const getPinsByTag = (tagName)=> {
+    return axiosClient.get(`/tag/${tagName}/pins`,
+        {skipAuth: true});
+}

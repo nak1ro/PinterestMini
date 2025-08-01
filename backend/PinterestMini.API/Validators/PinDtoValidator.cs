@@ -8,19 +8,17 @@ public class UpdatePinDtoValidator : AbstractValidator<UpdatePinDto>
     public UpdatePinDtoValidator()
     {
         RuleFor(x => x.Title)
-            .MaximumLength(100).WithMessage("Title cannot exceed 100 characters.")
+            .MaximumLength(100)
+            .WithMessage("Title cannot exceed 100 characters.")
             .When(x => x.Title != null);
 
-        RuleForEach(x => x.TagIdsToAdd)
-            .Must(tagId => tagId != Guid.Empty)
-            .WithMessage("Invalid tag ID to add.");
-
-        RuleForEach(x => x.TagIdsToRemove)
-            .Must(tagId => tagId != Guid.Empty)
-            .WithMessage("Invalid tag ID to remove.");
+        RuleForEach(x => x.TagNames)
+            .NotEmpty().WithMessage("Tag name cannot be empty.")
+            .MaximumLength(30).WithMessage("Tag name cannot exceed 30 characters.")
+            .When(x => x.TagNames != null);
 
         RuleForEach(x => x.BoardIds)
-            .Must(boardId => boardId != Guid.Empty)
+            .Must(id => id != Guid.Empty)
             .WithMessage("Invalid board ID.");
     }
 }

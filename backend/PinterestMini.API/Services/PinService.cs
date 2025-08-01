@@ -42,8 +42,8 @@ public class PinService : IPinService
             OwnerId = userId
         };
 
-        await AttachTagsByNameAsync(pin, dto.TagNames);
-        await AttachBoardsAsync(pin, dto.BoardIds, userId);
+        await SetTagsByNameAsync(pin, dto.TagNames);
+        await SetBoardsAsync(pin, dto.BoardIds, userId);
 
         await _unitOfWork.Pins.AddAsync(pin);
         await _unitOfWork.SaveChangesAsync();
@@ -75,33 +75,6 @@ public class PinService : IPinService
         };
     }
 
-    public async Task AssignPinToBoardAsync(Guid pinId, Guid boardId, ClaimsPrincipal user)
-    {
-        var userId = _userContext.GetUserId(user);
-
-        var pin = await _unitOfWork.Pins.GetByIdAsync(pinId)
-                  ?? throw new AppNotFoundException("Pin not found.");
-
-        var board = await _unitOfWork.Boards.GetByIdAsync(boardId)
-                    ?? throw new AppNotFoundException("Board not found.");
-
-        if (board.UserId != userId)
-            throw new AppUnauthorizedException("You do not own this board.");
-
-        var alreadyAssigned = await _unitOfWork.PinBoards.ExistsAsync(pinId, boardId, userId);
-        if (alreadyAssigned)
-            return;
-
-        await _unitOfWork.PinBoards.AddAsync(new PinBoard
-        {
-            PinId = pinId,
-            BoardId = boardId,
-            UserId = userId
-        });
-
-        await _unitOfWork.SaveChangesAsync();
-    }
-
     public async Task UpdatePinAsync(Guid pinId, UpdatePinDto dto, ClaimsPrincipal user)
     {
         var pin = await _unitOfWork.Pins.GetByIdWithTagsAndBoardsAsync(pinId);
@@ -113,8 +86,8 @@ public class PinService : IPinService
             throw new AppUnauthorizedException("You don't own this pin.");
 
         UpdateFields(pin, dto);
-        await ReplaceBoardsAsync(pin, dto.BoardIds);
-        await UpdateTagsAsync(pin, dto.TagIdsToAdd, dto.TagIdsToRemove);
+        await SetBoardsAsync(pin, dto.BoardIds, userId);
+        await SetTagsByNameAsync(pin, dto.TagNames);
 
         _unitOfWork.Pins.Update(pin);
         await _unitOfWork.SaveChangesAsync();
@@ -170,75 +143,108 @@ public class PinService : IPinService
         return _mapper.Map<List<PinDto>>(savedPins);
     }
 
-    private async Task AttachTagsByNameAsync(Pin pin, List<string>? tagNames)
+    private async Task SetBoardsAsync(Pin pin, List<Guid>? boardIds, Guid userId)
     {
-        if (tagNames == null || tagNames.Count == 0) return;
-        Console.WriteLine(tagNames);
-        // Normalize input (case-insensitive, trim)
-        var normalized = tagNames
+        pin.PinBoards = new List<PinBoard>(); // clear existing
+
+        if (boardIds is not { Count: > 0 }) return;
+
+        var boards = await _unitOfWork.Boards.GetByIdsAsync(boardIds);
+        pin.PinBoards = boards.Select(board => new PinBoard
+        {
+            PinId = pin.Id,
+            BoardId = board.Id,
+            UserId = userId
+        }).ToList();
+    }
+
+    private async Task SetTagsByNameAsync(Pin pin, List<string>? tagNames)
+    {
+        var oldTagIds = pin.PinTags?.Select(pt => pt.TagId).ToHashSet() ?? new HashSet<Guid>();
+        pin.PinTags = new List<PinTag>();
+
+        if (tagNames == null || tagNames.Count == 0)
+        {
+            await DecrementUsageCountsAsync(oldTagIds);
+            return;
+        }
+
+        var normalizedNames = NormalizeTagNames(tagNames);
+
+        var existingTags = await _unitOfWork.Tags.GetByNamesAsync(normalizedNames);
+        var newTags = await CreateNewTagsAsync(normalizedNames, existingTags);
+
+        var allTags = existingTags.Concat(newTags).ToList();
+        var newTagIds = allTags.Select(t => t.Id).ToHashSet();
+
+        await AdjustUsageCountsAsync(oldTagIds, newTagIds, allTags);
+
+        pin.PinTags = CreatePinTags(pin.Id, allTags);
+    }
+
+    private static List<string> NormalizeTagNames(List<string> tagNames)
+    {
+        return tagNames
             .Select(t => t.Trim().ToLower())
             .Where(t => !string.IsNullOrWhiteSpace(t))
             .Distinct()
             .ToList();
+    }
 
-        var existingTags = await _unitOfWork.Tags.GetByNamesAsync(normalized);
+    private async Task<List<Tag>> CreateNewTagsAsync(List<string> normalized, List<Tag> existingTags)
+    {
+        var existingNames = existingTags.Select(t => t.Name.ToLower()).ToHashSet();
+        var newNames = normalized.Except(existingNames).ToList();
 
-        var newTagNames = normalized
-            .Except(existingTags.Select(t => t.Name.ToLower()))
-            .ToList();
-
-        var newTags = newTagNames
-            .Select(name => new Tag { Id = Guid.NewGuid(), Name = name, UsageCount = 0 })
-            .ToList();
+        var newTags = newNames.Select(name => new Tag
+        {
+            Id = Guid.NewGuid(),
+            Name = name,
+            UsageCount = 0
+        }).ToList();
 
         foreach (var tag in newTags)
             await _unitOfWork.Tags.AddAsync(tag);
 
-        var allTags = existingTags.Concat(newTags).ToList();
-
-        pin.PinTags = allTags
-            .Select(tag => new PinTag { TagId = tag.Id, Pin = pin })
-            .ToList();
-
-        foreach (var tag in allTags)
-            tag.UsageCount += 1;
+        return newTags;
     }
 
-
-    private async Task AttachBoardsAsync(Pin pin, List<Guid>? boardIds, Guid userId)
+    private async Task AdjustUsageCountsAsync(HashSet<Guid> oldTagIds, HashSet<Guid> newTagIds, List<Tag> allTags)
     {
-        if (boardIds is not { Count: > 0 }) return;
+        var added = newTagIds.Except(oldTagIds);
+        var removed = oldTagIds.Except(newTagIds);
 
-        var boards = await _unitOfWork.Boards.GetByIdsAsync(boardIds);
-        pin.PinBoards = boards.Select(b => new PinBoard { BoardId = b.Id, Pin = pin, UserId = userId }).ToList();
-    }
-
-    private async Task ReplaceBoardsAsync(Pin pin, List<Guid>? boardIds)
-    {
-        if (boardIds == null) return;
-
-        var boards = await _unitOfWork.Boards.GetByIdsAsync(boardIds);
-        pin.PinBoards = boards.Select(b => new PinBoard { BoardId = b.Id, PinId = pin.Id }).ToList();
-    }
-
-    private async Task UpdateTagsAsync(Pin pin, List<Guid>? tagsToAdd, List<Guid>? tagsToRemove)
-    {
-        if (tagsToAdd != null)
+        foreach (var tagId in added)
         {
-            var newTags = await _unitOfWork.Tags.GetByIdsAsync(tagsToAdd);
-            foreach (var tag in newTags.Where(tag => pin.PinTags.All(pt => pt.TagId != tag.Id)))
-            {
-                pin.PinTags.Add(new PinTag { TagId = tag.Id, PinId = pin.Id });
-            }
+            var tag = allTags.FirstOrDefault(t => t.Id == tagId);
+            if (tag != null) tag.UsageCount += 1;
         }
 
-        if (tagsToRemove != null)
+        foreach (var tagId in removed)
         {
-            pin.PinTags = pin.PinTags
-                .Where(pt => !tagsToRemove.Contains(pt.TagId))
-                .ToList();
+            var tag = await _unitOfWork.Tags.GetByIdAsync(tagId);
+            if (tag != null) tag.UsageCount -= 1;
         }
     }
+
+    private async Task DecrementUsageCountsAsync(HashSet<Guid> tagIds)
+    {
+        foreach (var tagId in tagIds)
+        {
+            var tag = await _unitOfWork.Tags.GetByIdAsync(tagId);
+            if (tag != null) tag.UsageCount -= 1;
+        }
+    }
+
+    private static List<PinTag> CreatePinTags(Guid pinId, List<Tag> tags)
+    {
+        return tags.Select(tag => new PinTag
+        {
+            PinId = pinId,
+            TagId = tag.Id
+        }).ToList();
+    }
+
 
     private static void UpdateFields(Pin pin, UpdatePinDto dto)
     {

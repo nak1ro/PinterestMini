@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
-import pins from '../../data/pins';
 import PinGrid from '../common/pin/PinGrid';
-import { useAppContext} from "../../context/AppContext";
+import { useAppContext } from '../../context/AppContext';
+import useSavedPins from '../../hooks/useSavedPins';
+import useCreatedPins from '../../hooks/useCreatedPins';
+import { Spinner } from 'react-bootstrap';
 
 const Profile = () => {
   const { username } = useParams();
   const [activeTab, setActiveTab] = useState('created');
-  const { user: currentUser} = useAppContext();
+  const { user: currentUser } = useAppContext();
 
-  const userPins = pins;
-  const savedPins = pins.filter((pin, index) => index % 3 === 0);
+  const {
+    createdPins,
+    loading: loadingCreated
+  } = useCreatedPins(username);
+
+  const {
+    savedPins,
+    loading: loadingSaved
+  } = useSavedPins();
+
+  const isLoading = (activeTab === 'created' && loadingCreated) || (activeTab === 'saved' && loadingSaved);
+  const pinsToShow = activeTab === 'created' ? createdPins : savedPins;
 
   return (
       <motion.div
@@ -22,8 +34,8 @@ const Profile = () => {
       >
         <div className="d-flex flex-column align-items-center text-center mb-4">
           <img
-              //src={avatar}
-              //alt={user.name}
+              // src={user.avatar}
+              // alt={user.name}
               className="rounded-circle mb-3"
               style={{ width: '120px', height: '120px', objectFit: 'cover' }}
           />
@@ -57,7 +69,13 @@ const Profile = () => {
           </button>
         </div>
 
-        <PinGrid pins={activeTab === 'created' ? userPins : savedPins} />
+        {isLoading ? (
+            <div className="text-center py-5">
+              <Spinner animation="border" variant="primary" />
+            </div>
+        ) : (
+            <PinGrid pins={pinsToShow} />
+        )}
       </motion.div>
   );
 };

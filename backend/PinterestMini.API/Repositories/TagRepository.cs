@@ -25,7 +25,20 @@ public class TagRepository : ITagRepository
     {
         return await _context.Tags.FirstOrDefaultAsync(t => t.Name == name);
     }
-    
+
+    public async Task<List<Tag>> GetMostPopularAsync(int count)
+    {
+        return await _context.Tags
+            .OrderByDescending(t => t.UsageCount)
+            .Take(count)
+            .ToListAsync();
+    }
+
+    public async Task<Tag?> GetByIdAsync(Guid id)
+    {
+        return await _context.Tags.FindAsync(id);
+    }
+
     public async Task<List<Tag>> GetByNamesAsync(IEnumerable<string> names)
     {
         var normalized = names.Select(n => n.Trim().ToLower()).ToList();
