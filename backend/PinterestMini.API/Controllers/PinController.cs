@@ -45,6 +45,20 @@ public class PinController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("search")]
+    [AllowAnonymous]
+    public async Task<ActionResult<PaginatedResult<PinDto>>> SearchPins(
+        [FromQuery] string query,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return BadRequest(new { error = "Query cannot be empty", status = 400 });
+
+        var result = await _pinService.SearchPinsAsync(query, page, pageSize);
+        return Ok(result);
+    }
+
     [HttpGet("followed")]
     [Authorize]
     public async Task<ActionResult<PaginatedResult<PinDto>>> GetFollowedCreatorsFeed(

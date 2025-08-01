@@ -70,6 +70,22 @@ public class PinRepository : IPinRepository
             .ToListAsync();
     }
 
+    public async Task<List<Pin>> SearchPublicPinsAsync(string query, int page, int pageSize)
+    {
+        query = query.Trim().ToLower();
+
+        return await _context.Pins
+            .Where(p => EF.Functions.ILike(p.Title, $"%{query}%") ||
+                        EF.Functions.ILike(p.Description, $"%{query}%") ||
+                        p.PinTags.Any(pt => EF.Functions.ILike(pt.Tag.Name, $"%{query}%")))
+            .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+
     public async Task<List<Pin>> GetPinsByTagNameAsync(string tagName)
     {
         return await _context.Pins
