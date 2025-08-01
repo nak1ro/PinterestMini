@@ -106,12 +106,11 @@ public class PinController : ControllerBase
         return Ok("Token is valid and you are authenticated.");
     }
 
-    // (Optional) Get method to support CreatedAtAction
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
-    public IActionResult GetById(Guid id)
+    public async Task<ActionResult<PinDto>> GetById(Guid id)
     {
-        // You can implement this later
-        return Ok(new { message = "Coming soon." });
+        var pin = await _pinService.GetByIdAsync(id);
+        return Ok(pin);
     }
 }

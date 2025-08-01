@@ -51,6 +51,15 @@ public class PinService : IPinService
         return pin.Id;
     }
 
+    public async Task<PinDto> GetByIdAsync(Guid id)
+    {
+        var pin = await _unitOfWork.Pins.GetByIdAsync(id);
+        if (pin == null)
+            throw new AppNotFoundException("Pin not found.");
+
+        return _mapper.Map<PinDto>(pin);
+    }
+
     public async Task<List<PinDto>> GetMyPinsAsync(ClaimsPrincipal user)
     {
         var userId = _userContext.GetUserId(user);

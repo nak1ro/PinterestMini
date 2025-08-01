@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { fetchPinsByQuery } from '../services/pinService'; // путь поправь под себя
 
 
 const AppContext = createContext();
@@ -10,7 +11,38 @@ export const AppProvider = ({ children }) => {
     const [mail, setMail] = useState(null);
     const [token, setToken] = useState(null);
 
-    const [searchResults, setSearchResults] = useState([])
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const searchPins = async (term) => {
+        const query = term.trim();
+        if (!query) {
+            setSearchQuery('');
+            setSearchResults([]);
+            return;
+        }
+
+        try {
+            const result = await fetchPinsByQuery(query, 1, 20);
+
+            // ✅ result = axios full response
+            // ✅ result.data = объект с items, page и т.д.
+            // ✅ нам нужны именно items
+            const pins = result.data?.items || [];
+
+            console.log('✅ Pins from server:', pins);
+
+            setSearchQuery(query);
+            setSearchResults(pins); // ✅ теперь это массив пинов
+        } catch (err) {
+            console.error('❌ Search error:', err);
+            setSearchResults([]);
+        }
+    };
+
+
+
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -40,19 +72,6 @@ export const AppProvider = ({ children }) => {
         localStorage.removeItem('token');
     };
 
-    const searchPins = async (term) => {
-       // try {
-       //     const res = await axios.get(`/api/pin/search?q=${term}`, {
-       //         headers: {
-       //             Authorization: `Bearer ${token}`
-       //         }
-       //     });
-       //     setSearchResults(res.data);
-       // } catch (err) {
-       //     console.error('Search error:', err);
-       // }
-    };
-
     return (
         <AppContext.Provider
             value={{
@@ -62,7 +81,9 @@ export const AppProvider = ({ children }) => {
                 login,
                 logout,
                 searchPins,
-                searchResults
+                searchResults,
+                searchQuery,
+                isSearching
             }}
         >
             {children}

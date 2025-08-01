@@ -58,7 +58,7 @@ const PinPreviewModal = ({ pin, onClose }) => {
             </div>
 
             <div className="d-flex flex-wrap gap-2">
-              {(pin.tags || []).map(tag => (
+              {(pin.tag || []).map(tag => (
                   <span key={tag} className="badge bg-secondary">#{tag}</span>
               ))}
             </div>

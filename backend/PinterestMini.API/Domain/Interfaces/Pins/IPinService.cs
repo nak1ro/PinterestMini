@@ -7,6 +7,7 @@ namespace PinterestMini.API.Domain.Interfaces.Pins;
 public interface IPinService
 {
     Task<Guid> CreatePinAsync(CreatePinDto dto, ClaimsPrincipal user);
+    Task<PinDto> GetByIdAsync(Guid id);
     Task<PaginatedResult<PinDto>> GetRecentPinsPaginatedAsync(int page, int pageSize);
     Task<List<PinDto>> GetMyPinsAsync(ClaimsPrincipal user);
     Task<PaginatedResult<PinDto>> GetFollowedCreatorsFeedAsync(ClaimsPrincipal user, int page, int pageSize);

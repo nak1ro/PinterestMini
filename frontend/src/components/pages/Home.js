@@ -1,27 +1,25 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PinGrid from '../common/pin/PinGrid';
 import { motion } from 'framer-motion';
+import { useAppContext } from '../../context/AppContext';
 import usePins from '../../hooks/usePins';
-import useSearchPins from '../../hooks/useSearchPins';
 
 const Home = () => {
-    const { pins, loading } = usePins();
-    const { searchResults, searchPins, resetSearch } = useSearchPins(pins);
+    const { searchResults, isSearching } = useAppContext();
+    const { pins: basePins, loading: baseLoading } = usePins();
 
-    useEffect(() => {
-        resetSearch();
-    }, [pins]);
+    if (baseLoading) return <p className="text-center mt-5">Loading pins...</p>;
 
-    if (loading) return <p className="text-center mt-5">Loading pins...</p>;
-
+    const pinsToShow = isSearching || searchResults.length > 0 ? searchResults : basePins;
+    console.log("searchResults", searchResults);
+    console.log(basePins);
     return (
-        <motion.div
-            className="container py-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-        >
-            <PinGrid pins={searchResults} />
+        <motion.div className="container py-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+            {pinsToShow.length === 0 ? (
+                <p className="text-center mt-5">No pins found.</p>
+            ) : (
+                <PinGrid pins={pinsToShow} />
+            )}
         </motion.div>
     );
 };
