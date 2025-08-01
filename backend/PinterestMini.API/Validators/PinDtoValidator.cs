@@ -39,10 +39,6 @@ public class CreatePinDtoValidator : AbstractValidator<CreatePinDto>
             .Must(file => file != null && file.Length < 5_000_000)
             .WithMessage("Image must be smaller than 5MB.");
 
-        RuleForEach(x => x.TagIds)
-            .Must(tagId => tagId != Guid.Empty)
-            .WithMessage("Invalid tag ID.");
-
         RuleForEach(x => x.BoardIds)
             .Must(boardId => boardId != Guid.Empty)
             .WithMessage("Invalid board ID.");

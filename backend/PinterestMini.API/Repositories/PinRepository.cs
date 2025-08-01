@@ -28,6 +28,17 @@ public class PinRepository : IPinRepository
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
+    public async Task<List<Pin>> GetPinsByOwnerAsync(Guid ownerId)
+    {
+        return await _context.Pins
+            .Where(p => p.OwnerId == ownerId)
+            .OrderByDescending(p => p.CreatedAt)
+            .Include(p => p.Owner)
+            .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
+            .Include(p => p.PinBoards).ThenInclude(pb => pb.Board)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<Pin>> GetRecentPublicPinsAsync(int page, int pageSize)
     {
         return await _context.Pins

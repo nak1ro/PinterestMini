@@ -8,7 +8,7 @@ public class CreatePinDto
 
     public bool AllowComments { get; set; } = true;
 
-    public List<Guid>? TagIds { get; set; }
+    public List<string>? TagNames { get; set; }
 
     public List<Guid>? BoardIds { get; set; }
 

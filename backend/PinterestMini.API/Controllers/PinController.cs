@@ -77,6 +77,13 @@ public class PinController : ControllerBase
     {
         return Ok(await _pinService.GetSavedPinsAsync(User));
     }
+    
+    [HttpGet("mine")]
+    [Authorize]
+    public async Task<ActionResult<List<PinDto>>> GetMyPins()
+    {
+        return Ok(await _pinService.GetMyPinsAsync(User));
+    }
 
     [HttpPost("{pinId:guid}/boards/{boardId:guid}")]
     [Authorize]
@@ -85,6 +92,7 @@ public class PinController : ControllerBase
         await _pinService.AssignPinToBoardAsync(pinId, boardId, User);
         return NoContent();
     }
+    
 
     [Authorize]
     [HttpGet("check")]

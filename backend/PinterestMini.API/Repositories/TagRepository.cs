@@ -25,7 +25,15 @@ public class TagRepository : ITagRepository
     {
         return await _context.Tags.FirstOrDefaultAsync(t => t.Name == name);
     }
-
+    
+    public async Task<List<Tag>> GetByNamesAsync(IEnumerable<string> names)
+    {
+        var normalized = names.Select(n => n.Trim().ToLower()).ToList();
+        return await _context.Tags
+            .Where(t => normalized.Contains(t.Name.ToLower()))
+            .ToListAsync();
+    }
+    
     public async Task AddAsync(Tag tag)
     {
         await _context.Tags.AddAsync(tag);

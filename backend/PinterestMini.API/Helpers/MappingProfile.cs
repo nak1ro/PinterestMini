@@ -31,5 +31,22 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId.ToString()))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.PinTags.Select(pt => pt.Tag.Name)))
             .ForMember(dest => dest.Boards, opt => opt.MapFrom(src => src.PinBoards.Select(pb => pb.Board.Name)));
+        
+        CreateMap<Tag, TagPreviewDto>();
+        CreateMap<Board, BoardPreviewDto>();
+        
+        CreateMap<Pin, PinDto>()
+            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src =>
+                src.PinTags.Select(pt => new TagPreviewDto
+                {
+                    Id = pt.Tag.Id,
+                    Name = pt.Tag.Name
+                })))
+            .ForMember(dest => dest.Boards, opt => opt.MapFrom(src =>
+                src.PinBoards.Select(pb => new BoardPreviewDto
+                {
+                    Id = pb.Board.Id,
+                    Name = pb.Board.Name
+                })));
     }
 }

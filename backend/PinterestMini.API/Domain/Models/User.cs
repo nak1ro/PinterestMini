@@ -6,6 +6,7 @@ public class User: IdentityUser<Guid>
 {
     public string? ProfilePictureUrl { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string? Bio { get; set; }
 
     public ICollection<Board> Boards { get; set; }
     public ICollection<Pin> Pins { get; set; }

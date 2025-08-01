@@ -42,13 +42,20 @@ public class PinService : IPinService
             OwnerId = userId
         };
 
-        await AttachTagsAsync(pin, dto.TagIds);
+        await AttachTagsByNameAsync(pin, dto.TagNames);
         await AttachBoardsAsync(pin, dto.BoardIds, userId);
 
         await _unitOfWork.Pins.AddAsync(pin);
         await _unitOfWork.SaveChangesAsync();
 
         return pin.Id;
+    }
+
+    public async Task<List<PinDto>> GetMyPinsAsync(ClaimsPrincipal user)
+    {
+        var userId = _userContext.GetUserId(user);
+        var pins = await _unitOfWork.Pins.GetPinsByOwnerAsync(userId);
+        return _mapper.Map<List<PinDto>>(pins);
     }
 
     public async Task<PaginatedResult<PinDto>> GetFollowedCreatorsFeedAsync(ClaimsPrincipal user, int page,
@@ -163,13 +170,40 @@ public class PinService : IPinService
         return _mapper.Map<List<PinDto>>(savedPins);
     }
 
-    private async Task AttachTagsAsync(Pin pin, List<Guid>? tagIds)
+    private async Task AttachTagsByNameAsync(Pin pin, List<string>? tagNames)
     {
-        if (tagIds is not { Count: > 0 }) return;
+        if (tagNames == null || tagNames.Count == 0) return;
+        Console.WriteLine(tagNames);
+        // Normalize input (case-insensitive, trim)
+        var normalized = tagNames
+            .Select(t => t.Trim().ToLower())
+            .Where(t => !string.IsNullOrWhiteSpace(t))
+            .Distinct()
+            .ToList();
 
-        var tags = await _unitOfWork.Tags.GetByIdsAsync(tagIds);
-        pin.PinTags = tags.Select(t => new PinTag { TagId = t.Id, Pin = pin }).ToList();
+        var existingTags = await _unitOfWork.Tags.GetByNamesAsync(normalized);
+
+        var newTagNames = normalized
+            .Except(existingTags.Select(t => t.Name.ToLower()))
+            .ToList();
+
+        var newTags = newTagNames
+            .Select(name => new Tag { Id = Guid.NewGuid(), Name = name, UsageCount = 0 })
+            .ToList();
+
+        foreach (var tag in newTags)
+            await _unitOfWork.Tags.AddAsync(tag);
+
+        var allTags = existingTags.Concat(newTags).ToList();
+
+        pin.PinTags = allTags
+            .Select(tag => new PinTag { TagId = tag.Id, Pin = pin })
+            .ToList();
+
+        foreach (var tag in allTags)
+            tag.UsageCount += 1;
     }
+
 
     private async Task AttachBoardsAsync(Pin pin, List<Guid>? boardIds, Guid userId)
     {

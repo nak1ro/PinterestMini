@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="" />
+    <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/Services/PinService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/Services/PinService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -91,7 +94,7 @@
       <workItem from="1753669328890" duration="723000" />
       <workItem from="1753825696676" duration="620000" />
       <workItem from="1753900826476" duration="7922000" />
-      <workItem from="1753995982349" duration="639000" />
+      <workItem from="1753995982349" duration="2527000" />
     </task>
     <servers />
   </component>

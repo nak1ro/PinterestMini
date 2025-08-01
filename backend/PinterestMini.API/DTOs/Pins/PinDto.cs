@@ -16,7 +16,6 @@ public class PinDto
 
     public string OwnerId { get; set; }
 
-    public List<string> Tags { get; set; }
-
-    public List<string> Boards { get; set; }
+    public List<TagPreviewDto> Tags { get; set; }
+    public List<BoardPreviewDto> Boards { get; set; }
 }
