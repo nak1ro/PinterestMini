@@ -57,4 +57,14 @@ public class FollowService : IFollowService
         var currentUserId = _userContext.GetUserId(currentUser);
         return await _unitOfWork.Follows.ExistsAsync(currentUserId, targetUserId);
     }
+
+    public async Task<int> GetFollowersCountAsync(Guid userId)
+    {
+        return await _unitOfWork.Follows.GetFollowersCountAsync(userId);
+    }
+
+    public async Task<int> GetFollowingCountAsync(Guid userId)
+    {
+        return await _unitOfWork.Follows.GetFollowingCountAsync(userId);
+    }
 }
