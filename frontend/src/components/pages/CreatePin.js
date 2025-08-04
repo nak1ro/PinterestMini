@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Container, Form, Row, Col, FloatingLabel, Image,
     Button, Alert, ProgressBar, Spinner, Card
 } from "react-bootstrap";
-import { createPin } from '../../services/pinService';
-import { getMyBoards } from '../../services/boardService';
+import {createPin} from '../../services/pinService';
+import {getMyBoards} from '../../services/boardService';
 
 const CreatePinPage = () => {
     const [title, setTitle] = useState('');
@@ -64,17 +64,13 @@ const CreatePinPage = () => {
             formData.append("allowComments", allowComments);
             if (selectedFile) formData.append("image", selectedFile);
 
-
             if (selectedBoards.length > 0) {
                 selectedBoards.forEach(id => formData.append("boardIds", id));
             }
 
-
             if (tags.length > 0) {
                 tags.forEach(tag => formData.append("tagNames", tag));
             }
-
-
 
             const res = await createPin(formData, (progressEvent) => {
                 const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -116,7 +112,7 @@ const CreatePinPage = () => {
                             />
                         </Form.Group>
                         {previewUrl && (
-                            <Image src={previewUrl} alt="preview" thumbnail className="w-100 mb-3" />
+                            <Image src={previewUrl} alt="preview" thumbnail className="w-100 mb-3"/>
                         )}
                     </Col>
 
@@ -135,7 +131,7 @@ const CreatePinPage = () => {
                             <Form.Control
                                 as="textarea"
                                 placeholder=" "
-                                style={{ height: '120px' }}
+                                style={{height: '120px'}}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
@@ -164,7 +160,7 @@ const CreatePinPage = () => {
                                     <span
                                         key={idx}
                                         className="badge bg-secondary d-flex align-items-center"
-                                        style={{ padding: '0.5em 0.75em' }}
+                                        style={{padding: '0.5em 0.75em'}}
                                     >
                             {tag}
                                         <Button
@@ -173,7 +169,7 @@ const CreatePinPage = () => {
                                             onClick={() => setTags(tags.filter((_, i) => i !== idx))}
                                             className="ms-2 p-0 text-white"
                                             aria-label="Remove tag"
-                                            style={{ fontSize: '1rem', lineHeight: 1 }}
+                                            style={{fontSize: '1rem', lineHeight: 1}}
                                         >
                     ×
                                         </Button>
@@ -197,7 +193,6 @@ const CreatePinPage = () => {
                         </Form.Group>
 
 
-
                         <Form.Check
                             type="switch"
                             id="comments-switch"
@@ -210,11 +205,11 @@ const CreatePinPage = () => {
                 </Row>
 
                 {error && <Alert variant="danger">{error}</Alert>}
-                {sending && <ProgressBar now={uploadPct} animated className="mt-2" />}
+                {sending && <ProgressBar now={uploadPct} animated className="mt-2"/>}
 
                 <div className="mt-4 d-flex justify-content-end">
                     <Button variant="primary" type="submit" disabled={sending}>
-                        {sending && <Spinner size="sm" animation="border" className="me-2" />}
+                        {sending && <Spinner size="sm" animation="border" className="me-2"/>}
                         Create pin
                     </Button>
                 </div>

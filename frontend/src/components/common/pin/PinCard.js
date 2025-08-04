@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {motion, AnimatePresence} from 'framer-motion';
 import {Link} from 'react-router-dom';
-import useSavedPins from '../../../hooks/useSavedPins'; // ✅ NEW: our hook
+import useSavedPins from '../../../hooks/useSavedPins';
 import PinPreviewModal from './PinPreviewModal';
 import {Download} from 'react-bootstrap-icons';
 
 const PinCard = ({pin}) => {
-    const {savePin, unsavePin, isPinSaved} = useSavedPins(); // ✅ use the hook
+    const {savePin, unsavePin, isPinSaved} = useSavedPins();
     const saved = isPinSaved(pin.id);
     const [isHovered, setIsHovered] = useState(false);
     const [showPreview, setShowPreview] = useState(false);

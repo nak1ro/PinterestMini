@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { fetchPinsByQuery } from '../services/pinService'; // путь поправь под себя
-
+import { fetchPinsByQuery } from '../services/pinService'; // Adjust if needed
 
 const AppContext = createContext();
 
@@ -25,29 +24,24 @@ export const AppProvider = ({ children }) => {
 
         try {
             const result = await fetchPinsByQuery(query, 1, 20);
-
-
             const pins = result.data?.items || [];
-
             console.log('✅ Pins from server:', pins);
-
             setSearchQuery(query);
-            setSearchResults(pins); // ✅ теперь это массив пинов
+            setSearchResults(pins);
         } catch (err) {
             console.error('❌ Search error:', err);
             setSearchResults([]);
         }
     };
 
-
-
-
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         const storedToken = localStorage.getItem('token');
+        const storedMail = localStorage.getItem('mail');
 
         if (storedUser && storedToken) {
             setUser(JSON.parse(storedUser));
+            setMail(storedMail);
             setToken(storedToken);
         }
     }, []);
@@ -74,14 +68,16 @@ export const AppProvider = ({ children }) => {
         <AppContext.Provider
             value={{
                 user,
+                userId: user?.id || null, // ✅ added
                 token,
+                mail,
                 isAuthenticated: !!user,
                 login,
                 logout,
                 searchPins,
                 searchResults,
                 searchQuery,
-                isSearching
+                isSearching,
             }}
         >
             {children}
