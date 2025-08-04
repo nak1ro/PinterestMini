@@ -26,9 +26,7 @@ export const AppProvider = ({ children }) => {
         try {
             const result = await fetchPinsByQuery(query, 1, 20);
 
-            // ✅ result = axios full response
-            // ✅ result.data = объект с items, page и т.д.
-            // ✅ нам нужны именно items
+
             const pins = result.data?.items || [];
 
             console.log('✅ Pins from server:', pins);

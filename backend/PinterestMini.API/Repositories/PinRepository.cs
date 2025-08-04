@@ -132,13 +132,18 @@ public class PinRepository : IPinRepository
 
     public async Task<IEnumerable<Pin>> GetSavedPinsAsync(Guid userId)
     {
-        return await _context.SavedPins
+        var pinIds = await _context.SavedPins
             .Where(sp => sp.UserId == userId)
             .OrderByDescending(sp => sp.SavedAt)
-            .Select(sp => sp.Pin)
+            .Select(sp => sp.PinId)
+            .ToListAsync();
+
+        return await _context.Pins
+            .Where(p => pinIds.Contains(p.Id))
             .Include(p => p.Owner)
             .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
             .Include(p => p.PinBoards).ThenInclude(pb => pb.Board)
+            .OrderByDescending(p => pinIds.IndexOf(p.Id)) // Preserve saved order
             .ToListAsync();
     }
 
