@@ -92,18 +92,20 @@ const PinCard = ({pin}) => {
                                     transition={{duration: 0.3, ease: 'easeInOut'}}
                                 >
                                     <Link
-                                        to={`/profile/${pin.ownerId}`}
+                                        to={`/profile/${pin.owner?.username || pin.owner?.id}`}
                                         className="d-flex align-items-center text-white text-decoration-none"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <img
-                                            src={`/avatars/${pin.ownerId}.jpg`}
-                                            alt="User Avatar"
+                                            src={pin.owner?.profilePictureUrl || '/assets/avatar-default.svg'}
+                                            alt={pin.owner?.username || 'User'}
                                             className="rounded-circle me-2"
-                                            style={{width: '24px', height: '24px', objectFit: 'cover'}}
+                                            style={{ width: '24px', height: '24px', objectFit: 'cover' }}
+                                            onError={(e) => { e.target.src = '/assets/avatar-default.svg'; }}
                                         />
-                                        <span className="small">{pin.ownerId.slice(0, 8)}</span>
+                                        <span className="small">{pin.owner?.username || 'Unknown'}</span>
                                     </Link>
+
 
                                 </motion.div>
                             </motion.div>

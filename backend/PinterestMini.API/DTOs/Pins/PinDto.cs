@@ -14,8 +14,7 @@ public class PinDto
 
     public bool AllowComments { get; set; }
 
-    public string OwnerId { get; set; }
-
+    public OwnerDto Owner { get; set; } = null!;
     public List<TagPreviewDto> Tags { get; set; }
     public List<BoardPreviewDto> Boards { get; set; }
 }

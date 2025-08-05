@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 const PinPreviewModal = ({ pin, onClose }) => {
   if (!pin) return null;
 
-  const avatarUrl = `/avatars/${pin.ownerId}.jpg`; // либо генерируем по ownerId
-  const username = pin.ownerId?.slice(0, 8); // псевдо-никнейм на основе GUID
+  const avatarUrl = pin.owner?.profilePictureUrl || '/assets/avatar-default.svg';
+  const username = pin.owner?.username || 'Unknown';
 
   return (
       <motion.div

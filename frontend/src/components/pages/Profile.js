@@ -16,7 +16,7 @@ const Profile = () => {
     const [activeTab, setActiveTab] = useState('pins');
     const [onlyMyPins, setOnlyMyPins] = useState(false);
 
-    const { user, userId } = useAppContext();
+    const { user, userId, avatarUrl } = useAppContext();
 
     const { createdPins, loading: loadingCreated } = useCreatedPins(username);
     const { savedPins, loading: loadingSaved } = useSavedPins();
@@ -38,10 +38,16 @@ const Profile = () => {
             {/* User Info */}
             <div className="d-flex flex-column align-items-center text-center mb-4">
                 <img
-                    src={`/avatars/${username}.jpg`}
-                    alt={username}
+                    src={avatarUrl}
+                    alt={user?.username || 'User Avatar'}
                     className="rounded-circle mb-3"
                     style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                    onError={(e) => {
+                        const fallback = '/assets/avatar-default.svg';
+                        if (!e.target.src.endsWith(fallback)) {
+                            e.target.src = fallback;
+                        }
+                    }}
                 />
                 <h1 className="fw-bold fs-2 mb-1">{user?.username}</h1>
                 <p className="text-center mx-auto" style={{ maxWidth: '500px' }}>

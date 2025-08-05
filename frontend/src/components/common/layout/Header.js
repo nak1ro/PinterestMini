@@ -24,6 +24,7 @@ const Header = () => {
       <>
         <motion.header
             className="d-flex align-items-center justify-content-between px-4 py-3 shadow-sm sticky-top bg-white z-3"
+            style={{ marginLeft: '100px' }}
             initial={{ y: -50 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.3 }}

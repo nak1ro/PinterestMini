@@ -26,16 +26,18 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.OwnerUsername, opt => opt.MapFrom(src => src.User.UserName))
             .ForMember(dest => dest.CoverImageUrl, opt => opt.MapFrom(src => src.CoverImageUrl));
 
-        // ✅ Pin → PinDto
-        CreateMap<Pin, PinDto>()
-            .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId.ToString()))
-            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.PinTags.Select(pt => pt.Tag.Name)))
-            .ForMember(dest => dest.Boards, opt => opt.MapFrom(src => src.PinBoards.Select(pb => pb.Board.Name)));
-        
+        // ✅ Tag → TagPreviewDto
         CreateMap<Tag, TagPreviewDto>();
+
+        // ✅ Board → BoardPreviewDto
         CreateMap<Board, BoardPreviewDto>();
-        
+
+        // ✅ User → OwnerDto (for embedding inside PinDto)
+        CreateMap<User, OwnerDto>();
+
+        // ✅ Pin → PinDto (unified version)
         CreateMap<Pin, PinDto>()
+            .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.Owner))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(src =>
                 src.PinTags.Select(pt => new TagPreviewDto
                 {

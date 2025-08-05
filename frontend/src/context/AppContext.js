@@ -40,6 +40,8 @@ export const AppProvider = ({ children }) => {
         localStorage.removeItem('token');
     };
 
+    const defaultAvatar = '/assets/avatar-default.svg';
+
     return (
         <AppContext.Provider
             value={{
@@ -48,6 +50,10 @@ export const AppProvider = ({ children }) => {
                 token,
                 mail,
                 isAuthenticated: !!user,
+                avatarUrl:
+                    user?.profilePictureUrl && user.profilePictureUrl.trim() !== ''
+                        ? user.profilePictureUrl
+                        : defaultAvatar,
                 login,
                 logout,
             }}
