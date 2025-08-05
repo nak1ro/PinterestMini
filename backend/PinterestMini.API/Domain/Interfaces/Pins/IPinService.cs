@@ -17,4 +17,8 @@ public interface IPinService
     Task SavePinAsync(Guid pinId, ClaimsPrincipal user);
     Task UnsavePinAsync(Guid pinId, ClaimsPrincipal user);
     Task<List<PinDto>> GetSavedPinsAsync(ClaimsPrincipal user);
+    Task<int> GetLikeCountAsync(Guid pinId);
+    Task<bool> IsPinLikedAsync(Guid pinId, ClaimsPrincipal user);
+    Task LikePinAsync(Guid pinId, ClaimsPrincipal user);
+    Task UnlikePinAsync(Guid pinId, ClaimsPrincipal user);
 }

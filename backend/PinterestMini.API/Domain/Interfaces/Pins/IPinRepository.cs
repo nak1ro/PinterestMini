@@ -16,6 +16,10 @@ public interface IPinRepository
     Task SavePinAsync(Guid userId, Guid pinId);
     Task UnsavePinAsync(Guid userId, Guid pinId);
     Task<IEnumerable<Pin>> GetSavedPinsAsync(Guid userId);
+    Task<int> GetLikeCountAsync(Guid pinId);
+    Task<bool> IsPinLikedByUserAsync(Guid pinId, Guid userId);
+    Task LikePinAsync(Guid pinId, Guid userId);
+    Task UnlikePinAsync(Guid pinId, Guid userId);
     Task AddAsync(Pin pin);
     void Update(Pin pin);
     void Delete(Pin pin);

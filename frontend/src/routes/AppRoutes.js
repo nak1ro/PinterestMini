@@ -13,6 +13,7 @@ import ProfileDropdown from "../components/common/layout/ProfileDropdown";
 import TestBoardTag from "../components/pages/TestBoardTag";
 import TagPage from '../components/pages/Tag';
 import CreateBoard from "../components/pages/CreateBoard";
+import FujiPostPage from '../components/pages/FujiPostPage';
 
 const AppRoutes = () => {
     const { user } = useAppContext();
@@ -126,6 +127,22 @@ const AppRoutes = () => {
                         )
                     }
                 />
+
+                <Route
+                    path="/fuji-post"
+                    element={
+                        isAuthenticated ? (
+                            <AuthenticatedLayout>
+                                <FujiPostPage />
+                            </AuthenticatedLayout>
+                        ) : (
+                            <UnauthenticatedLayout>
+                                <FujiPostPage />
+                            </UnauthenticatedLayout>
+                        )
+                    }
+                />
+
 
                 {isAuthenticated && (
                     <>

@@ -182,6 +182,46 @@ public class PinService : IPinService
         return _mapper.Map<List<PinDto>>(savedPins);
     }
 
+    public async Task<int> GetLikeCountAsync(Guid pinId)
+    {
+        var pin = await _unitOfWork.Pins.GetByIdAsync(pinId);
+        if (pin == null)
+            throw new AppNotFoundException("Pin not found.");
+
+        return await _unitOfWork.Pins.GetLikeCountAsync(pinId);
+    }
+
+    public async Task<bool> IsPinLikedAsync(Guid pinId, ClaimsPrincipal user)
+    {
+        var userId = _userContext.GetUserId(user);
+        return await _unitOfWork.Pins.IsPinLikedByUserAsync(pinId, userId);
+    }
+
+    public async Task LikePinAsync(Guid pinId, ClaimsPrincipal user)
+    {
+        var userId = _userContext.GetUserId(user);
+
+        var pin = await _unitOfWork.Pins.GetByIdAsync(pinId);
+        if (pin == null)
+            throw new AppNotFoundException("Pin not found.");
+
+        var alreadyLiked = await _unitOfWork.Pins.IsPinLikedByUserAsync(pinId, userId);
+        if (alreadyLiked) return;
+
+        await _unitOfWork.Pins.LikePinAsync(pinId, userId);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task UnlikePinAsync(Guid pinId, ClaimsPrincipal user)
+    {
+        var userId = _userContext.GetUserId(user);
+        var alreadyLiked = await _unitOfWork.Pins.IsPinLikedByUserAsync(pinId, userId);
+        if (!alreadyLiked) return;
+
+        await _unitOfWork.Pins.UnlikePinAsync(pinId, userId);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     private async Task SetBoardsAsync(Pin pin, List<Guid>? boardIds, Guid userId)
     {
         pin.PinBoards = new List<PinBoard>(); // clear existing

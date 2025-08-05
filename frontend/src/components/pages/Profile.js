@@ -84,9 +84,9 @@ const Profile = () => {
                         </h1>
                     </div>
 
-                    <div className="d-flex justify-content-start border-bottom mb-4 px-3" style={{ borderColor: 'var(--pinterest-border)' }}>
+                    <div className="d-flex justify-content-start px-3" style={{ borderColor: 'var(--pinterest-border)' }}>
                         <button
-                            className={`btn fw-semibold px-4 py-3 border-0 ${activeTab === 'pins' ? 'border-bottom border-3' : ''}`}
+                            className={`btn fw-semibold px-4 py-3 p-50 border-0 ${activeTab === 'pins' ? 'border-bottom border-3' : ''}`}
                             onClick={() => setActiveTab('pins')}
                             style={{
                                 borderBottomColor: activeTab === 'pins' ? '#e60023' : 'transparent',

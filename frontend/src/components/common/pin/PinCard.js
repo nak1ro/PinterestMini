@@ -75,10 +75,13 @@ const PinCard = ({pin}) => {
                                     </motion.a>
 
                                     <motion.button
-                                        className={`btn btn-sm ${saved ? 'btn-light' : 'btn-danger'}`}
+                                        className={`btn btn-sm px-3 rounded-3 ${saved ? 'btn-light border' : 'btn-danger'}`}
                                         onClick={handleSaveClick}
-                                        whileHover={{scale: 1.05}}
-                                        whileTap={{scale: 0.95}}
+                                        style={{
+                                            fontSize: '1rem'
+                                        }}
+                                        whileHover={{scale: 1.02}}
+                                        whileTap={{scale: 0.98}}
                                     >
                                         {saved ? 'Saved' : 'Save'}
                                     </motion.button>

@@ -173,6 +173,39 @@ public class PinRepository : IPinRepository
             .ToListAsync();
     }
 
+    public async Task<int> GetLikeCountAsync(Guid pinId)
+    {
+        return await _context.Likes
+            .CountAsync(l => l.PinId == pinId);
+    }
+
+    public async Task<bool> IsPinLikedByUserAsync(Guid pinId, Guid userId)
+    {
+        return await _context.Likes
+            .AnyAsync(l => l.PinId == pinId && l.UserId == userId);
+    }
+
+    public async Task LikePinAsync(Guid pinId, Guid userId)
+    {
+        var like = new Like
+        {
+            PinId = pinId,
+            UserId = userId,
+            LikedAt = DateTime.UtcNow
+        };
+
+        await _context.Likes.AddAsync(like);
+    }
+
+    public async Task UnlikePinAsync(Guid pinId, Guid userId)
+    {
+        var like = await _context.Likes
+            .FirstOrDefaultAsync(l => l.PinId == pinId && l.UserId == userId);
+
+        if (like != null)
+            _context.Likes.Remove(like);
+    }
+
 
     public async Task AddAsync(Pin pin)
     {

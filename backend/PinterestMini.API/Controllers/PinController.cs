@@ -127,4 +127,36 @@ public class PinController : ControllerBase
         var pin = await _pinService.GetByIdAsync(id);
         return Ok(pin);
     }
+    
+    [HttpGet("{pinId:guid}/likes/count")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetLikeCount(Guid pinId)
+    {
+        var count = await _pinService.GetLikeCountAsync(pinId);
+        return Ok(new { count });
+    }
+
+    [HttpGet("{pinId:guid}/likes/is-liked")]
+    [Authorize]
+    public async Task<IActionResult> IsLiked(Guid pinId)
+    {
+        var isLiked = await _pinService.IsPinLikedAsync(pinId, User);
+        return Ok(new { isLiked });
+    }
+
+    [HttpPost("{pinId:guid}/likes")]
+    [Authorize]
+    public async Task<IActionResult> Like(Guid pinId)
+    {
+        await _pinService.LikePinAsync(pinId, User);
+        return Ok(new { message = "Pin liked successfully." });
+    }
+
+    [HttpDelete("{pinId:guid}/likes")]
+    [Authorize]
+    public async Task<IActionResult> Unlike(Guid pinId)
+    {
+        await _pinService.UnlikePinAsync(pinId, User);
+        return Ok(new { message = "Pin unliked successfully." });
+    }
 }
