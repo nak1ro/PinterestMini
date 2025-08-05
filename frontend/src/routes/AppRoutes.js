@@ -19,15 +19,18 @@ const AppRoutes = () => {
     const isAuthenticated = !!user;
 
     const AuthenticatedLayout = ({ children }) => (
-        <>
+        <div className="d-flex">
             <SideBar />
-            <div className="d-flex align-items-center px-3 py-2 ms-5">
-                <SearchBar />
-                <ProfileDropdown />
+            <div className="flex-grow-1" style={{ marginLeft: '90px' }}>
+                <div className="d-flex align-items-center justify-content-between px-3 py-2">
+                    <SearchBar />
+                    <ProfileDropdown />
+                </div>
+                <main>{children}</main>
             </div>
-            <main className="ms-5">{children}</main>
-        </>
+        </div>
     );
+
 
     const UnauthenticatedLayout = ({ children }) => (
         <>
