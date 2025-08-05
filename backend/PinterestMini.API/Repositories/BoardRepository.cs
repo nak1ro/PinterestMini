@@ -52,7 +52,12 @@ public class BoardRepository : IBoardRepository
             .Where(b => b.UserId == userId && !b.IsPrivate)
             .ToListAsync();
     }
-    
+
+    public async Task<int> GetPinsCountAsync(Guid boardId)
+    {
+        return await _context.PinBoards.CountAsync(pb => pb.BoardId == boardId);
+    }
+
     public async Task<List<Pin>> GetPinsForBoardByUserAsync(Guid boardId, Guid userId)
     {
         return await _context.PinBoards

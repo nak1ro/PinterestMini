@@ -54,4 +54,12 @@ public class BoardController : ControllerBase
         var boards = await _boardService.GetBoardsByUserAsync(userId);
         return Ok(boards);
     }
+    
+    [HttpGet("{boardId:guid}/pins-count")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetPinsCount(Guid boardId)
+    {
+        var count = await _boardService.GetPinsCountAsync(boardId);
+        return Ok(new { count });
+    }
 }

@@ -9,5 +9,6 @@ public interface IBoardService
     Task UpdateBoardAsync(Guid boardId, UpdateBoardDto dto, ClaimsPrincipal user);
     Task DeleteBoardAsync(Guid boardId, ClaimsPrincipal user);
     Task<IEnumerable<BoardDto>> GetMyBoardsAsync(ClaimsPrincipal user);
+    Task<int> GetPinsCountAsync(Guid boardId);
     Task<IEnumerable<BoardDto>> GetBoardsByUserAsync(Guid userId);
 }

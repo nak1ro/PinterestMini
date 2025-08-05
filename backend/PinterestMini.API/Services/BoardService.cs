@@ -84,6 +84,11 @@ public class BoardService : IBoardService
         return _mapper.Map<IEnumerable<BoardDto>>(boards);
     }
 
+    public async Task<int> GetPinsCountAsync(Guid boardId)
+    {
+        return await _unitOfWork.Boards.GetPinsCountAsync(boardId);
+    }
+
     public async Task<IEnumerable<BoardDto>> GetBoardsByUserAsync(Guid userId)
     {
         var boards = await _unitOfWork.Boards.GetPublicBoardsByUserIdAsync(userId);

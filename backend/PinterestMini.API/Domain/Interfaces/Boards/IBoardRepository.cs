@@ -10,5 +10,6 @@ public interface IBoardRepository
     void Delete(Board board);
     Task<List<Board>> GetByUserIdAsync(Guid userId);
     Task<List<Board>> GetPublicBoardsByUserIdAsync(Guid userId);
+    Task<int> GetPinsCountAsync(Guid boardId);
     Task<List<Pin>> GetPinsForBoardByUserAsync(Guid boardId, Guid userId);
 }
