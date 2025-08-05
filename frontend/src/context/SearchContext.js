@@ -42,11 +42,13 @@ export const SearchProvider = ({ children }) => {
 
     return (
         <SearchContext.Provider value={{
-            searchPins,
-            resetSearch,
             searchResults,
             searchQuery,
-            isSearching
+            isSearching,
+            setSearchResults,
+            setSearchQuery,
+            setIsSearching,
+            resetSearch,
         }}>
             {children}
         </SearchContext.Provider>

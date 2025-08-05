@@ -60,3 +60,22 @@ export const fetchPinsByQuery = async (query, page = 1, pageSize = 20) => {
         throw new Error(error.response?.data?.error || 'Ошибка при загрузке пинов');
     }
 };
+
+export const fetchSavedPinsByQuery = async (query, page = 1, pageSize = 20) => {
+    if (!query || typeof query !== 'string') throw new Error('Invalid query');
+
+    try {
+        return axiosClient.get('/pin/saved/search', {
+            skipAuth: true,
+            params: {
+                query,
+                page,
+                pageSize
+            }
+        });
+    } catch (error) {
+        console.error('API error:', error);
+        throw new Error(error.response?.data?.error || 'Ошибка при загрузке пинов');
+    }
+};
+

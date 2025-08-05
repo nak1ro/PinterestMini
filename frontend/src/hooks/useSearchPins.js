@@ -1,63 +1,37 @@
-import { useState } from 'react';
-import { fetchPinsByQuery } from '../services/pinService';
+// hooks/useSearchPins.js
+import { useSearchContext } from '../context/SearchContext';
+import { fetchPinsByQuery, fetchSavedPinsByQuery } from '../services/pinService';
 
-const useSearchPins = () => {
-    const [searchResults, setSearchResults] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [pagination, setPagination] = useState({
-        page: 1,
-        pageSize: 20,
-        totalPages: 0,
-        totalCount: 0,
-    });
+const useSearchPins = (mode = 'all') => {
+    const {
+        setSearchResults,
+        setSearchQuery,
+        setIsSearching,
+        resetSearch
+    } = useSearchContext();
 
     const searchPins = async (term, page = 1, pageSize = 20) => {
         const query = term.trim();
-        if (!query) {
-            setSearchResults([]);
-            setPagination(prev => ({ ...prev, page: 1, totalPages: 0, totalCount: 0 }));
-            return;
-        }
+        if (!query) return;
 
-        setLoading(true);
-        setError(null);
+        setIsSearching(true);
 
         try {
-            const result = await fetchPinsByQuery(query, page, pageSize);
-            setSearchResults(result.data);
-            setPagination({
-                page: result.page,
-                pageSize: result.pageSize,
-                totalPages: result.totalPages,
-                totalCount: result.totalCount,
-            });
+            const fetchFn = mode === 'saved' ? fetchSavedPinsByQuery : fetchPinsByQuery;
+            const result = await fetchFn(query, page, pageSize);
+            const pins = result.data?.items || result.data || [];
+
+            setSearchQuery(query);
+            setSearchResults(pins);
         } catch (err) {
-            setError(err.message);
+            console.error(`Search error (${mode}):`, err);
+            setSearchResults([]);
         } finally {
-            setLoading(false);
+            setIsSearching(false);
         }
     };
 
-    const resetSearch = () => {
-        setSearchResults([]);
-        setPagination({
-            page: 1,
-            pageSize: 20,
-            totalPages: 0,
-            totalCount: 0,
-        });
-        setError(null);
-    };
-
-    return {
-        searchResults,
-        searchPins,
-        resetSearch,
-        loading,
-        error,
-        pagination,
-    };
+    return { searchPins, resetSearch };
 };
 
 export default useSearchPins;
