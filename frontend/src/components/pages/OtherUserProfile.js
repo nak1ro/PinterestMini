@@ -8,6 +8,7 @@ import { useAppContext } from '../../context/AppContext';
 import useCreatedPins from '../../hooks/useCreatedPins';
 import useSavedPins from '../../hooks/useSavedPins';
 import useFollowCounts from '../../hooks/useFollowCounts';
+import useUserProfile from '../../hooks/useUserProfile';
 import PinGrid from '../common/pin/PinGrid';
 
 const OtherUserProfile = () => {
@@ -15,19 +16,23 @@ const OtherUserProfile = () => {
     const [activeTab, setActiveTab] = useState('created');
     const [isFollowing, setIsFollowing] = useState(false);
 
-    const { user, userId } = useAppContext();
-
+    const { userId } = useAppContext();
+    const { profile, loading: loadingProfile } = useUserProfile(username);
     const { createdPins, loading: loadingCreated } = useCreatedPins(username);
-    const { savedPins, loading: loadingSaved } = useSavedPins();
-    const { followersCount, followingCount } = useFollowCounts(userId);
+    const { savedPins, loading: loadingSaved } = useSavedPins(username);
+    const { followersCount, followingCount } = useFollowCounts(profile?.id);
 
     const handleFollowToggle = () => {
         setIsFollowing(!isFollowing);
-        // Here you would typically make an API call to follow/unfollow the user
+        // TODO: Trigger API call to follow/unfollow here
     };
 
     const pinsToShow = activeTab === 'created' ? createdPins : savedPins;
-    const isLoading = activeTab === 'created' ? loadingCreated : loadingSaved;
+    const isLoadingPins = activeTab === 'created' ? loadingCreated : loadingSaved;
+
+    const avatarSrc = profile?.profilePictureUrl || '/assets/avatar-default.svg';
+    const displayName = profile?.username || 'Unknown user';
+    const bio = profile?.bio || 'No bio provided.';
 
     return (
         <motion.div
@@ -44,8 +49,8 @@ const OtherUserProfile = () => {
             {/* User Info */}
             <div className="d-flex flex-column align-items-center text-center mb-5">
                 <img
-                    src={`/avatars/${username}.jpg`}
-                    alt={username}
+                    src={avatarSrc}
+                    alt={displayName}
                     className="rounded-circle mb-4 border border-3"
                     style={{
                         width: '140px',
@@ -53,20 +58,29 @@ const OtherUserProfile = () => {
                         objectFit: 'cover',
                         borderColor: 'var(--pinterest-border)'
                     }}
+                    onError={(e) => {
+                        const fallback = '/assets/avatar-default.svg';
+                        if (!e.target.src.endsWith(fallback)) {
+                            e.target.src = fallback;
+                        }
+                    }}
                 />
                 <h1 className="fw-bold fs-2 mb-2" style={{ color: 'var(--pinterest-text)' }}>
-                    {username}
+                    {displayName}
                 </h1>
-                <p className="text-center mx-auto mb-4" style={{
-                    maxWidth: '500px',
-                    color: 'var(--pinterest-text-muted)'
-                }}>
-                    Creative enthusiast sharing inspiring ideas and beautiful designs.
+                <p
+                    className="text-center mx-auto mb-4"
+                    style={{
+                        maxWidth: '500px',
+                        color: 'var(--pinterest-text-muted)'
+                    }}
+                >
+                    {bio}
                 </p>
 
                 {/* Follow Button */}
                 <Button
-                    variant={isFollowing ? "outline-secondary" : "danger"}
+                    variant={isFollowing ? 'outline-secondary' : 'danger'}
                     className="rounded-pill px-4 py-2 fw-semibold mb-4"
                     onClick={handleFollowToggle}
                     style={{
@@ -75,22 +89,6 @@ const OtherUserProfile = () => {
                         color: isFollowing ? 'var(--pinterest-text)' : 'white',
                         transition: 'all 0.2s ease',
                         minWidth: '120px'
-                    }}
-                    onMouseEnter={(e) => {
-                        if (!isFollowing) {
-                            e.target.style.transform = 'translateY(-2px) scale(1.02)';
-                            e.target.style.boxShadow = '0 8px 25px rgba(230, 0, 35, 0.3)';
-                        } else {
-                            e.target.style.backgroundColor = 'var(--pinterest-hover)';
-                        }
-                    }}
-                    onMouseLeave={(e) => {
-                        if (!isFollowing) {
-                            e.target.style.transform = 'translateY(0) scale(1)';
-                            e.target.style.boxShadow = 'none';
-                        } else {
-                            e.target.style.backgroundColor = 'transparent';
-                        }
                     }}
                 >
                     {isFollowing ? (
@@ -109,28 +107,16 @@ const OtherUserProfile = () => {
                 {/* Stats */}
                 <div className="d-flex gap-5">
                     <div className="text-center">
-                        <div className="fw-bold fs-4" style={{ color: 'var(--pinterest-text)' }}>
-                            {followersCount ?? '-'}
-                        </div>
-                        <div className="small" style={{ color: 'var(--pinterest-text-muted)' }}>
-                            followers
-                        </div>
+                        <div className="fw-bold fs-4">{followersCount ?? '-'}</div>
+                        <div className="small text-muted">followers</div>
                     </div>
                     <div className="text-center">
-                        <div className="fw-bold fs-4" style={{ color: 'var(--pinterest-text)' }}>
-                            {followingCount ?? '-'}
-                        </div>
-                        <div className="small" style={{ color: 'var(--pinterest-text-muted)' }}>
-                            following
-                        </div>
+                        <div className="fw-bold fs-4">{followingCount ?? '-'}</div>
+                        <div className="small text-muted">following</div>
                     </div>
                     <div className="text-center">
-                        <div className="fw-bold fs-4" style={{ color: 'var(--pinterest-text)' }}>
-                            {createdPins?.length ?? '-'}
-                        </div>
-                        <div className="small" style={{ color: 'var(--pinterest-text-muted)' }}>
-                            pins created
-                        </div>
+                        <div className="fw-bold fs-4">{createdPins?.length ?? '-'}</div>
+                        <div className="small text-muted">pins created</div>
                     </div>
                 </div>
             </div>
@@ -138,9 +124,7 @@ const OtherUserProfile = () => {
             {/* Tabs */}
             <div className="d-flex justify-content-center border-bottom mb-5" style={{ borderColor: 'var(--pinterest-border)' }}>
                 <button
-                    className={`btn fw-semibold px-4 py-3 border-0 ${
-                        activeTab === 'created' ? 'border-bottom border-3' : ''
-                    }`}
+                    className={`btn fw-semibold px-4 py-3 border-0 ${activeTab === 'created' ? 'border-bottom border-3' : ''}`}
                     onClick={() => setActiveTab('created')}
                     style={{
                         borderBottomColor: activeTab === 'created' ? '#e60023' : 'transparent',
@@ -149,23 +133,11 @@ const OtherUserProfile = () => {
                         fontSize: '16px',
                         transition: 'all 0.2s ease'
                     }}
-                    onMouseEnter={(e) => {
-                        if (activeTab !== 'created') {
-                            e.target.style.color = 'var(--pinterest-text)';
-                        }
-                    }}
-                    onMouseLeave={(e) => {
-                        if (activeTab !== 'created') {
-                            e.target.style.color = 'var(--pinterest-text-muted)';
-                        }
-                    }}
                 >
                     Created Pins
                 </button>
                 <button
-                    className={`btn fw-semibold px-4 py-3 border-0 ${
-                        activeTab === 'saved' ? 'border-bottom border-3' : ''
-                    }`}
+                    className={`btn fw-semibold px-4 py-3 border-0 ${activeTab === 'saved' ? 'border-bottom border-3' : ''}`}
                     onClick={() => setActiveTab('saved')}
                     style={{
                         borderBottomColor: activeTab === 'saved' ? '#e60023' : 'transparent',
@@ -174,61 +146,46 @@ const OtherUserProfile = () => {
                         fontSize: '16px',
                         transition: 'all 0.2s ease'
                     }}
-                    onMouseEnter={(e) => {
-                        if (activeTab !== 'saved') {
-                            e.target.style.color = 'var(--pinterest-text)';
-                        }
-                    }}
-                    onMouseLeave={(e) => {
-                        if (activeTab !== 'saved') {
-                            e.target.style.color = 'var(--pinterest-text-muted)';
-                        }
-                    }}
                 >
                     Saved Pins
                 </button>
             </div>
 
-            {/* Tab Content */}
+            {/* Pins */}
             <div className="px-3">
-                {isLoading ? (
+                {isLoadingPins ? (
                     <div className="text-center py-5">
                         <div className="spinner-border text-danger" role="status">
                             <span className="visually-hidden">Loading...</span>
                         </div>
-                        <p className="mt-3" style={{ color: 'var(--pinterest-text-muted)' }}>
-                            Loading {activeTab} pins...
-                        </p>
+                        <p className="mt-3 text-muted">Loading {activeTab} pins...</p>
                     </div>
                 ) : pinsToShow && pinsToShow.length > 0 ? (
                     <PinGrid pins={pinsToShow} />
                 ) : (
                     <div className="text-center py-5">
-                        <div className="mb-4">
-                            <svg
-                                width="80"
-                                height="80"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="1"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                style={{ color: 'var(--pinterest-text-muted)' }}
-                            >
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21,15 16,10 5,21"></polyline>
-                            </svg>
-                        </div>
-                        <h4 className="fw-normal mb-2" style={{ color: 'var(--pinterest-text-muted)' }}>
+                        <svg
+                            width="80"
+                            height="80"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{ color: 'var(--pinterest-text-muted)' }}
+                        >
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21,15 16,10 5,21"></polyline>
+                        </svg>
+                        <h4 className="fw-normal mt-3 text-muted">
                             No {activeTab} pins yet
                         </h4>
-                        <p className="small" style={{ color: 'var(--pinterest-text-muted)' }}>
+                        <p className="small text-muted">
                             {activeTab === 'created'
-                                ? 'This user hasn\'t created any pins yet'
-                                : 'This user hasn\'t saved any pins yet'
-                            }
+                                ? "This user hasn't created any pins yet"
+                                : "This user hasn't saved any pins yet"}
                         </p>
                     </div>
                 )}
@@ -238,4 +195,3 @@ const OtherUserProfile = () => {
 };
 
 export default OtherUserProfile;
-
