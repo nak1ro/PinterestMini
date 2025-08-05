@@ -7,6 +7,7 @@ public interface IPinRepository
     Task<Pin?> GetByIdAsync(Guid id);
     Task<Pin?> GetByIdWithTagsAndBoardsAsync(Guid id);
     Task<List<Pin>> GetPinsByOwnerAsync(Guid ownerId);
+    Task<List<Pin>> SearchSavedPinsAsync(Guid userId, string query, int page, int pageSize);
     Task<IEnumerable<Pin>> GetRecentPublicPinsAsync(int page, int pageSize);
     Task<List<Pin>> GetPinsCreatedByFollowedUsersAsync(Guid userId, int page, int pageSize);
     Task<List<Pin>> SearchPublicPinsAsync(string query, int page, int pageSize);

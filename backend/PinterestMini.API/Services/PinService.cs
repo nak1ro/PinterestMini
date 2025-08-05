@@ -98,6 +98,22 @@ public class PinService : IPinService
         };
     }
 
+    public async Task<PaginatedResult<PinDto>> SearchSavedPinsAsync(string query, ClaimsPrincipal user, int page, int pageSize)
+    {
+        var userId = _userContext.GetUserId(user);
+        var pins = await _unitOfWork.Pins.SearchSavedPinsAsync(userId, query, page, pageSize + 1);
+        var mapped = _mapper.Map<List<PinDto>>(pins.Take(pageSize));
+
+        return new PaginatedResult<PinDto>
+        {
+            Items = mapped,
+            Page = page,
+            PageSize = pageSize,
+            HasMore = pins.Count > pageSize
+        };
+    }
+
+
     public async Task UpdatePinAsync(Guid pinId, UpdatePinDto dto, ClaimsPrincipal user)
     {
         var pin = await _unitOfWork.Pins.GetByIdWithTagsAndBoardsAsync(pinId);

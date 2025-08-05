@@ -39,6 +39,32 @@ public class PinRepository : IPinRepository
             .ToListAsync();
     }
 
+    public async Task<List<Pin>> SearchSavedPinsAsync(Guid userId, string query, int page, int pageSize)
+    {
+        query = query.Trim().ToLower();
+        var skip = (page - 1) * pageSize;
+
+        var savedIds = await _context.SavedPins
+            .Where(sp => sp.UserId == userId)
+            .Select(sp => sp.PinId)
+            .ToListAsync();
+
+        return await _context.Pins
+            .Where(p =>
+                savedIds.Contains(p.Id) &&
+                (EF.Functions.ILike(p.Title, $"%{query}%") ||
+                 EF.Functions.ILike(p.Description, $"%{query}%") ||
+                 p.PinTags.Any(pt => EF.Functions.ILike(pt.Tag.Name, $"%{query}%"))))
+            .Include(p => p.Owner)
+            .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
+            .Include(p => p.PinBoards).ThenInclude(pb => pb.Board)
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+
     public async Task<IEnumerable<Pin>> GetRecentPublicPinsAsync(int page, int pageSize)
     {
         return await _context.Pins

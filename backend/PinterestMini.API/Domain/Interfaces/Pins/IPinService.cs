@@ -12,6 +12,7 @@ public interface IPinService
     Task<List<PinDto>> GetMyPinsAsync(ClaimsPrincipal user);
     Task<PaginatedResult<PinDto>> GetFollowedCreatorsFeedAsync(ClaimsPrincipal user, int page, int pageSize);
     Task<PaginatedResult<PinDto>> SearchPinsAsync(string query, int page, int pageSize);
+    Task<PaginatedResult<PinDto>> SearchSavedPinsAsync(string query, ClaimsPrincipal user, int page, int pageSize);
     Task UpdatePinAsync(Guid pinId, UpdatePinDto dto, ClaimsPrincipal user);
     Task SavePinAsync(Guid pinId, ClaimsPrincipal user);
     Task UnsavePinAsync(Guid pinId, ClaimsPrincipal user);
