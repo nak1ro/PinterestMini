@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import {Link} from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from '../components/common/layout/Header';
 import SideBar from '../components/common/layout/SideBar';
 import Home from '../components/pages/Home';
@@ -9,62 +8,131 @@ import Profile from '../components/pages/Profile';
 import PinDetail from '../components/pages/PinDetail';
 import SearchBar from "../components/common/layout/SearchBar";
 import CreatePin from '../components/pages/CreatePin';
-import {useAppContext} from '../context/AppContext.js';
-import ProfileImage from '../components/common/layout/ProfileDropdown';
+import { useAppContext } from '../context/AppContext.js';
 import ProfileDropdown from "../components/common/layout/ProfileDropdown";
 import TestBoardTag from "../components/pages/TestBoardTag";
 import TagPage from '../components/pages/Tag';
 import CreateBoard from "../components/pages/CreateBoard";
-import CreateBoardPage from "../components/pages/CreateBoard";
-
 
 const AppRoutes = () => {
-    const [isLoggedIn, setLogin] = useState(0);
-    const {user, login, logout} = useAppContext();
+    const { user } = useAppContext();
+    const isAuthenticated = !!user;
 
-    const handleLogout = () => {
-        logout();
-    }
+    const AuthenticatedLayout = ({ children }) => (
+        <>
+            <SideBar />
+            <div className="d-flex align-items-center px-3 py-2 ms-5">
+                <SearchBar />
+                <ProfileDropdown />
+            </div>
+            <main className="ms-5">{children}</main>
+        </>
+    );
+
+    const UnauthenticatedLayout = ({ children }) => (
+        <>
+            <Header />
+            <main>{children}</main>
+        </>
+    );
 
     return (
-        <>
-            {user == null ? (
-                <Router>
-                    <div>
-                        <Header/>
-                        <Routes>
-                            <Route path="/" element={<Home/>}/>
-                            <Route path="/explore" element={<Explore/>}/>
-                            <Route path="/profile" element={<Profile/>}/>
-                            <Route path="/profile/:username" element={<Profile/>}/>
-                            <Route path="/pin/:id" element={<PinDetail/>}/>
-                            <Route path="/tag/:tagName" element={<TagPage/>}/>
-                        </Routes>
-                    </div>
-                </Router>
-            ) : (
-                <>
-                    <Router>
-                        <SideBar/>
-                        <div className="d-flex align-items-center px-3 py-2 ms-5">
-                            <SearchBar/>
-                            <ProfileDropdown/>
-                        </div>
-                        <Routes>
-                            <Route path="/" element={<Home/>}/>
-                            <Route path="/explore" element={<Explore/>}/>
-                            <Route path="/profile" element={<Profile/>}/>
-                            <Route path="/profile/:username" element={<SideBar> <Profile/> </SideBar>}/>
-                            <Route path="/pin/:id" element={<PinDetail/>}/>
-                            <Route path="create-pin" element={<CreatePin/>}/>
-                            <Route path="/create-board" element={<CreateBoard />} />
-                            <Route path="test" element={<TestBoardTag/>}/>
-                            <Route path="/tag/:tagName" element={<TagPage/>}/>
-                        </Routes>
-                    </Router>
-                </>
-            )}
-        </>
+        <Router>
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        isAuthenticated ? (
+                            <AuthenticatedLayout>
+                                <Home />
+                            </AuthenticatedLayout>
+                        ) : (
+                            <UnauthenticatedLayout>
+                                <Home />
+                            </UnauthenticatedLayout>
+                        )
+                    }
+                />
+                <Route
+                    path="/explore"
+                    element={
+                        isAuthenticated ? (
+                            <AuthenticatedLayout>
+                                <Explore />
+                            </AuthenticatedLayout>
+                        ) : (
+                            <UnauthenticatedLayout>
+                                <Explore />
+                            </UnauthenticatedLayout>
+                        )
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        isAuthenticated ? (
+                            <AuthenticatedLayout>
+                                <Profile />
+                            </AuthenticatedLayout>
+                        ) : (
+                            <UnauthenticatedLayout>
+                                <Profile />
+                            </UnauthenticatedLayout>
+                        )
+                    }
+                />
+                <Route
+                    path="/profile/:username"
+                    element={
+                        isAuthenticated ? (
+                            <AuthenticatedLayout>
+                                <Profile />
+                            </AuthenticatedLayout>
+                        ) : (
+                            <UnauthenticatedLayout>
+                                <Profile />
+                            </UnauthenticatedLayout>
+                        )
+                    }
+                />
+                <Route
+                    path="/pin/:id"
+                    element={
+                        isAuthenticated ? (
+                            <AuthenticatedLayout>
+                                <PinDetail />
+                            </AuthenticatedLayout>
+                        ) : (
+                            <UnauthenticatedLayout>
+                                <PinDetail />
+                            </UnauthenticatedLayout>
+                        )
+                    }
+                />
+                <Route
+                    path="/tag/:tagName"
+                    element={
+                        isAuthenticated ? (
+                            <AuthenticatedLayout>
+                                <TagPage />
+                            </AuthenticatedLayout>
+                        ) : (
+                            <UnauthenticatedLayout>
+                                <TagPage />
+                            </UnauthenticatedLayout>
+                        )
+                    }
+                />
+
+                {isAuthenticated && (
+                    <>
+                        <Route path="/create-pin" element={<AuthenticatedLayout><CreatePin /></AuthenticatedLayout>} />
+                        <Route path="/create-board" element={<AuthenticatedLayout><CreateBoard /></AuthenticatedLayout>} />
+                        <Route path="/test" element={<AuthenticatedLayout><TestBoardTag /></AuthenticatedLayout>} />
+                    </>
+                )}
+            </Routes>
+        </Router>
     );
 };
 

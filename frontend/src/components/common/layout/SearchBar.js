@@ -1,9 +1,10 @@
+// components/common/search/SearchBar.jsx
 import React, { useState } from 'react';
-import { useAppContext } from '../../../context/AppContext';
+import { useSearchContext } from '../../../context/SearchContext';
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { searchPins } = useAppContext();
+  const { searchPins } = useSearchContext();
 
   const handleSubmit = (e) => {
     e.preventDefault();
