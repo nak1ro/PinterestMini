@@ -11,3 +11,7 @@ export const createBoard = async (formData) => {
 export const getMyBoards = async () => {
     return axiosClient.get('/board/me');
 };
+
+export const getPinsCountForBoard = async (boardId) => {
+    return axiosClient.get(`/api/board/${boardId}/pins-count`);
+};

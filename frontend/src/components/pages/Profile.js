@@ -86,6 +86,8 @@ const Profile = () => {
                     <PinsTab
                         pins={pinsToShow}
                         loading={isLoadingPins}
+                        onlyMyPins={onlyMyPins}
+                        setOnlyMyPins={setOnlyMyPins}
                     />
                 </>
             )}

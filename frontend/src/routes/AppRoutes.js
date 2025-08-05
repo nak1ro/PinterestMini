@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Header from '../components/common/layout/Header';
 import SideBar from '../components/common/layout/SideBar';
 import Home from '../components/pages/Home';
@@ -14,12 +14,13 @@ import ProfileImage from '../components/common/layout/ProfileDropdown';
 import ProfileDropdown from "../components/common/layout/ProfileDropdown";
 import TestBoardTag from "../components/pages/TestBoardTag";
 import TagPage from '../components/pages/Tag';
-
+import CreateBoard from "../components/pages/CreateBoard";
+import CreateBoardPage from "../components/pages/CreateBoard";
 
 
 const AppRoutes = () => {
-    const [ isLoggedIn, setLogin ] = useState(0);
-    const { user, login, logout } = useAppContext();
+    const [isLoggedIn, setLogin] = useState(0);
+    const {user, login, logout} = useAppContext();
 
     const handleLogout = () => {
         logout();
@@ -27,43 +28,44 @@ const AppRoutes = () => {
 
     return (
         <>
-        {user ==null ? (
-            <Router>
-            <div>
-            <Header />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/explore" element={<Explore />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/profile/:username" element={<Profile />} />
-                <Route path="/pin/:id" element={<PinDetail />} />
-                <Route path="/tag/:tagName" element={<TagPage />} />
-            </Routes>
-            </div>
-            </Router>
-        ) : (
-            <>
+            {user == null ? (
                 <Router>
-                    <SideBar />
-                    <div className="d-flex align-items-center px-3 py-2 ms-5">
-                        <SearchBar />
-                        <ProfileDropdown />
+                    <div>
+                        <Header/>
+                        <Routes>
+                            <Route path="/" element={<Home/>}/>
+                            <Route path="/explore" element={<Explore/>}/>
+                            <Route path="/profile" element={<Profile/>}/>
+                            <Route path="/profile/:username" element={<Profile/>}/>
+                            <Route path="/pin/:id" element={<PinDetail/>}/>
+                            <Route path="/tag/:tagName" element={<TagPage/>}/>
+                        </Routes>
                     </div>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/explore" element={<Explore />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/profile/:username" element={<Profile />} />
-                        <Route path="/pin/:id" element={<PinDetail />} />
-                        <Route path="create-pin" element={<CreatePin />} />
-                        <Route path="test" element={<TestBoardTag />} />
-                        <Route path="/tag/:tagName" element={<TagPage />} />
-                    </Routes>
                 </Router>
-            </>
-        )}
+            ) : (
+                <>
+                    <Router>
+                        <SideBar/>
+                        <div className="d-flex align-items-center px-3 py-2 ms-5">
+                            <SearchBar/>
+                            <ProfileDropdown/>
+                        </div>
+                        <Routes>
+                            <Route path="/" element={<Home/>}/>
+                            <Route path="/explore" element={<Explore/>}/>
+                            <Route path="/profile" element={<Profile/>}/>
+                            <Route path="/profile/:username" element={<SideBar> <Profile/> </SideBar>}/>
+                            <Route path="/pin/:id" element={<PinDetail/>}/>
+                            <Route path="create-pin" element={<CreatePin/>}/>
+                            <Route path="/create-board" element={<CreateBoard />} />
+                            <Route path="test" element={<TestBoardTag/>}/>
+                            <Route path="/tag/:tagName" element={<TagPage/>}/>
+                        </Routes>
+                    </Router>
+                </>
+            )}
         </>
-  );
+    );
 };
 
 export default AppRoutes;
