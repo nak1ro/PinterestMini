@@ -9,6 +9,7 @@ export const SearchProvider = ({ children }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [hasSearched, setHasSearched] = useState(false);
 
     const searchPins = async (term) => {
         const query = term.trim();
@@ -38,6 +39,7 @@ export const SearchProvider = ({ children }) => {
         setSearchQuery('');
         setSearchResults([]);
         setIsSearching(false);
+        setHasSearched(false);
     };
 
     return (
@@ -45,9 +47,11 @@ export const SearchProvider = ({ children }) => {
             searchResults,
             searchQuery,
             isSearching,
+            hasSearched,
             setSearchResults,
             setSearchQuery,
             setIsSearching,
+            setHasSearched,
             resetSearch,
         }}>
             {children}

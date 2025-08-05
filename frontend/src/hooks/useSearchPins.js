@@ -1,4 +1,3 @@
-// hooks/useSearchPins.js
 import { useSearchContext } from '../context/SearchContext';
 import { fetchPinsByQuery, fetchSavedPinsByQuery } from '../services/pinService';
 
@@ -7,7 +6,8 @@ const useSearchPins = (mode = 'all') => {
         setSearchResults,
         setSearchQuery,
         setIsSearching,
-        resetSearch
+        setHasSearched,
+        resetSearch,
     } = useSearchContext();
 
     const searchPins = async (term, page = 1, pageSize = 20) => {
@@ -15,6 +15,7 @@ const useSearchPins = (mode = 'all') => {
         if (!query) return;
 
         setIsSearching(true);
+        setHasSearched(true);
 
         try {
             const fetchFn = mode === 'saved' ? fetchSavedPinsByQuery : fetchPinsByQuery;
