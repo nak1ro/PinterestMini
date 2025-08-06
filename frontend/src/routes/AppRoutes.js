@@ -22,7 +22,7 @@ const AppRoutes = () => {
     const AuthenticatedLayout = ({ children }) => (
         <div className="d-flex">
             <SideBar />
-            <div className="flex-grow-1" style={{ marginLeft: '90px' }}>
+            <div className="flex-grow-1" style={{ marginLeft: '80px' }}>
                 <div className="d-flex align-items-center justify-content-between px-3 py-2">
                     <SearchBar />
                     <ProfileDropdown />

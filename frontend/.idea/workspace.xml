@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinPreviewModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/pin/PinPreviewModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/pinService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/pinService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/layout/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/layout/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/layout/SearchBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/layout/SearchBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/layout/SidebarLayout.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/layout/SidebarLayout.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/AppRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/AppRoutes.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

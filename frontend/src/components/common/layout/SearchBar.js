@@ -19,7 +19,7 @@ const SearchBar = () => {
   };
 
   return (
-      <form onSubmit={handleSubmit} className="d-flex w-100 justify-content-center">
+      <form onSubmit={handleSubmit} className="flex-grow-1 mx-3">
         <div className="d-flex rounded-3 overflow-hidden shadow-sm" style={{ backgroundColor: '#f1f1f1', height: '48px', width: '100%' }}>
           <input
               type="text"
