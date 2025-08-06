@@ -85,6 +85,12 @@ const PinPreviewModal = ({pin, onClose}) => {
         a.click();
     };
 
+    const handleSaveClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        saved ? unsavePin(pin.id) : savePin(pin.id);
+    };
+
     const scrollToComments = () => {
         commentRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
     };
@@ -159,12 +165,22 @@ const PinPreviewModal = ({pin, onClose}) => {
                     </div>
 
 
-                    <button
-                        className={`btn btn-sm px-3 rounded-3 ${saved ? 'btn-light border' : 'btn-danger'}`}
-                        onClick={() => (saved ? unsavePin(pin.id) : savePin(pin.id))}
+                    <motion.button
+                        className={`btn btn-sm px-3 rounded-3 d-flex align-items-center justify-content-center`}
+                        onClick={handleSaveClick}
+                        style={{
+                            fontSize: '1rem',
+                            border: saved? 'solid 1px' :'none',
+                            height: '36px',
+                            minWidth: '90px',
+                            backgroundColor: saved ? '#ffffff' : 'rgb(217, 3, 33)',
+                            color: saved ? '#000' : '#fff',
+                        }}
+                        whileHover={{scale: 1.04}}
+                        whileTap={{scale: 0.97}}
                     >
                         {saved ? 'Saved' : 'Save'}
-                    </button>
+                    </motion.button>
                 </div>
 
                 {/* IMAGE */}

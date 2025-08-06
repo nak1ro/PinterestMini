@@ -9,3 +9,18 @@ export const getFollowingCount = async (userId) => {
     const res = await axiosClient.get(`/follow/${userId}/following-count`);
     return res.data; // { count: number }
 };
+
+export const followUser = async (userId) => {
+    const res = await axiosClient.post(`/follow/${userId}`);
+    return res.data;
+};
+
+export const unfollowUser = async (userId) => {
+    const res = await axiosClient.delete(`/follow/${userId}`);
+    return res.data;
+};
+
+export const isFollowingUser = async (userId) => {
+    const res = await axiosClient.delete(`/follow/${userId}/check`);
+    return res.data;
+};

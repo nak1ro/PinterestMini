@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { ArrowLeft, Eye } from 'react-bootstrap-icons';
 
@@ -15,22 +15,22 @@ import OtherUserProfile from './OtherUserProfile';
 
 const Profile = () => {
     const { username } = useParams();
-    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('pins');
     const [onlyMyPins, setOnlyMyPins] = useState(false);
     const [viewAsOther, setViewAsOther] = useState(false);
 
     const { user, userId } = useAppContext();
-
     const { createdPins, loading: loadingCreated } = useCreatedPins(username);
     const { savedPins, loading: loadingSaved } = useSavedPins();
-    const { followersCount, followingCount } = useFollowCounts(userId);
+    const { followersCount } = useFollowCounts(userId);
 
     const isLoadingPins =
         (onlyMyPins && loadingCreated) ||
         (!onlyMyPins && (loadingCreated || loadingSaved));
 
-    const pinsToShow = onlyMyPins ? createdPins : [...(createdPins || []), ...(savedPins || [])];
+    const pinsToShow = onlyMyPins
+        ? createdPins
+        : [...(createdPins || []), ...(savedPins || [])];
 
     if (viewAsOther) {
         return (
@@ -43,7 +43,7 @@ const Profile = () => {
                         style={{
                             backgroundColor: 'rgba(255,255,255,0.9)',
                             backdropFilter: 'blur(10px)',
-                            border: '1px solid var(--pinterest-border)',
+                            border: '1px solid #ccc',
                             transition: 'all 0.2s ease'
                         }}
                         onMouseEnter={(e) => {
@@ -71,29 +71,27 @@ const Profile = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
             style={{
-                backgroundColor: 'var(--pinterest-bg)',
-                color: 'var(--pinterest-text)',
+                color: '#111',
                 minHeight: '100vh'
             }}
         >
             <div className="row">
                 <div className="col-lg-9">
                     <div className="d-flex justify-content-between align-items-center mb-4 px-3">
-                        <h1 className="fw-bold fs-2 mb-0" style={{ color: 'var(--pinterest-text)' }}>
+                        <h1 className="fw-bold fs-2 mb-0" style={{ color: '#111' }}>
                             Your saved ideas
                         </h1>
                     </div>
 
-                    <div className="d-flex justify-content-start px-3" style={{ borderColor: 'var(--pinterest-border)' }}>
+                    <div className="d-flex justify-content-start px-3" style={{ borderColor: '#ddd' }}>
                         <button
-                            className={`btn fw-semibold px-4 py-3 p-50 border-0 ${activeTab === 'pins' ? 'border-bottom border-3' : ''}`}
+                            className={`btn fw-semibold px-4 py-3 border-0 ${activeTab === 'pins' ? 'border-bottom border-3' : ''}`}
                             onClick={() => setActiveTab('pins')}
                             style={{
                                 borderBottomColor: activeTab === 'pins' ? '#e60023' : 'transparent',
-                                color: activeTab === 'pins' ? 'var(--pinterest-text)' : 'var(--pinterest-text-muted)',
+                                color: activeTab === 'pins' ? '#111' : '#777',
                                 backgroundColor: 'transparent',
                                 fontSize: '16px',
-                                transition: 'all 0.2s ease'
                             }}
                         >
                             Pins
@@ -103,10 +101,9 @@ const Profile = () => {
                             onClick={() => setActiveTab('boards')}
                             style={{
                                 borderBottomColor: activeTab === 'boards' ? '#e60023' : 'transparent',
-                                color: activeTab === 'boards' ? 'var(--pinterest-text)' : 'var(--pinterest-text-muted)',
+                                color: activeTab === 'boards' ? '#111' : '#777',
                                 backgroundColor: 'transparent',
                                 fontSize: '16px',
-                                transition: 'all 0.2s ease'
                             }}
                         >
                             Boards
@@ -130,8 +127,8 @@ const Profile = () => {
                         className="position-sticky p-4 rounded-4 shadow-sm"
                         style={{
                             top: '100px',
-                            backgroundColor: 'var(--pinterest-card-bg)',
-                            border: '1px solid var(--pinterest-border)'
+                            backgroundColor: '#fff',
+                            border: '1px solid #ddd'
                         }}
                     >
                         <div className="text-center mb-4">
@@ -143,17 +140,17 @@ const Profile = () => {
                                     width: '80px',
                                     height: '80px',
                                     objectFit: 'cover',
-                                    borderColor: 'var(--pinterest-border)'
+                                    borderColor: '#ccc'
                                 }}
                                 onError={(e) => {
                                     const fallback = '/assets/avatar-default.svg';
                                     if (!e.target.src.endsWith(fallback)) e.target.src = fallback;
                                 }}
                             />
-                            <h5 className="fw-bold mb-1" style={{ color: 'var(--pinterest-text)' }}>
+                            <h5 className="fw-bold mb-1" style={{ color: '#111' }}>
                                 {user?.username || 'Unknown'}
                             </h5>
-                            <p className="small mb-3" style={{ color: 'var(--pinterest-text-muted)' }}>
+                            <p className="small mb-3" style={{ color: '#777' }}>
                                 {followersCount ?? 0} followers
                             </p>
 
@@ -162,19 +159,19 @@ const Profile = () => {
                                 className="rounded-pill px-3 py-2 w-100 fw-medium"
                                 onClick={() => setViewAsOther(true)}
                                 style={{
-                                    border: '2px solid var(--pinterest-border)',
-                                    color: 'var(--pinterest-text)',
+                                    border: '2px solid #ddd',
+                                    color: '#111',
                                     backgroundColor: 'transparent',
                                     transition: 'all 0.2s ease'
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.target.style.backgroundColor = 'var(--pinterest-hover)';
+                                    e.target.style.backgroundColor = '#f5f5f5';
                                     e.target.style.borderColor = '#e60023';
                                     e.target.style.transform = 'translateY(-1px)';
                                 }}
                                 onMouseLeave={(e) => {
                                     e.target.style.backgroundColor = 'transparent';
-                                    e.target.style.borderColor = 'var(--pinterest-border)';
+                                    e.target.style.borderColor = '#ddd';
                                     e.target.style.transform = 'translateY(0)';
                                 }}
                             >
@@ -183,21 +180,21 @@ const Profile = () => {
                             </Button>
                         </div>
 
-                        <div className="border-top pt-3" style={{ borderColor: 'var(--pinterest-border)' }}>
+                        <div className="border-top pt-3" style={{ borderColor: '#ddd' }}>
                             <div className="row text-center">
                                 <div className="col-6">
-                                    <div className="fw-bold" style={{ color: 'var(--pinterest-text)' }}>
+                                    <div className="fw-bold" style={{ color: '#111' }}>
                                         {createdPins?.length ?? 0}
                                     </div>
-                                    <div className="small" style={{ color: 'var(--pinterest-text-muted)' }}>
+                                    <div className="small" style={{ color: '#777' }}>
                                         Created
                                     </div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="fw-bold" style={{ color: 'var(--pinterest-text)' }}>
+                                    <div className="fw-bold" style={{ color: '#111' }}>
                                         {savedPins?.length ?? 0}
                                     </div>
-                                    <div className="small" style={{ color: 'var(--pinterest-text-muted)' }}>
+                                    <div className="small" style={{ color: '#777' }}>
                                         Saved
                                     </div>
                                 </div>

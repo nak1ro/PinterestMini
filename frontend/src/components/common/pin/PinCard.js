@@ -3,7 +3,21 @@ import {motion, AnimatePresence} from 'framer-motion';
 import {Link} from 'react-router-dom';
 import useSavedPins from '../../../hooks/useSavedPins';
 import PinPreviewModal from './PinPreviewModal';
-import {Download} from 'react-bootstrap-icons';
+
+const blurBoxStyle = {
+    height: '36px',
+    minWidth: '90px',
+    padding: '0.25rem 0.5rem',
+    borderRadius: '0.5rem',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    border: '1px solid rgba(255, 255, 255, 0.5)',
+    backdropFilter: 'blur(4px)',
+    WebkitBackdropFilter: 'blur(4px)',
+    transition: 'background-color 0.2s ease',
+    display: 'flex',
+    alignItems: 'center',
+};
+
 
 const PinCard = ({pin}) => {
     const {savePin, unsavePin, isPinSaved} = useSavedPins();
@@ -22,108 +36,98 @@ const PinCard = ({pin}) => {
         setShowPreview(true);
     };
 
-    return (
-        <>
-            <motion.div
-                className="card mb-3 shadow-sm border-0 overflow-hidden position-relative"
-                whileHover={{y: -5}}
-                initial={{opacity: 0}}
-                animate={{opacity: 1}}
-                transition={{duration: 0.3}}
-                onHoverStart={() => setIsHovered(true)}
-                onHoverEnd={() => setIsHovered(false)}
-                onClick={handlePinClick}
-                style={{cursor: 'pointer'}}
-            >
-                <div className="position-relative w-100">
-                    <img
-                        src={pin.imageUrl}
-                        alt={pin.title}
-                        className="img-fluid w-100"
-                        style={{display: 'block'}}
-                    />
+    return (<>
+        <motion.div
+            className="card mb-3 shadow-sm border-0 overflow-hidden position-relative"
+            whileHover={{y: -5}}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.3}}
+            onHoverStart={() => setIsHovered(true)}
+            onHoverEnd={() => setIsHovered(false)}
+            onClick={handlePinClick}
+            style={{cursor: 'pointer'}}
+        >
+            <div className="position-relative w-100">
+                <img
+                    src={pin.imageUrl}
+                    alt={pin.title}
+                    className="img-fluid w-100"
+                    style={{display: 'block'}}
+                />
 
-                    <AnimatePresence>
-                        {isHovered && (
-                            <motion.div
-                                className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-between"
-                                style={{backgroundColor: 'rgba(0,0,0,0.5)', color: 'white'}}
-                                initial={{opacity: 0}}
-                                animate={{opacity: 1}}
-                                exit={{opacity: 0}}
-                                transition={{duration: 0.2}}
+                <AnimatePresence>
+                    {isHovered && (<motion.div
+                        className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-between"
+                        style={{backgroundColor: 'rgba(0,0,0,0.5)', color: 'white'}}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}
+                        transition={{duration: 0.2}}
+                    >
+
+                        {/* Top Row */}
+                        <div className="d-flex justify-content-between align-items-center p-3 gap-2">
+                            {/* Save button (left) */}
+                            <motion.button
+                                className={`btn btn-sm px-3 rounded-3 d-flex align-items-center justify-content-center`}
+                                onClick={handleSaveClick}
+                                style={{
+                                    fontSize: '0.9rem',
+                                    border: 'none',
+                                    height: '36px',
+                                    minWidth: '70px',
+                                    backgroundColor: saved ? '#dddddd' : 'rgb(217, 3, 33)',
+                                    color: saved ? '#000' : '#fff',
+                                }}
+                                whileHover={{scale: 1.04}}
+                                whileTap={{scale: 0.97}}
                             >
-                                <div className="d-flex justify-content-between p-3">
-                                    <motion.a
-                                        href={pin.image}
-                                        download
-                                        className="d-flex align-items-center justify-content-center"
-                                        style={{
-                                            width: '32px',
-                                            height: '32px',
-                                            padding: 0,
-                                            backgroundColor: 'transparent',
-                                            border: '1px solid rgba(255,255,255,0.6)',
-                                            borderRadius: '6px',
-                                            color: 'white'
-                                        }}
-                                        whileHover={{scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)'}}
-                                        whileTap={{scale: 0.95}}
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <Download size={18}/>
-                                    </motion.a>
+                                {saved ? 'Saved' : 'Save'}
+                            </motion.button>
 
-                                    <motion.button
-                                        className={`btn btn-sm px-3 rounded-3 ${saved ? 'btn-light border' : 'btn-danger'}`}
-                                        onClick={handleSaveClick}
-                                        style={{
-                                            fontSize: '1rem'
-                                        }}
-                                        whileHover={{scale: 1.02}}
-                                        whileTap={{scale: 0.98}}
-                                    >
-                                        {saved ? 'Saved' : 'Save'}
-                                    </motion.button>
-                                </div>
-
-                                <motion.div
-                                    className="d-flex align-items-center px-3 pb-3"
-                                    initial={{opacity: 0}}
-                                    animate={{opacity: 1}}
-                                    exit={{opacity: 0, y: -10}}
-                                    transition={{duration: 0.3, ease: 'easeInOut'}}
+                            {/* Owner link (right) */}
+                            <motion.div
+                                className="d-flex align-items-center rounded-3 px-2 py-1"
+                                style={{
+                                    backgroundColor: 'rgba(255,255,255,0.3)', height: '36px', minWidth: '80px',
+                                }}
+                                whileHover={{scale: 1.04}}
+                                whileTap={{scale: 0.97}}
+                            >
+                                <Link
+                                    to={`/profile/${pin.owner?.username || pin.owner?.id}`}
+                                    className="d-flex align-items-center text-white text-decoration-none w-100 h-100"
+                                    onClick={(e) => e.stopPropagation()}
                                 >
-                                    <Link
-                                        to={`/profile/${pin.owner?.username || pin.owner?.id}`}
-                                        className="d-flex align-items-center text-white text-decoration-none"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <img
-                                            src={pin.owner?.profilePictureUrl || '/assets/avatar-default.svg'}
-                                            alt={pin.owner?.username || 'User'}
-                                            className="rounded-circle me-2"
-                                            style={{ width: '24px', height: '24px', objectFit: 'cover' }}
-                                            onError={(e) => { e.target.src = '/assets/avatar-default.svg'; }}
-                                        />
-                                        <span className="small">{pin.owner?.username || 'Unknown'}</span>
-                                    </Link>
-
-
-                                </motion.div>
+                                    <img
+                                        src={pin.owner?.profilePictureUrl || '/assets/avatar-default.svg'}
+                                        alt={pin.owner?.username || 'User'}
+                                        className="rounded-circle me-2"
+                                        style={{width: '26px', height: '26px', objectFit: 'cover'}}
+                                        onError={(e) => {
+                                            e.target.src = '/assets/avatar-default.svg';
+                                        }}
+                                    />
+                                    <span className="small">
+                                              {pin.owner?.username?.length > 8
+                                                  ? `${pin.owner.username.slice(0, 8)}...`
+                                                  : pin.owner?.username || 'Unknown'}
+                                    </span>
+                                </Link>
                             </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-            </motion.div>
 
-            <AnimatePresence>
-                {showPreview && (
-                    <PinPreviewModal pin={pin} onClose={() => setShowPreview(false)}/>
-                )}
-            </AnimatePresence>
-        </>
-    );
+                        </div>
+                    </motion.div>)}
+                </AnimatePresence>
+
+            </div>
+        </motion.div>
+
+        <AnimatePresence>
+            {showPreview && (<PinPreviewModal pin={pin} onClose={() => setShowPreview(false)}/>)}
+        </AnimatePresence>
+    </>);
 };
 
 export default PinCard;

@@ -6,7 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/layout/profileTabs/BoardsTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/layout/profileTabs/BoardsTab.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/layout/profileTabs/PinsTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/layout/profileTabs/PinsTab.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/pin/PinCard.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinPreviewModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/pin/PinPreviewModal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pages/OtherUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/OtherUserProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pages/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/Profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/followService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/followService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,6 +105,7 @@
       <workItem from="1753995982349" duration="4311000" />
       <workItem from="1754156493445" duration="1536000" />
       <workItem from="1754341760405" duration="12638000" />
+      <workItem from="1754517799409" duration="4662000" />
     </task>
     <servers />
   </component>

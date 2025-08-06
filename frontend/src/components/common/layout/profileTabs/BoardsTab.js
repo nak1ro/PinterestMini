@@ -44,7 +44,7 @@ const BoardsTab = () => {
             <div className="d-flex justify-content-end align-items-center mb-4">
                 <Button
                     variant="danger"
-                    className="rounded-pill px-4 py-2 fw-semibold"
+                    className="rounded-3 px-4 py-2 fw-semibold"
                     onClick={handleCreateBoard}
                     style={{
                         background: 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
@@ -52,8 +52,8 @@ const BoardsTab = () => {
                         transition: 'all 0.2s ease'
                     }}
                     onMouseEnter={(e) => {
-                        e.target.style.transform = 'translateY(-2px) scale(1.02)';
-                        e.target.style.boxShadow = '0 8px 25px rgba(230, 0, 35, 0.3)';
+                        e.target.style.transform = 'translateY(-1px) scale(1.02)';
+                        e.target.style.boxShadow = '0 6px 20px rgba(230, 0, 35, 0.3)';
                     }}
                     onMouseLeave={(e) => {
                         e.target.style.transform = 'translateY(0) scale(1)';
