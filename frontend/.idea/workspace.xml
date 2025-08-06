@@ -6,14 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/Auth/SignInForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Auth/SignInForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/Auth/SignUpForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Auth/SignUpForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinPreviewModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/pin/PinPreviewModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/OtherUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/OtherUserProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/context/AppContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/context/AppContext.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hooks/useUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/useUserProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/AppRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/AppRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/authService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/authService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinGrid.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/pin/PinGrid.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pages/CreatePin.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/CreatePin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/followService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/followService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
