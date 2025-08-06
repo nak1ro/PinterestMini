@@ -4,6 +4,7 @@ namespace PinterestMini.API.Domain.Models;
 
 public class User: IdentityUser<Guid>
 {
+    public string? Name { get; set; }
     public string? ProfilePictureUrl { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? Bio { get; set; }

@@ -38,4 +38,12 @@ public class AccountController : ControllerBase
         var user = await _authService.GetUserByLoginAsync(login);
         return Ok(new { user.Id });
     }
+    
+    [HttpGet("user/{username}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetUserProfile(string username)
+    {
+        var profile = await _authService.GetUserProfileByUsernameAsync(username);
+        return Ok(profile);
+    }
 }

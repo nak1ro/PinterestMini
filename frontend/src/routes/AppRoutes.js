@@ -1,44 +1,54 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import Header from '../components/common/layout/Header';
 import SideBar from '../components/common/layout/SideBar';
 import Home from '../components/pages/Home';
 import Explore from '../components/pages/Explore';
 import Profile from '../components/pages/Profile';
 import PinDetail from '../components/pages/PinDetail';
-import SearchBar from "../components/common/layout/SearchBar";
+import SearchBar from '../components/common/layout/SearchBar';
 import CreatePin from '../components/pages/CreatePin';
-import { useAppContext } from '../context/AppContext.js';
-import ProfileDropdown from "../components/common/layout/ProfileDropdown";
-import TestBoardTag from "../components/pages/TestBoardTag";
+import { useAppContext } from '../context/AppContext';
+import ProfileDropdown from '../components/common/layout/ProfileDropdown';
+import TestBoardTag from '../components/pages/TestBoardTag';
 import TagPage from '../components/pages/Tag';
-import CreateBoard from "../components/pages/CreateBoard";
+import CreateBoard from '../components/pages/CreateBoard';
 import FujiPostPage from '../components/pages/FujiPostPage';
+import OtherUserProfile from '../components/pages/OtherUserProfile';
+
+const AuthenticatedLayout = ({ children }) => (
+    <div className="d-flex">
+        <SideBar />
+        <div className="flex-grow-1" style={{ marginLeft: '80px' }}>
+            <div className="d-flex align-items-center justify-content-between px-3 py-2">
+                <SearchBar />
+                <ProfileDropdown />
+            </div>
+            <main>{children}</main>
+        </div>
+    </div>
+);
+
+const UnauthenticatedLayout = ({ children }) => (
+    <>
+        <Header />
+        <main>{children}</main>
+    </>
+);
+
+// Wrapper to check if ID in URL matches current user
+const ProfileRouter = () => {
+    const { id } = useParams();
+    const { user } = useAppContext();
+
+    if (!user) return <Navigate to="/" />;
+
+    return id === user.id ? <Navigate to="/profile" /> : <OtherUserProfile />;
+};
 
 const AppRoutes = () => {
     const { user } = useAppContext();
     const isAuthenticated = !!user;
-
-    const AuthenticatedLayout = ({ children }) => (
-        <div className="d-flex">
-            <SideBar />
-            <div className="flex-grow-1" style={{ marginLeft: '80px' }}>
-                <div className="d-flex align-items-center justify-content-between px-3 py-2">
-                    <SearchBar />
-                    <ProfileDropdown />
-                </div>
-                <main>{children}</main>
-            </div>
-        </div>
-    );
-
-
-    const UnauthenticatedLayout = ({ children }) => (
-        <>
-            <Header />
-            <main>{children}</main>
-        </>
-    );
 
     return (
         <Router>
@@ -47,83 +57,64 @@ const AppRoutes = () => {
                     path="/"
                     element={
                         isAuthenticated ? (
-                            <AuthenticatedLayout>
-                                <Home />
-                            </AuthenticatedLayout>
+                            <AuthenticatedLayout><Home /></AuthenticatedLayout>
                         ) : (
-                            <UnauthenticatedLayout>
-                                <Home />
-                            </UnauthenticatedLayout>
+                            <UnauthenticatedLayout><Home /></UnauthenticatedLayout>
                         )
                     }
                 />
+
                 <Route
                     path="/explore"
                     element={
                         isAuthenticated ? (
-                            <AuthenticatedLayout>
-                                <Explore />
-                            </AuthenticatedLayout>
+                            <AuthenticatedLayout><Explore /></AuthenticatedLayout>
                         ) : (
-                            <UnauthenticatedLayout>
-                                <Explore />
-                            </UnauthenticatedLayout>
+                            <UnauthenticatedLayout><Explore /></UnauthenticatedLayout>
                         )
                     }
                 />
+
                 <Route
                     path="/profile"
                     element={
                         isAuthenticated ? (
-                            <AuthenticatedLayout>
-                                <Profile />
-                            </AuthenticatedLayout>
+                            <AuthenticatedLayout><Profile /></AuthenticatedLayout>
                         ) : (
-                            <UnauthenticatedLayout>
-                                <Profile />
-                            </UnauthenticatedLayout>
+                            <UnauthenticatedLayout><Profile /></UnauthenticatedLayout>
                         )
                     }
                 />
+
                 <Route
                     path="/profile/:username"
                     element={
                         isAuthenticated ? (
-                            <AuthenticatedLayout>
-                                <Profile />
-                            </AuthenticatedLayout>
+                            <AuthenticatedLayout><ProfileRouter /></AuthenticatedLayout>
                         ) : (
-                            <UnauthenticatedLayout>
-                                <Profile />
-                            </UnauthenticatedLayout>
+                            <UnauthenticatedLayout><ProfileRouter /></UnauthenticatedLayout>
                         )
                     }
                 />
+
                 <Route
                     path="/pin/:id"
                     element={
                         isAuthenticated ? (
-                            <AuthenticatedLayout>
-                                <PinDetail />
-                            </AuthenticatedLayout>
+                            <AuthenticatedLayout><PinDetail /></AuthenticatedLayout>
                         ) : (
-                            <UnauthenticatedLayout>
-                                <PinDetail />
-                            </UnauthenticatedLayout>
+                            <UnauthenticatedLayout><PinDetail /></UnauthenticatedLayout>
                         )
                     }
                 />
+
                 <Route
                     path="/tag/:tagName"
                     element={
                         isAuthenticated ? (
-                            <AuthenticatedLayout>
-                                <TagPage />
-                            </AuthenticatedLayout>
+                            <AuthenticatedLayout><TagPage /></AuthenticatedLayout>
                         ) : (
-                            <UnauthenticatedLayout>
-                                <TagPage />
-                            </UnauthenticatedLayout>
+                            <UnauthenticatedLayout><TagPage /></UnauthenticatedLayout>
                         )
                     }
                 />
@@ -132,17 +123,12 @@ const AppRoutes = () => {
                     path="/fuji-post"
                     element={
                         isAuthenticated ? (
-                            <AuthenticatedLayout>
-                                <FujiPostPage />
-                            </AuthenticatedLayout>
+                            <AuthenticatedLayout><FujiPostPage /></AuthenticatedLayout>
                         ) : (
-                            <UnauthenticatedLayout>
-                                <FujiPostPage />
-                            </UnauthenticatedLayout>
+                            <UnauthenticatedLayout><FujiPostPage /></UnauthenticatedLayout>
                         )
                     }
                 />
-
 
                 {isAuthenticated && (
                     <>

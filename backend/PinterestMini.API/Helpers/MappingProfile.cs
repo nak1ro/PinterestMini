@@ -1,5 +1,6 @@
 using AutoMapper;
 using PinterestMini.API.Domain.Models;
+using PinterestMini.API.DTOs.Account;
 using PinterestMini.API.DTOs.Boards;
 using PinterestMini.API.DTOs.Comments;
 using PinterestMini.API.DTOs.Pins;
@@ -50,5 +51,9 @@ public class MappingProfile : Profile
                     Id = pb.Board.Id,
                     Name = pb.Board.Name
                 })));
+        
+        CreateMap<User, UserProfileDto>()
+            .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+            .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.Name));
     }
 }

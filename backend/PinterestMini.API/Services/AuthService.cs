@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PinterestMini.API.Domain.Interfaces.Auth;
@@ -12,12 +13,14 @@ public class AuthService : IAuthService
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly ITokenService _tokenService;
+    private readonly IMapper _mapper;
 
-    public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService)
+    public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService, IMapper mapper)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _tokenService = tokenService;
+        _tokenService = tokenService;¶
+        _mapper = mapper;
     }
 
     public async Task<NewUserDto> RegisterAsync(RegisterDto dto)
@@ -77,5 +80,17 @@ public class AuthService : IAuthService
             throw new AppNotFoundException("User not found.");
 
         return user;
+    }
+
+    public async Task<UserProfileDto> GetUserProfileByUsernameAsync(string username)
+    {
+        var user = await _userManager.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.UserName == username);
+
+        if (user == null)
+            throw new AppNotFoundException("User not found.");
+
+        return _mapper.Map<UserProfileDto>(user);
     }
 }
