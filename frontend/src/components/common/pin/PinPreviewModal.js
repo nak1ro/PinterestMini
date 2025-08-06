@@ -18,7 +18,6 @@ const ActionButton = ({icon, onClick, alt, animationKey}) => (
             background: 'transparent',
         }}
     >
-        <AnimatePresence mode="wait" initial={false}>
             <motion.img
                 key={animationKey}
                 src={icon}
@@ -29,7 +28,7 @@ const ActionButton = ({icon, onClick, alt, animationKey}) => (
                 exit={{opacity: 0}}
                 transition={{duration: 0.2}}
             />
-        </AnimatePresence>
+
     </motion.button>
 );
 
@@ -130,7 +129,7 @@ const PinPreviewModal = ({pin, onClose}) => {
                 style={{
                     maxWidth: '800px',
                     width: '100%',
-                    height: '90vh',
+                    height: 'calc(100vh - 30px)',
                     display: 'flex',
                     flexDirection: 'column',
                 }}

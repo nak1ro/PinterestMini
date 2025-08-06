@@ -23,7 +23,7 @@ public class CommentService : ICommentService
         _userContext = userContext;
     }
 
-    public async Task<Guid> CreateCommentAsync(Guid pinId, CreateCommentDto dto, ClaimsPrincipal user)
+    public async Task<CommentDto> CreateCommentAsync(Guid pinId, CreateCommentDto dto, ClaimsPrincipal user)
     {
         var userId = _userContext.GetUserId(user);
 
@@ -40,8 +40,12 @@ public class CommentService : ICommentService
         await _unitOfWork.Comments.AddAsync(comment);
         await _unitOfWork.SaveChangesAsync();
 
-        return comment.Id;
+        var commentWithUser = await _unitOfWork.Comments.GetByIdWithUserAsync(comment.Id)
+                              ?? throw new AppNotFoundException("Comment not found after creation.");
+
+        return _mapper.Map<CommentDto>(commentWithUser);
     }
+
 
     public async Task UpdateCommentAsync(Guid commentId, UpdateCommentDto dto, ClaimsPrincipal user)
     {

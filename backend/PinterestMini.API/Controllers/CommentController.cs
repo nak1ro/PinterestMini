@@ -21,9 +21,10 @@ public class CommentController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Create([FromRoute] Guid pinId, [FromBody] CreateCommentDto dto)
     {
-        var commentId = await _commentService.CreateCommentAsync(pinId, dto, User);
-        return CreatedAtAction(nameof(GetForPin), new { pinId }, new { commentId });
+        var commentDto = await _commentService.CreateCommentAsync(pinId, dto, User);
+        return CreatedAtAction(nameof(GetForPin), new { pinId }, commentDto);
     }
+
 
     // Get comments for a pin (paginated)
     [HttpGet]

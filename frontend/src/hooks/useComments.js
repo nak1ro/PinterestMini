@@ -21,9 +21,21 @@ const useComments = (pinId) => {
     }, [pinId]);
 
     const addComment = async (content) => {
-        const newComment = await postComment(pinId, content);
-        setComments((prev) => [newComment, ...prev]);
+        const c = await postComment(pinId, content);
+
+        const normalized = {
+            id: c.id,
+            content: c.content,
+            createdAt: c.createdAt,
+            user: {
+                username: c.username,
+                profilePictureUrl: c.userAvatarUrl
+            }
+        };
+
+        setComments((prev) => [normalized, ...prev]);
     };
+
 
     return {
         comments,
