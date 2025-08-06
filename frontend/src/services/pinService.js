@@ -79,3 +79,20 @@ export const fetchSavedPinsByQuery = async (query, page = 1, pageSize = 20) => {
     }
 };
 
+export const likePin = async (pinId) => {
+    await axiosClient.post(`/pin/${pinId}/likes`);
+};
+
+export const unlikePin = async (pinId) => {
+    await axiosClient.delete(`/pin/${pinId}/likes`);
+};
+
+export const isPinLiked = async (pinId) => {
+    const res = await axiosClient.get(`/pin/${pinId}/likes/is-liked`);
+    return res.data; // { isLiked: boolean, likeCount: number }
+};
+
+export const getLikeStatus = async (pinId) => {
+    const res = await axiosClient.get(`/pin/${pinId}/likes/count`);
+    return res.data; // { likeCount: number }
+};
