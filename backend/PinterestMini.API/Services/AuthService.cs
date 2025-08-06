@@ -19,7 +19,7 @@ public class AuthService : IAuthService
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _tokenService = tokenService;¶
+        _tokenService = tokenService;
         _mapper = mapper;
     }
 
