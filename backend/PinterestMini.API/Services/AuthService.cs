@@ -40,12 +40,10 @@ public class AuthService : IAuthService
 
         await _userManager.AddToRoleAsync(user, "User");
 
-        return new NewUserDto
-        {
-            Username = user.UserName,
-            Email = user.Email,
-            Token = await _tokenService.CreateToken(user)
-        };
+        var token = await _tokenService.CreateToken(user);
+        var newDto = _mapper.Map<NewUserDto>(user);
+        newDto.Token = token;
+        return newDto;
     }
 
     public async Task<NewUserDto> LoginAsync(LoginDto dto)
@@ -60,12 +58,10 @@ public class AuthService : IAuthService
         if (!result.Succeeded)
             throw new AppUnauthorizedException("Invalid credentials");
 
-        return new NewUserDto
-        {
-            Username = user.UserName,
-            Email = user.Email,
-            Token = await _tokenService.CreateToken(user)
-        };
+        var token = await _tokenService.CreateToken(user);
+        var newDto = _mapper.Map<NewUserDto>(user);
+        newDto.Token = token;
+        return newDto;
     }
 
     public async Task<User> GetUserByLoginAsync(string login)
