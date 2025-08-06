@@ -108,8 +108,8 @@ const PinPreviewModal = ({pin, onClose}) => {
 
     const goToAuthorProfile = (e) => {
         e.stopPropagation();
-        if (pin.owner?.id) {
-            navigate(`/profile/${pin.owner.id}`);
+        if (pin.owner?.username) {
+            navigate(`/profile/${pin.owner.username}`);
         }
     };
 

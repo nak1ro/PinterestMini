@@ -22,8 +22,7 @@ const SignInForm = () => {
                 return;
             }
             console.log(resultLog.data.token);
-            login(resultLog.data.username, resultLog.data.email, resultLog.data.token);
-
+            login(resultLog.data, resultLog.data.email, resultLog.data.token);
         };
 
         return (

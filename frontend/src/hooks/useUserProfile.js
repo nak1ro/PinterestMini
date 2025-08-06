@@ -1,25 +1,34 @@
-// hooks/useUserProfile.js
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { getUserInfoByUsername } from '../services/authService'; // Assuming you have an API function to get user data
 
 const useUserProfile = (username) => {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!username) return;
+        const fetchProfile = async () => {
+            try {
+                setLoading(true);
+                const response = await getUserInfoByUsername(username);  // Replace with your actual API call
+                if (response.success) {
+                    setProfile(response.data);
+                } else {
+                    setError(response.error);
+                }
+            } catch (err) {
+                setError(err.message || 'An error occurred');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        setLoading(true);
-        axios.get(`/api/users/${username}`)
-            .then((res) => setProfile(res.data))
-            .catch((err) => {
-                console.error('Failed to load user profile:', err);
-                setProfile(null);
-            })
-            .finally(() => setLoading(false));
-    }, [username]);
+        if (username) {
+            fetchProfile();
+        }
+    }, [username]); // Refetch profile when username changes
 
-    return { profile, loading };
+    return { profile, loading, error };
 };
 
 export default useUserProfile;

@@ -9,6 +9,7 @@ export const AppProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [mail, setMail] = useState(null);
     const [token, setToken] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -20,6 +21,8 @@ export const AppProvider = ({ children }) => {
             setMail(storedMail);
             setToken(storedToken);
         }
+
+        setLoading(false);
     }, []);
 
     const login = (userData, userMail, jwtToken) => {
@@ -56,6 +59,7 @@ export const AppProvider = ({ children }) => {
                         : defaultAvatar,
                 login,
                 logout,
+                loading
             }}
         >
             {children}

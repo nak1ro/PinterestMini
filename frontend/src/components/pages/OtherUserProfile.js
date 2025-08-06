@@ -8,16 +8,16 @@ import { useAppContext } from '../../context/AppContext';
 import useCreatedPins from '../../hooks/useCreatedPins';
 import useSavedPins from '../../hooks/useSavedPins';
 import useFollowCounts from '../../hooks/useFollowCounts';
-import useUserProfile from '../../hooks/useUserProfile';
+import useUserProfile from '../../hooks/useUserProfile'; // Custom hook
 import PinGrid from '../common/pin/PinGrid';
 
 const OtherUserProfile = () => {
-    const { username } = useParams();
+    const { username } = useParams(); // Get username from URL
     const [activeTab, setActiveTab] = useState('created');
     const [isFollowing, setIsFollowing] = useState(false);
 
     const { userId } = useAppContext();
-    const { profile, loading: loadingProfile } = useUserProfile(username);
+    const { profile, loading: loadingProfile, error: profileError } = useUserProfile(username); // Using custom hook
     const { createdPins, loading: loadingCreated } = useCreatedPins(username);
     const { savedPins, loading: loadingSaved } = useSavedPins(username);
     const { followersCount, followingCount } = useFollowCounts(profile?.id);
@@ -33,6 +33,14 @@ const OtherUserProfile = () => {
     const avatarSrc = profile?.profilePictureUrl || '/assets/avatar-default.svg';
     const displayName = profile?.username || 'Unknown user';
     const bio = profile?.bio || 'No bio provided.';
+
+    if (loadingProfile) {
+        return <div>Loading...</div>;
+    }
+
+    if (profileError) {
+        return <div>Error: {profileError}</div>;
+    }
 
     return (
         <motion.div

@@ -15,6 +15,7 @@ import TagPage from '../components/pages/Tag';
 import CreateBoard from '../components/pages/CreateBoard';
 import FujiPostPage from '../components/pages/FujiPostPage';
 import OtherUserProfile from '../components/pages/OtherUserProfile';
+import useUserProfile from "../hooks/useUserProfile";
 
 const AuthenticatedLayout = ({ children }) => (
     <div className="d-flex">
@@ -36,15 +37,45 @@ const UnauthenticatedLayout = ({ children }) => (
     </>
 );
 
-// Wrapper to check if ID in URL matches current user
 const ProfileRouter = () => {
-    const { id } = useParams();
+    const { username } = useParams();
     const { user } = useAppContext();
 
-    if (!user) return <Navigate to="/" />;
+    const { profile, loading, error } = useUserProfile(username);
 
-    return id === user.id ? <Navigate to="/profile" /> : <OtherUserProfile />;
+    // Wait for profile to load
+    if (loading) return null;
+
+    // If user doesn't exist (backend returned 404 or null)
+    if (!profile) {
+        return <div className="text-center mt-5 text-muted">User not found</div>;
+    }
+
+    // Avoid early redirect before `user` is available
+    if (user && profile.id === user.id) {
+        return <Navigate to="/profile" replace />;
+    }
+
+    return <OtherUserProfile />;
 };
+
+
+const RedirectToSelfProfile = ({ children }) => {
+    const { username } = useParams();
+    const { user, loading } = useAppContext();
+
+    if (loading) return null;
+
+    if (!user) return <Navigate to="/" />;
+    console.log(user.username);
+    console.log(username);
+    if (username === user.username) {
+        return <Navigate to="/profile" replace />;
+    }
+
+    return children;
+};
+
 
 const AppRoutes = () => {
     const { user } = useAppContext();
@@ -90,12 +121,17 @@ const AppRoutes = () => {
                     path="/profile/:username"
                     element={
                         isAuthenticated ? (
-                            <AuthenticatedLayout><ProfileRouter /></AuthenticatedLayout>
+                            <RedirectToSelfProfile>
+                                <AuthenticatedLayout>
+                                    <OtherUserProfile />
+                                </AuthenticatedLayout>
+                            </RedirectToSelfProfile>
                         ) : (
-                            <UnauthenticatedLayout><ProfileRouter /></UnauthenticatedLayout>
+                            <UnauthenticatedLayout><OtherUserProfile /></UnauthenticatedLayout>
                         )
                     }
                 />
+
 
                 <Route
                     path="/pin/:id"
@@ -134,7 +170,6 @@ const AppRoutes = () => {
                     <>
                         <Route path="/create-pin" element={<AuthenticatedLayout><CreatePin /></AuthenticatedLayout>} />
                         <Route path="/create-board" element={<AuthenticatedLayout><CreateBoard /></AuthenticatedLayout>} />
-                        <Route path="/test" element={<AuthenticatedLayout><TestBoardTag /></AuthenticatedLayout>} />
                     </>
                 )}
             </Routes>

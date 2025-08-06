@@ -18,3 +18,13 @@ export const registerUser = async (formData) => {
         return { success: false, error: parseApiError(err) };
     }
 };
+
+export const getUserInfoByUsername = async (username) => {
+    try {
+        const res = await axiosClient.get(`/account/user/${username}`);
+        return { success: true, data: res.data };
+    } catch (err) {
+        return { success: false, error: parseApiError(err) };
+    }
+};
+

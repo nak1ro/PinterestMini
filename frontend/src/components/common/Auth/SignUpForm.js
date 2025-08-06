@@ -40,8 +40,7 @@ const SignUpForm = () => {
             return;
         }
         console.log(resultReg.data.token);
-        login(resultReg.data.username, resultReg.data.email, resultReg.data.token);
-
+        login(resultReg.data, resultReg.data.email, resultReg.data.token);
     };
 
     return (
