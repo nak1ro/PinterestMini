@@ -4,6 +4,7 @@ namespace PinterestMini.API.Domain.Interfaces.Pins;
 
 public interface IPinRepository
 {
+    Task<bool> ExistsAsync(Guid userId);
     Task<Pin?> GetByIdAsync(Guid id);
     Task<Pin?> GetByIdWithTagsAndBoardsAsync(Guid id);
     Task<List<Pin>> GetPinsByOwnerAsync(Guid ownerId);

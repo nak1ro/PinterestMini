@@ -33,6 +33,10 @@ public class FollowService : IFollowService
         if (exists)
             throw new AppBadRequestException("You already follow this user.");
 
+        var userExists = await _unitOfWork.Pins.ExistsAsync(targetUserId); // 👈 Add this check
+        if (!userExists)
+            throw new AppNotFoundException("User does not exist."); 
+
         var follow = new Follow
         {
             FollowerId = currentUserId,
@@ -43,6 +47,7 @@ public class FollowService : IFollowService
         await _unitOfWork.Follows.AddAsync(follow);
         await _unitOfWork.SaveChangesAsync();
     }
+
 
     public async Task UnfollowAsync(Guid targetUserId, ClaimsPrincipal currentUser)
     {

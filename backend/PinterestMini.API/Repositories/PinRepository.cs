@@ -15,6 +15,11 @@ public class PinRepository : IPinRepository
         _context = context;
     }
 
+    public async Task<bool> ExistsAsync(Guid userId)
+    {
+        return await _context.Users.AnyAsync(u => u.Id == userId);
+    }
+
     public async Task<Pin?> GetByIdAsync(Guid id)
     {
         return await _context.Pins.FindAsync(id);
