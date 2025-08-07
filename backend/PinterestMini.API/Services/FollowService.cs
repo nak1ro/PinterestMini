@@ -1,8 +1,10 @@
 using System.Security.Claims;
+using AutoMapper;
 using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Follow;
 using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Models;
+using PinterestMini.API.DTOs.Account;
 using PinterestMini.API.Middlewares;
 
 namespace PinterestMini.API.Services;
@@ -10,11 +12,13 @@ namespace PinterestMini.API.Services;
 public class FollowService : IFollowService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
     private readonly IUserContextService _userContext;
 
-    public FollowService(IUnitOfWork unitOfWork, IUserContextService userContext)
+    public FollowService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContext)
     {
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
         _userContext = userContext;
     }
 
@@ -66,5 +70,17 @@ public class FollowService : IFollowService
     public async Task<int> GetFollowingCountAsync(Guid userId)
     {
         return await _unitOfWork.Follows.GetFollowingCountAsync(userId);
+    }
+
+    public async Task<List<UserProfileDto>> GetFollowersAsync(Guid userId)
+    {
+        var users = await _unitOfWork.Follows.GetFollowersAsync(userId);
+        return users.Select(u => _mapper.Map<UserProfileDto>(u)).ToList();
+    }
+
+    public async Task<List<UserProfileDto>> GetFollowingAsync(Guid userId)
+    {
+        var users = await _unitOfWork.Follows.GetFollowingAsync(userId);
+        return users.Select(u => _mapper.Map<UserProfileDto>(u)).ToList();
     }
 }

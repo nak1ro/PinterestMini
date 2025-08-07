@@ -1,3 +1,5 @@
+using PinterestMini.API.Domain.Models;
+
 namespace PinterestMini.API.Domain.Interfaces.Follow;
 
 public interface IFollowRepository
@@ -9,4 +11,6 @@ public interface IFollowRepository
     Task<List<Guid>> GetFollowingIdsAsync(Guid userId);
     Task<int> GetFollowersCountAsync(Guid userId);
     Task<int> GetFollowingCountAsync(Guid userId);
+    Task<List<User>> GetFollowersAsync(Guid userId);
+    Task<List<User>> GetFollowingAsync(Guid userId);
 }

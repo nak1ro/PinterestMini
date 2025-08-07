@@ -54,4 +54,20 @@ public class FollowController : ControllerBase
         var count = await _followService.GetFollowingCountAsync(userId);
         return Ok(new { count });
     }
+    
+    [HttpGet("{userId:guid}/followers")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetFollowers(Guid userId)
+    {
+        var followers = await _followService.GetFollowersAsync(userId);
+        return Ok(followers);
+    }
+
+    [HttpGet("{userId:guid}/following")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetFollowing(Guid userId)
+    {
+        var following = await _followService.GetFollowingAsync(userId);
+        return Ok(following);
+    }
 }

@@ -53,4 +53,20 @@ public class FollowRepository : IFollowRepository
     {
         return await _context.Follows.CountAsync(f => f.FollowerId == userId);
     }
+
+    public async Task<List<User>> GetFollowersAsync(Guid userId)
+    {
+        return await _context.Follows
+            .Where(f => f.FollowingId == userId)
+            .Select(f => f.Follower)
+            .ToListAsync();
+    }
+
+    public async Task<List<User>> GetFollowingAsync(Guid userId)
+    {
+        return await _context.Follows
+            .Where(f => f.FollowerId == userId)
+            .Select(f => f.Following)
+            .ToListAsync();
+    }
 }
