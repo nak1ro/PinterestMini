@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import AuthModal from './AuthModal';
 
 
@@ -10,16 +10,16 @@ const AuthButtons = () => {
 
     return (
         <div>
-                <div>
-                    <button onClick={() => openModal('signin')} className="btn btn-danger btn-sm fw-semibold">
-                        Log In
-                    </button>
-                    <button onClick={() => openModal('signup')} className="btn btn-sm btn-light fw-semibold ms-3">
-                        Sign Up
-                    </button>
-                </div>
+            <div>
+                <button onClick={() => openModal('signin')} className="btn btn-danger btn-sm fw-semibold">
+                    Log In
+                </button>
+                <button onClick={() => openModal('signup')} className="btn btn-sm btn-light fw-semibold ms-3">
+                    Sign Up
+                </button>
+            </div>
             {authModalType && (
-                <AuthModal type={authModalType} onClose={() => setAuthModalType(null)} />
+                <AuthModal type={authModalType} onClose={() => setAuthModalType(null)}/>
             )}
         </div>
     );

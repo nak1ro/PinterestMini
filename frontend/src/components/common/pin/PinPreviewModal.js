@@ -166,7 +166,7 @@ const PinPreviewModal = ({pin, onClose}) => {
 
 
                     <motion.button
-                        className={`btn btn-sm px-3 rounded-3 d-flex align-items-center justify-content-center`}
+                        className={`btn btn-sm fw-bold px-3 rounded-3 d-flex align-items-center justify-content-center`}
                         onClick={handleSaveClick}
                         style={{
                             fontSize: '1rem',

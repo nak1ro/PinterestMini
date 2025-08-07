@@ -67,10 +67,10 @@ const PinCard = ({pin}) => {
                     >
 
                         {/* Top Row */}
-                        <div className="d-flex justify-content-between align-items-center p-3 gap-2">
+                        <div className="d-flex fw-bold justify-content-between align-items-center p-3 gap-2">
                             {/* Save button (left) */}
                             <motion.button
-                                className={`btn btn-sm px-3 rounded-3 d-flex align-items-center justify-content-center`}
+                                className={`btn btn-sm px-3 fw-bold rounded-3 d-flex align-items-center justify-content-center`}
                                 onClick={handleSaveClick}
                                 style={{
                                     fontSize: '0.9rem',

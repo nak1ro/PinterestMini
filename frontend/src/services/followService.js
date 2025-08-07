@@ -24,3 +24,13 @@ export const isFollowingUser = async (userId) => {
     const res = await axiosClient.delete(`/follow/${userId}/check`);
     return res.data;
 };
+
+export const getFollowers = async (userId) => {
+    const res = await axiosClient.get(`/follow/${userId}/followers`);
+    return res.data;
+};
+
+export const getFollowing = async (userId) => {
+    const res = await axiosClient.get(`/follow/${userId}/following`);
+    return res.data;
+};
