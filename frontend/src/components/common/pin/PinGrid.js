@@ -26,18 +26,16 @@ const PinGrid = ({pins}) => {
     }, [pins]);
 
     return (
-        <div className="container py-4">
-            <div
-                ref={gridRef}
-                className="masonry-grid m-auto"
-                style={{ margin: '0 auto', maxWidth: '1300px' }}
-            >
-                {(pins || []).map(pin => (
-                    <div key={pin.id} className="masonry-item" style={{width: '250px'}}>
-                        <PinCard pin={pin} />
-                    </div>
-                ))}
-            </div>
+        <div
+            ref={gridRef}
+            className="masonry-grid m-auto"
+            style={{margin: '0 auto'}}
+        >
+            {(pins || []).map(pin => (
+                <div key={pin.id} className="masonry-item" style={{width: '305px'}}>
+                    <PinCard pin={pin}/>
+                </div>
+            ))}
         </div>
     );
 };

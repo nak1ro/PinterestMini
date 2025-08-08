@@ -14,23 +14,33 @@ const PinsTab = ({ pins, loading, onlyMyPins, setOnlyMyPins }) => {
 
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <motion.div
-                    className={`d-flex fw-bold align-items-center px-3 py-2 rounded-3 fw-medium`}
+                    className="d-flex fw-bold align-items-center px-3 py-2 rounded-3 fw-medium"
                     style={{
                         cursor: 'pointer',
-                        backgroundColor: onlyMyPins ? '#e60023' : '#f1f1f1',
+                        background: onlyMyPins
+                            ? 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)'
+                            : '#f1f1f1',
                         color: onlyMyPins ? '#fff' : '#333',
-                        transition: 'all 0.3s ease',
+                        border: 'none',
                         userSelect: 'none',
+                        boxShadow: onlyMyPins ? '0 4px 12px rgba(230, 0, 35, 0.2)': 'none'
                     }}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
+                    whileHover={{
+                        scale: 1.03,
+                        y: -1,
+                        boxShadow: onlyMyPins ? '0 6px 20px rgba(230, 0, 35, 0.3)' : '0 3px 10px rgba(10, 10, 10, 0.25)'
+                    }}
+                    whileTap={{
+                        scale: 0.97,
+                        y: 0
+                    }}
                     onClick={() => setOnlyMyPins(!onlyMyPins)}
                 >
                     Created by you
                 </motion.div>
 
+
                 <Button
-                    variant="danger"
                     className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center"
                     onClick={() => navigate('/create-pin')}
                     style={{

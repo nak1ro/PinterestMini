@@ -30,22 +30,14 @@ const BoardsTab = () => {
         navigate('/create-board');
     };
 
-    if (loading) {
-        return (
-            <div className="text-center py-5">
-                <Spinner animation="border" variant="primary" />
-            </div>
-        );
-    }
-
     return (
         <div className="px-3 py-4">
             {/* "+" Button only (no title) */}
             <div className="d-flex justify-content-end align-items-center mb-4">
                 <Button
                     variant="danger"
-                    className="rounded-3 px-4 py-2 fw-semibold"
-                    onClick={handleCreateBoard}
+                    className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center"
+                    onClick={() => navigate('/create-board')}
                     style={{
                         background: 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
                         border: 'none',
@@ -60,7 +52,7 @@ const BoardsTab = () => {
                         e.target.style.boxShadow = 'none';
                     }}
                 >
-                    <Plus size={18} className="me-2" />
+                    <Plus className="me-2 fw-bold" size={23} />
                     Create Board
                 </Button>
             </div>

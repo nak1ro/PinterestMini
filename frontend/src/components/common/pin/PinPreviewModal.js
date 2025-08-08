@@ -173,8 +173,8 @@ const PinPreviewModal = ({pin, onClose}) => {
                             border: saved? 'solid 1px' :'none',
                             height: '36px',
                             minWidth: '90px',
-                            backgroundColor: saved ? '#ffffff' : 'rgb(217, 3, 33)',
-                            color: saved ? '#000' : '#fff',
+                            background: saved ? '#dddddd' : 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
+                            color: saved ? '#333' : '#fff',
                         }}
                         whileHover={{scale: 1.04}}
                         whileTap={{scale: 0.97}}

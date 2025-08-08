@@ -4,21 +4,6 @@ import {Link} from 'react-router-dom';
 import useSavedPins from '../../../hooks/useSavedPins';
 import PinPreviewModal from './PinPreviewModal';
 
-const blurBoxStyle = {
-    height: '36px',
-    minWidth: '90px',
-    padding: '0.25rem 0.5rem',
-    borderRadius: '0.5rem',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    border: '1px solid rgba(255, 255, 255, 0.5)',
-    backdropFilter: 'blur(4px)',
-    WebkitBackdropFilter: 'blur(4px)',
-    transition: 'background-color 0.2s ease',
-    display: 'flex',
-    alignItems: 'center',
-};
-
-
 const PinCard = ({pin}) => {
     const {savePin, unsavePin, isPinSaved} = useSavedPins();
     const saved = isPinSaved(pin.id);
@@ -77,8 +62,8 @@ const PinCard = ({pin}) => {
                                     border: 'none',
                                     height: '36px',
                                     minWidth: '70px',
-                                    backgroundColor: saved ? '#dddddd' : 'rgb(217, 3, 33)',
-                                    color: saved ? '#000' : '#fff',
+                                    background: saved ? '#dddddd' : 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
+                                    color: saved ? '#333' : '#fff',
                                 }}
                                 whileHover={{scale: 1.04}}
                                 whileTap={{scale: 0.97}}

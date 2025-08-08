@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Spinner } from 'react-bootstrap';
-import { Pencil } from 'react-bootstrap-icons';
-import { useNavigate } from 'react-router-dom';
-import { getPinsCountForBoard } from '../../../services/boardService';
+import React, {useEffect, useState} from 'react';
+import {Card, Spinner, Badge} from 'react-bootstrap';
+import {Pencil, Lock} from 'react-bootstrap-icons';
+import {useNavigate} from 'react-router-dom';
+import {getPinsCountForBoard} from '../../../services/boardService';
 
-const BoardCard = ({ board }) => {
+const BoardCard = ({board}) => {
     const [pinCount, setPinCount] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [hovered, setHovered] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,41 +25,149 @@ const BoardCard = ({ board }) => {
         fetchPinCount();
     }, [board.id]);
 
-    const handleEdit = () => {
+    const handleEdit = (e) => {
+        e.stopPropagation();
         navigate(`/edit-board/${board.id}`);
     };
 
+    // ---------- UI helpers (pure UI, no functionality change) ----------
+    const initials = (name) =>
+        name
+            ?.trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((w) => w[0]?.toUpperCase())
+            .join('') || 'B';
+
+    const stringToHsl = (str) => {
+        let h = 0;
+        for (let i = 0; i < (str || '').length; i++) h = (h * 31 + str.charCodeAt(i)) % 360;
+        return `hsl(${h}, 65%, 55%)`;
+    };
+
+    const hasCover = Boolean(board.coverImageUrl && board.coverImageUrl.trim() !== '');
+
     return (
-        <Card className="h-100 shadow-sm">
-            {board.coverImageUrl && (
-                <Card.Img
-                    variant="top"
-                    src={board.coverImageUrl}
-                    style={{ height: '180px', objectFit: 'cover' }}
-                />
-            )}
-            <Card.Body className="d-flex flex-column">
-                {/* Header: title + pencil icon */}
-                <div className="d-flex justify-content-between align-items-center mb-1">
-                    <Card.Title className="fs-5 mb-0">{board.name}</Card.Title>
-                    <Pencil
-                        size={18}
-                        role="button"
-                        className="text-muted"
-                        onClick={handleEdit}
-                        title="Edit board"
-                        style={{ cursor: 'pointer' }}
+        <Card
+            className="h-100 border-0 shadow-sm"
+            style={{
+                transition: 'transform 140ms ease, box-shadow 140ms ease',
+                transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
+                boxShadow: hovered
+                    ? '0 0.5rem 1.25rem rgba(0,0,0,.12)'
+                    : '0 .125rem .5rem rgba(0,0,0,.08)',
+                borderRadius: '18px',
+                overflow: 'hidden',
+                cursor: 'default',
+            }}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+        >
+            {/* Cover section */}
+            <div
+                className="position-relative"
+                style={{height: 180, background: '#f8f9fa'}}
+            >
+                {hasCover ? (
+                    <Card.Img
+                        variant="top"
+                        src={board.coverImageUrl}
+                        alt={board.name}
+                        style={{height: '100%', width: '100%', objectFit: 'cover'}}
                     />
+                ) : (
+                    <div
+                        className="w-100 h-100 d-flex align-items-center justify-content-center"
+                        style={{
+                            background: `linear-gradient(135deg, ${stringToHsl(board.name)} 0%, rgba(255,255,255,.15) 100%)`,
+                            color: 'white',
+                            fontWeight: 700,
+                            fontSize: '2rem',
+                            letterSpacing: '.04em',
+                        }}
+                        aria-label={`${board.name} cover placeholder`}
+                    >
+                        {initials(board.name)}
+                    </div>
+                )}
+
+                {/* Soft gradient overlay for readability */}
+                <div
+                    className="position-absolute top-0 start-0 w-100 h-100"
+                    style={{
+                        background: 'linear-gradient(180deg, rgba(0,0,0,.0) 40%, rgba(0,0,0,.25) 100%)',
+                        pointerEvents: 'none',
+                    }}
+                />
+
+                {/* Edit button (reveals on hover) */}
+                <button
+                    type="button"
+                    onClick={handleEdit}
+                    className="btn btn-light border-0 position-absolute justify-content-center align-items-center"
+                    title="Edit board"
+                    style={{
+                        top: 10,
+                        right: 10,
+                        borderRadius: '12px',
+                        padding: '6px 10px',
+                        boxShadow: '0 .25rem .75rem rgba(0,0,0,.12)',
+                        minWidth: '60px',
+                        opacity: hovered ? 1 : 0,
+                        transform: hovered ? 'translateY(0)' : 'translateY(-4px)',
+                        transition: 'opacity 140ms ease, transform 140ms ease',
+                    }}
+                >
+                    Edit
+                </button>
+
+                {/* Privacy badge (optional, only if field exists) */}
+                {typeof board.isPrivate === 'boolean' && board.isPrivate && (
+                    <span
+                        className="position-absolute d-inline-flex align-items-center gap-1 text-white small px-2 py-1"
+                        style={{
+                            left: 10,
+                            bottom: 10,
+                            background: 'rgba(0,0,0,.45)',
+                            borderRadius: '10px',
+                            backdropFilter: 'blur(2px)',
+                        }}
+                    >
+            <Lock size={14}/>
+            Private
+          </span>
+                )}
+            </div>
+
+            {/* Body */}
+            <Card.Body className="d-flex flex-column">
+                {/* Title row */}
+                <div className="d-flex justify-content-between align-items-start">
+                    <Card.Title
+                        className="mb-1 text-truncate"
+                        title={board.name}
+                        style={{fontSize: '1.05rem', fontWeight: 700, lineHeight: 1.2}}
+                    >
+                        {board.name}
+                    </Card.Title>
+
+                    {/* Inline pencil (kept for parity, small & subtle) */}
+
                 </div>
 
-                {/* Pin count */}
-                <Card.Text className="text-muted small mb-0">
+                {/* Metadata row */}
+                <div className="d-flex align-items-center text-muted small">
                     {loading ? (
-                        <Spinner animation="border" size="sm" />
+                        <span className="d-inline-flex align-items-center gap-2">
+              <Spinner animation="border" size="sm"/>
+              <span>Loading pins…</span>
+            </span>
                     ) : (
-                        `${pinCount} pin${pinCount === 1 ? '' : 's'}`
+                        <>
+                            <span className="me-2">{pinCount} pin{pinCount === 1 ? '' : 's'}</span>
+                        </>
                     )}
-                </Card.Text>
+                </div>
             </Card.Body>
         </Card>
     );
