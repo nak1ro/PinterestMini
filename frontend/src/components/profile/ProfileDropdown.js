@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import React from "react";
-import { useAppContext } from '../../../context/AppContext';
+import { useAppContext } from '../../context/AppContext';
 
 const ProfileDropdown = () => {
     const { avatarUrl, logout } = useAppContext();

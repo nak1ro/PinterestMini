@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { useAppContext } from '../../../context/AppContext';
-import AuthButtons from '../Auth/AuthButtons';
-import SearchBar from './SearchBar';
+import { useAppContext } from '../../context/AppContext';
+import AuthButtons from '../auth/AuthButtons';
+import SearchBar from '../bars/SearchBar';
 
 
 const Header = () => {

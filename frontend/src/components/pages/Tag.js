@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { usePinsByTag } from '../../hooks/useTags';
-import PinGrid from '../common/pin/PinGrid';
+import PinGrid from '../pin/PinGrid';
 
 const TagPage = () => {
     const { tagName } = useParams();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { usePopularTags, usePinsByTag } from '../../hooks/useTags';
-import PinGrid from '../common/pin/PinGrid';
+import PinGrid from '../pin/PinGrid';
 import { Link } from 'react-router-dom';
 
 const Explore = () => {

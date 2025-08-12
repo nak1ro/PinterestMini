@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {motion, AnimatePresence} from 'framer-motion';
 import {Link} from 'react-router-dom';
-import useSavedPins from '../../../hooks/useSavedPins';
+import useSavedPins from '../../hooks/useSavedPins';
 import PinPreviewModal from './PinPreviewModal';
 
 const PinCard = ({pin}) => {

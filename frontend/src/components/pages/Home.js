@@ -1,6 +1,6 @@
 // pages/Home.jsx
 import React from 'react';
-import PinGrid from '../common/pin/PinGrid';
+import PinGrid from '../pin/PinGrid';
 import { motion } from 'framer-motion';
 import { useSearchContext } from '../../context/SearchContext';
 import usePins from '../../hooks/usePins';

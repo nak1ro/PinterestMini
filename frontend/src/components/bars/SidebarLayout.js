@@ -1,7 +1,7 @@
 // src/components/layout/SidebarLayout.js
 import React from 'react';
-import Sidebar from './Sidebar';
-import Header from "./Header"; // your existing sidebar component
+import Sidebar from './SideBar';
+import Header from "../common/Header"; // your existing sidebar component
 
 const SidebarLayout = ({ children }) => {
     return (

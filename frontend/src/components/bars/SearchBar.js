@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useSearchPins from '../../../hooks/useSearchPins';
+import useSearchPins from '../../hooks/useSearchPins';
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');

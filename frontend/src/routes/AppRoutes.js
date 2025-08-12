@@ -1,19 +1,19 @@
 import React from 'react';
 import {BrowserRouter as Router, Routes, Route, Navigate, useParams} from 'react-router-dom';
-import Header from '../components/common/layout/Header';
-import SideBar from '../components/common/layout/SideBar';
+import Header from '../components/common/Header';
+import SideBar from '../components/bars/SideBar';
 import Home from '../components/pages/Home';
 import Explore from '../components/pages/Explore';
-import Profile from '../components/pages/Profile';
-import PinDetail from '../components/pages/PinDetail';
-import SearchBar from '../components/common/layout/SearchBar';
-import CreatePin from '../components/pages/CreatePin';
+import Profile from '../components/profile/Profile';
+import PinDetail from '../components/pin/PinDetail';
+import SearchBar from '../components/bars/SearchBar';
+import CreatePin from '../components/pin/CreatePin';
 import {useAppContext} from '../context/AppContext';
-import ProfileDropdown from '../components/common/layout/ProfileDropdown';
+import ProfileDropdown from '../components/profile/ProfileDropdown';
 import TestBoardTag from '../components/pages/TestBoardTag';
 import TagPage from '../components/pages/Tag';
-import CreateBoard from '../components/pages/CreateBoard';
-import OtherUserProfile from '../components/pages/OtherUserProfile';
+import CreateBoard from '../components/board/CreateBoard';
+import OtherUserProfile from '../components/profile/OtherUserProfile';
 import useUserProfile from "../hooks/useUserProfile";
 
 const AuthenticatedLayout = ({children}) => (

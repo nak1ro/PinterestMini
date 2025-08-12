@@ -1,7 +1,7 @@
-// src/components/Auth/SignInForm.js
+// src/components/auth/SignInForm.js
 import React, { useState } from 'react';
-import { useAppContext } from '../../../context/AppContext';
-import {loginUser, registerUser} from '../../../services/authService';
+import { useAppContext } from '../../context/AppContext';
+import {loginUser, registerUser} from '../../services/authService';
 
 const SignInForm = () => {
     const {login} = useAppContext();

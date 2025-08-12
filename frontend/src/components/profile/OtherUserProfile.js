@@ -9,7 +9,7 @@ import useCreatedPins from '../../hooks/useCreatedPins';
 import useSavedPins from '../../hooks/useSavedPins';
 import useUserProfile from '../../hooks/useUserProfile';
 import useFollowUser from '../../hooks/useFollowUser';
-import PinGrid from '../common/pin/PinGrid';
+import PinGrid from '../pin/PinGrid';
 
 const OtherUserProfile = () => {
     const { username } = useParams();

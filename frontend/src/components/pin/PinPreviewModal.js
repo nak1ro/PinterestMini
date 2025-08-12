@@ -1,9 +1,9 @@
 import React, {useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {motion, AnimatePresence} from 'framer-motion';
-import useSavedPins from '../../../hooks/useSavedPins';
-import usePinLike from '../../../hooks/usePinLike';
-import useComments from '../../../hooks/useComments';
+import useSavedPins from '../../hooks/useSavedPins';
+import usePinLike from '../../hooks/usePinLike';
+import useComments from '../../hooks/useComments';
 import {Link} from 'react-router-dom';
 
 const ActionButton = ({icon, onClick, alt, animationKey}) => (<motion.button

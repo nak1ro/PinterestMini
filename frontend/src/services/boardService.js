@@ -13,5 +13,16 @@ export const getMyBoards = async () => {
 };
 
 export const getPinsCountForBoard = async (boardId) => {
-    return axiosClient.get(`/api/board/${boardId}/pins-count`);
+    return axiosClient.get(`/board/${boardId}/pins-count`);
 };
+
+export const changeBoardInfo = async (boardId, formData) => {
+    return axiosClient.put(`/board/${boardId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+};
+
+export const deleteBoard = async (boardId) => {
+    return axiosClient.delete(`/board/${boardId}`);
+};
+

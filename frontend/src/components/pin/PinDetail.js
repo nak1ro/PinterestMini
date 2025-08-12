@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 import pins from '../../data/pins';
-import PinGrid from '../common/pin/PinGrid';
+import PinGrid from './PinGrid';
 
 const PinDetail = () => {
   const { id } = useParams();

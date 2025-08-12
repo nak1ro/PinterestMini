@@ -1,38 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Spinner, Button } from 'react-bootstrap';
+// src/components/common/layout/profileTabs/BoardsTab.jsx
+import React from 'react';
+import { Spinner, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { getMyBoards } from '../../../../services/boardService';
-import BoardCard from '../BoardCard';
 import { Plus } from 'react-bootstrap-icons';
 
+import useBoards from '../../../hooks/useBoards';
+import BoardCard from '../../board/BoardCard';
+
 const BoardsTab = () => {
-    const [boards, setBoards] = useState([]);
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
-    const fetchBoards = async () => {
-        setLoading(true);
-        try {
-            const res = await getMyBoards();
-            setBoards(res.data);
-        } catch (err) {
-            console.error('Failed to fetch boards', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchBoards();
-    }, []);
-
-    const handleCreateBoard = () => {
-        navigate('/create-board');
-    };
+    const { boards, loading, error, patchBoard, removeBoard } = useBoards();
 
     return (
         <div className="px-3 py-4">
-            {/* "+" Button only (no title) */}
+            {/* "+" Button */}
             <div className="d-flex justify-content-end align-items-center mb-4">
                 <Button
                     variant="danger"
@@ -57,8 +38,19 @@ const BoardsTab = () => {
                 </Button>
             </div>
 
-            {/* Boards List or Empty State */}
-            {boards.length === 0 ? (
+            {/* Loading / Error / Empty / List */}
+            {loading ? (
+                <div className="text-center py-5">
+                    <Spinner animation="border" />
+                    <p className="text-muted mt-3 mb-0">Loading boards…</p>
+                </div>
+            ) : error ? (
+                <div className="py-5">
+                    <Alert variant="danger">
+                        {error?.response?.data?.message || error.message || 'Failed to load boards.'}
+                    </Alert>
+                </div>
+            ) : boards.length === 0 ? (
                 <div className="text-center py-5">
                     <div className="mb-4">
                         <svg
@@ -83,7 +75,17 @@ const BoardsTab = () => {
                 <div className="row g-4">
                     {boards.map((board) => (
                         <div key={board.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-                            <BoardCard board={board} />
+                            <BoardCard
+                                board={board}
+                                onUpdated={(updated) => {
+                                    // Update the board in the list immediately (name/desc/privacy/cover)
+                                    patchBoard(updated);
+                                }}
+                                onDeleted={(deletedId) => {
+                                    // Remove from list immediately
+                                    removeBoard(deletedId);
+                                }}
+                            />
                         </div>
                     ))}
                 </div>
