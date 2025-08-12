@@ -4,6 +4,7 @@ using PinterestMini.API.Domain.Interfaces.Boards;
 using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Boards;
+using PinterestMini.API.DTOs.Pins;
 using PinterestMini.API.Helpers;
 using PinterestMini.API.Middlewares;
 
@@ -16,7 +17,8 @@ public class BoardService : IBoardService
     private readonly IUserContextService _userContext;
     private readonly ImageUploader _imageUploader;
 
-    public BoardService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContext, ImageUploader imageUploader)
+    public BoardService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContext,
+        ImageUploader imageUploader)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -87,6 +89,22 @@ public class BoardService : IBoardService
     public async Task<int> GetPinsCountAsync(Guid boardId)
     {
         return await _unitOfWork.Boards.GetPinsCountAsync(boardId);
+    }
+
+    public async Task<IEnumerable<PinDto>> GetPinsForBoardAsync(Guid boardId, ClaimsPrincipal user)
+    {
+        var board = await _unitOfWork.Boards.GetByIdAsync(boardId)
+                    ?? throw new AppNotFoundException("Board not found");
+
+        if (board.IsPrivate)
+        {
+            var userId = _userContext.GetUserId(user);
+            if (board.UserId != userId)
+                throw new AppUnauthorizedException("This board is private.");
+        }
+
+        var pins = await _unitOfWork.Boards.GetPinsForBoardAsync(boardId);
+        return _mapper.Map<IEnumerable<PinDto>>(pins);
     }
 
     public async Task<IEnumerable<BoardDto>> GetBoardsByUserAsync(Guid userId)

@@ -58,6 +58,15 @@ public class BoardRepository : IBoardRepository
         return await _context.PinBoards.CountAsync(pb => pb.BoardId == boardId);
     }
 
+    public async Task<List<Pin>> GetPinsForBoardAsync(Guid boardId)
+    {
+        return await _context.PinBoards
+            .Where(pb => pb.BoardId == boardId)
+            .Include(pb => pb.Pin)
+            .Select(pb => pb.Pin)
+            .ToListAsync();
+    }
+
     public async Task<List<Pin>> GetPinsForBoardByUserAsync(Guid boardId, Guid userId)
     {
         return await _context.PinBoards
