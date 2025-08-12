@@ -1,32 +1,28 @@
-import { useEffect, useState } from 'react';
+import useAsync from './common/useAsync';
 import { getFollowersCount, getFollowingCount } from '../services/followService';
 
-const useFollowCounts = (userId) => {
-    const [followersCount, setFollowersCount] = useState(0);
-    const [followingCount, setFollowingCount] = useState(0);
-    const [loading, setLoading] = useState(false);
-
-    const fetchCounts = async () => {
-        try {
-            setLoading(true);
+export default function useFollowCounts(userId) {
+    const { data, loading, error, execute } = useAsync(
+        async () => {
+            if (!userId) return { followersCount: 0, followingCount: 0 };
             const [followersRes, followingRes] = await Promise.all([
                 getFollowersCount(userId),
                 getFollowingCount(userId),
             ]);
-            setFollowersCount(followersRes.count);
-            setFollowingCount(followingRes.count);
-        } catch (error) {
-            console.error('Failed to fetch follow counts', error);
-        } finally {
-            setLoading(false);
-        }
+            return {
+                followersCount: (followersRes && followersRes.count) != null ? followersRes.count : (followersRes && followersRes.data && followersRes.data.count) || 0,
+                followingCount: (followingRes && followingRes.count) != null ? followingRes.count : (followingRes && followingRes.data && followingRes.data.count) || 0,
+            };
+        },
+        [userId],
+        { immediate: Boolean(userId), initialData: { followersCount: 0, followingCount: 0 } }
+    );
+
+    return {
+        followersCount: data.followersCount,
+        followingCount: data.followingCount,
+        loading,
+        error,
+        refetch: execute,
     };
-
-    useEffect(() => {
-        if (userId) fetchCounts();
-    }, [userId]);
-
-    return { followersCount, followingCount, loading };
-};
-
-export default useFollowCounts;
+}

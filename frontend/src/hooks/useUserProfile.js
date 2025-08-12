@@ -1,34 +1,18 @@
-import { useState, useEffect } from 'react';
-import { getUserInfoByUsername } from '../services/authService'; // Assuming you have an API function to get user data
+import useAsync from './common/useAsync';
+import {getUserInfoByUsername} from '../services/authService';
 
-const useUserProfile = (username) => {
-    const [profile, setProfile] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+export default function useUserProfile(username) {
+    const {data, loading, error} = useAsync(
+        async () => {
+            if (!username) return null;
+            const response = await getUserInfoByUsername(username);
+            if (response && response.success) return response.data;
+            if (response && response.data && response.data.success) return response.data.data;
+            throw (response && (response.error || (response.data && response.data.error))) || new Error('Failed to load profile');
+        },
+        [username],
+        {immediate: Boolean(username), initialData: null}
+    );
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                setLoading(true);
-                const response = await getUserInfoByUsername(username);  // Replace with your actual API call
-                if (response.success) {
-                    setProfile(response.data);
-                } else {
-                    setError(response.error);
-                }
-            } catch (err) {
-                setError(err.message || 'An error occurred');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (username) {
-            fetchProfile();
-        }
-    }, [username]); // Refetch profile when username changes
-
-    return { profile, loading, error };
-};
-
-export default useUserProfile;
+    return {profile: data, loading, error};
+}

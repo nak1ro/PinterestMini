@@ -1,47 +1,39 @@
-import { useState, useEffect } from 'react';
+import createCrudHook from './common/createCrudHook';
 import { getComments, postComment } from '../services/commentService';
 
-const useComments = (pinId) => {
-    const [comments, setComments] = useState([]);
-    const [loading, setLoading] = useState(true);
+function normalizePosted(c) {
+    return {
+        id: c.id,
+        content: c.content,
+        createdAt: c.createdAt,
+        user: {
+            username: c.username,
+            profilePictureUrl: c.userAvatarUrl,
+        },
+    };
+}
 
-    useEffect(() => {
-        if (!pinId) return;
-        const fetchComments = async () => {
-            try {
-                const data = await getComments(pinId);
-                setComments(data);
-            } catch (err) {
-                console.error('Failed to load comments', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchComments();
-    }, [pinId]);
+export default function useComments(pinId) {
+    const useCrud = createCrudHook({
+        list: async () => getComments(pinId),
+        create: async (content) => postComment(pinId, content),
+        selectList: (r) => (Array.isArray(r && r.data) ? r.data : (Array.isArray(r) ? r : [])),
+        selectItem: (r) => normalizePosted((r && r.data) != null ? r.data : r),
+        key: 'id',
+    });
+
+    const { items, loading, error, createItem, refresh, setItems } = useCrud();
 
     const addComment = async (content) => {
-        const c = await postComment(pinId, content);
-
-        const normalized = {
-            id: c.id,
-            content: c.content,
-            createdAt: c.createdAt,
-            user: {
-                username: c.username,
-                profilePictureUrl: c.userAvatarUrl
-            }
-        };
-
-        setComments((prev) => [normalized, ...prev]);
+        const newItem = await createItem(content);
+        setItems((prev) => [newItem, ...prev]);
     };
-
 
     return {
-        comments,
+        comments: items,
         loading,
-        addComment
+        error,
+        addComment,
+        refetch: refresh,
     };
-};
-
-export default useComments;
+}

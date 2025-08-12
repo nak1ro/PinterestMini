@@ -1,31 +1,22 @@
-import { useEffect, useState } from 'react';
-import { getCreatedPins } from '../services/pinService'; // 👈
+import useAsync from './common/useAsync';
+import { getCreatedPins } from '../services/pinService';
 
-const useCreatedPins = () => {
-    const [createdPins, setCreatedPins] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    const fetchCreatedPins = async () => {
-        setLoading(true);
-        try {
-            const data = await getCreatedPins(); // ✅ без username
-            setCreatedPins(data);
-        } catch (error) {
-            console.error('Error fetching created pins:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchCreatedPins();
-    }, []);
+export default function useCreatedPins() {
+    const { data, loading, error, execute } = useAsync(
+        async () => {
+            const res = await getCreatedPins();
+            if (Array.isArray(res && res.data)) return res.data;
+            if (Array.isArray(res)) return res;
+            return [];
+        },
+        [],
+        { immediate: true, initialData: [] }
+    );
 
     return {
-        createdPins,
+        createdPins: data,
         loading,
-        refetch: fetchCreatedPins,
+        error,
+        refetch: execute,
     };
-};
-
-export default useCreatedPins;
+}

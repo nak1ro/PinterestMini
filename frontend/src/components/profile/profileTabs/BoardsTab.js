@@ -1,15 +1,35 @@
 // src/components/common/layout/profileTabs/BoardsTab.jsx
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Spinner, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Plus } from 'react-bootstrap-icons';
 
 import useBoards from '../../../hooks/useBoards';
 import BoardCard from '../../board/BoardCard';
+import BoardView from '../../board/BoardView';
 
 const BoardsTab = () => {
     const navigate = useNavigate();
     const { boards, loading, error, patchBoard, removeBoard } = useBoards();
+
+    // Local view state: list vs board view
+    const [openBoard, setOpenBoard] = useState(null);
+
+    const sortedBoards = useMemo(() => {
+        // Keep UI deterministic: example sort by last update/name if present
+        return [...boards].sort((a, b) => (a.updatedAt || '').localeCompare(b.updatedAt || '') || a.name.localeCompare(b.name));
+    }, [boards]);
+
+    if (openBoard) {
+        return (
+            <div className="px-3 py-4">
+                <BoardView
+                    board={openBoard}
+                    onBack={() => setOpenBoard(null)}
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="px-3 py-4">
@@ -25,12 +45,12 @@ const BoardsTab = () => {
                         transition: 'all 0.2s ease'
                     }}
                     onMouseEnter={(e) => {
-                        e.target.style.transform = 'translateY(-1px) scale(1.02)';
-                        e.target.style.boxShadow = '0 6px 20px rgba(230, 0, 35, 0.3)';
+                        e.currentTarget.style.transform = 'translateY(-1px) scale(1.02)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(230, 0, 35, 0.3)';
                     }}
                     onMouseLeave={(e) => {
-                        e.target.style.transform = 'translateY(0) scale(1)';
-                        e.target.style.boxShadow = 'none';
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                        e.currentTarget.style.boxShadow = 'none';
                     }}
                 >
                     <Plus className="me-2 fw-bold" size={23} />
@@ -50,7 +70,7 @@ const BoardsTab = () => {
                         {error?.response?.data?.message || error.message || 'Failed to load boards.'}
                     </Alert>
                 </div>
-            ) : boards.length === 0 ? (
+            ) : sortedBoards.length === 0 ? (
                 <div className="text-center py-5">
                     <div className="mb-4">
                         <svg
@@ -73,7 +93,7 @@ const BoardsTab = () => {
                 </div>
             ) : (
                 <div className="row g-4">
-                    {boards.map((board) => (
+                    {sortedBoards.map((board) => (
                         <div key={board.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
                             <BoardCard
                                 board={board}
@@ -85,6 +105,7 @@ const BoardsTab = () => {
                                     // Remove from list immediately
                                     removeBoard(deletedId);
                                 }}
+                                onOpen={(b) => setOpenBoard(b)}
                             />
                         </div>
                     ))}

@@ -1,50 +1,38 @@
-import { useEffect, useState } from 'react';
-import {
-    getSavedPins,
-    savePin as savePinApi,
-    unsavePin as unsavePinApi
-} from '../services/pinService';
+import useAsync from './common/useAsync';
+import { getSavedPins, savePin as savePinApi, unsavePin as unsavePinApi } from '../services/pinService';
 
-const useSavedPins = () => {
-    const [savedPins, setSavedPins] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    const fetchSavedPins = async () => {
-        setLoading(true);
-        try {
-            const data = await getSavedPins();
-            setSavedPins(data);
-        } catch (error) {
-            console.error('Error fetching saved pins:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+export default function useSavedPins() {
+    const { data, loading, error, execute, setData } = useAsync(
+        async () => {
+            const res = await getSavedPins();
+            if (Array.isArray(res && res.data)) return res.data;
+            if (Array.isArray(res)) return res;
+            return [];
+        },
+        [],
+        { immediate: true, initialData: [] }
+    );
 
     const savePin = async (pinId) => {
         await savePinApi(pinId);
-        await fetchSavedPins();
+        await execute();
     };
 
     const unsavePin = async (pinId) => {
         await unsavePinApi(pinId);
-        await fetchSavedPins();
+        await execute();
     };
 
-    const isPinSaved = (pinId) => savedPins.some(pin => pin.id === pinId);
-
-    useEffect(() => {
-        fetchSavedPins();
-    }, []);
+    const isPinSaved = (pinId) => data.some((p) => p.id === pinId);
 
     return {
-        savedPins,
+        savedPins: data,
         loading,
+        error,
         savePin,
         unsavePin,
         isPinSaved,
-        refetch: fetchSavedPins
+        refetch: execute,
+        setSavedPins: setData,
     };
-};
-
-export default useSavedPins;
+}

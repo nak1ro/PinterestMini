@@ -1,26 +1,18 @@
-import { useEffect, useState } from 'react';
-import {getPublicPins} from '../services/pinService';
+import useAsync from './common/useAsync';
+import { getPublicPins } from '../services/pinService';
 
-const usePins = () => {
-    const [pins, setPins] = useState([]);
-    const [loading, setLoading] = useState(true);
+export default function usePins() {
+    const { data, loading, error } = useAsync(
+        async () => {
+            const response = await getPublicPins();
+            if (Array.isArray(response && response.data && response.data.items)) return response.data.items;
+            if (Array.isArray(response && response.data)) return response.data;
+            if (Array.isArray(response)) return response;
+            return [];
+        },
+        [],
+        { immediate: true, initialData: [] }
+    );
 
-    useEffect(() => {
-        const fetchPins = async () => {
-            try {
-                const response = await getPublicPins();
-                setPins(response.data.items || []); // <- paginated: { items, totalCount, ... }
-            } catch (error) {
-                console.error('Failed to fetch pins:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPins();
-    }, []);
-
-    return { pins, loading };
-};
-
-export default usePins;
+    return { pins: data, loading, error };
+}

@@ -1,36 +1,36 @@
-import { useCallback, useEffect, useState } from 'react';
-import { getMyBoards } from '../services/boardService';
+import { getMyBoards, changeBoardInfo, deleteBoard } from '../services/boardService';
+import createCrudHook from './common/createCrudHook';
+
+const useBoardsBase = createCrudHook({
+    list: async () => getMyBoards(),
+    update: async (id, formData) => changeBoardInfo(id, formData),
+    remove: async (id) => deleteBoard(id),
+    selectList: (r) => (Array.isArray(r && r.data) ? r.data : (Array.isArray(r) ? r : [])),
+    selectItem: (r) => ((r && r.data) != null ? r.data : r),
+    key: 'id',
+});
 
 export default function useBoards() {
-    const [boards, setBoards] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { items, loading, error, refresh, setItems, updateItem, removeItem } = useBoardsBase();
 
-    const refetch = useCallback(async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const res = await getMyBoards();
-            // backend might return { data: [...] } or just [...]
-            setBoards(res.data ?? res);
-        } catch (e) {
-            setError(e);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+    const boards = items;
 
-    useEffect(() => {
-        refetch();
-    }, [refetch]);
+    const patchBoard = (updated) => {
+        setItems((prev) => prev.map((b) => (b.id === updated.id ? { ...b, ...updated } : b)));
+    };
 
-    const patchBoard = useCallback((updated) => {
-        setBoards((prev) => prev.map((b) => (b.id === updated.id ? { ...b, ...updated } : b)));
-    }, []);
+    const removeBoardLocal = (id) => {
+        setItems((prev) => prev.filter((b) => b.id !== id));
+    };
 
-    const removeBoard = useCallback((id) => {
-        setBoards((prev) => prev.filter((b) => b.id !== id));
-    }, []);
-
-    return { boards, loading, error, refetch, patchBoard, removeBoard };
+    return {
+        boards,
+        loading,
+        error,
+        refetch: refresh,
+        patchBoard,
+        removeBoard: removeBoardLocal,
+        updateItem,
+        removeItem,
+    };
 }

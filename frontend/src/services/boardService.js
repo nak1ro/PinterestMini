@@ -26,3 +26,7 @@ export const deleteBoard = async (boardId) => {
     return axiosClient.delete(`/board/${boardId}`);
 };
 
+export const getPinsOfBoard = async (boardId) => {
+    return axiosClient.get(`/board/${boardId}/pins`);
+};
+

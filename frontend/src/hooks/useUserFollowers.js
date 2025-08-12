@@ -1,31 +1,18 @@
-import { useEffect, useState } from 'react';
+import useAsync from './common/useAsync';
 import { getFollowers } from '../services/followService';
 
-const useUserFollowers = (userId, enabled = true) => {
-    const [followers, setFollowers] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-
-    const fetchFollowers = async () => {
-        try {
-            setLoading(true);
+export default function useUserFollowers(userId, enabled = true) {
+    const { data, loading, error, execute } = useAsync(
+        async () => {
+            if (!enabled || !userId) return [];
             const res = await getFollowers(userId);
-            setFollowers(res);
-        } catch (err) {
-            setError(err);
-            console.error('Failed to fetch followers:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
+            if (Array.isArray(res && res.data)) return res.data;
+            if (Array.isArray(res)) return res;
+            return [];
+        },
+        [userId, enabled],
+        { immediate: Boolean(enabled && userId), initialData: [] }
+    );
 
-    useEffect(() => {
-        if (enabled && userId) {
-            fetchFollowers();
-        }
-    }, [enabled, userId]);
-
-    return { followers, loading, error, refetch: fetchFollowers };
-};
-
-export default useUserFollowers;
+    return { followers: data, loading, error, refetch: execute };
+}

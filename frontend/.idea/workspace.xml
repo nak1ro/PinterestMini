@@ -5,32 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/board/BoardCard.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/board/EditBoardModal.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/hooks/useBoardEditor.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/hooks/useBoards.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/hooks/useProfileController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/board/BoardView.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/hooks/useBoardPins.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/Auth/AuthButtons.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/auth/AuthButtons.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/Auth/AuthModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/auth/AuthModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/Auth/SignInForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/auth/SignInForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/Auth/SignUpForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/auth/SignUpForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/layout/BoardCard.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/layout/EditBoardModal.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/layout/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/layout/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/layout/profileTabs/BoardsTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/layout/profileTabs/BoardsTab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/layout/profileTabs/PinsTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/layout/profileTabs/PinsTab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinGrid.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinGrid.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/pin/PinPreviewModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinPreviewModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/CreatePin.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/CreatePin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/Explore.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/Explore.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/OtherUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/OtherUserProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/PinDetail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/PinDetail.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/Profile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/Tag.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/Tag.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/AppRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/AppRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/board/BoardCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/board/BoardCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/profile/profileTabs/BoardsTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/profileTabs/BoardsTab.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hooks/useBoards.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/useBoards.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/boardService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/boardService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -134,7 +114,8 @@
       <workItem from="1754517799409" duration="4662000" />
       <workItem from="1754620495361" duration="1662000" />
       <workItem from="1754694606607" duration="566000" />
-      <workItem from="1755030807632" duration="317000" />
+      <workItem from="1755030807632" duration="1656000" />
+      <workItem from="1755038496911" duration="2042000" />
     </task>
     <servers />
   </component>

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import {useCallback, useMemo} from 'react';
+import useAsync from './common/useAsync';
 import {
     isFollowingUser,
     followUser,
@@ -7,59 +8,56 @@ import {
     getFollowingCount,
 } from '../services/followService';
 
-const useFollowUser = (targetUserId, currentUserId) => {
-    const [isFollowing, setIsFollowing] = useState(false);
-    const [followersCount, setFollowersCount] = useState(0);
-    const [followingCount, setFollowingCount] = useState(0);
-    const [loading, setLoading] = useState(false);
+export default function useFollowUser(targetUserId, currentUserId) {
+    const enabled = Boolean(targetUserId && currentUserId && targetUserId !== currentUserId);
 
-    const fetchFollowStatus = async () => {
-        try {
-            setLoading(true);
+    const {data, loading, error, execute, setData} = useAsync(
+        async () => {
+            if (!enabled) {
+                return {isFollowing: false, followersCount: 0, followingCount: 0};
+            }
             const [statusRes, followersRes, followingRes] = await Promise.all([
                 isFollowingUser(targetUserId),
                 getFollowersCount(targetUserId),
                 getFollowingCount(targetUserId),
             ]);
-            setIsFollowing(statusRes.isFollowing);
-            setFollowersCount(followersRes.count);
-            setFollowingCount(followingRes.count);
-        } catch (err) {
-            console.error('Failed to fetch follow status', err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    const toggleFollow = async () => {
+            return {
+                isFollowing: !!((statusRes && statusRes.isFollowing) ?? (statusRes && statusRes.data && statusRes.data.isFollowing)),
+                followersCount: (followersRes && followersRes.count) != null ? followersRes.count : (followersRes && followersRes.data && followersRes.data.count) || 0,
+                followingCount: (followingRes && followingRes.count) != null ? followingRes.count : (followingRes && followingRes.data && followingRes.data.count) || 0,
+            };
+        },
+        [targetUserId, currentUserId, enabled],
+        {immediate: enabled, initialData: {isFollowing: false, followersCount: 0, followingCount: 0}}
+    );
+
+    const toggleFollow = useCallback(async () => {
+        if (!enabled) return;
         try {
-            if (isFollowing) {
+            if (data.isFollowing) {
+                setData((prev) => ({
+                    ...prev,
+                    isFollowing: false,
+                    followersCount: Math.max(prev.followersCount - 1, 0)
+                }));
                 await unfollowUser(targetUserId);
-                setIsFollowing(false);
-                setFollowersCount((prev) => Math.max(prev - 1, 0));
             } else {
+                setData((prev) => ({...prev, isFollowing: true, followersCount: prev.followersCount + 1}));
                 await followUser(targetUserId);
-                setIsFollowing(true);
-                setFollowersCount((prev) => prev + 1);
             }
         } catch (err) {
-            console.error('Failed to toggle follow', err);
+            await execute();
         }
-    };
+    }, [enabled, data.isFollowing, setData, execute, targetUserId]);
 
-    useEffect(() => {
-        if (targetUserId && currentUserId && targetUserId !== currentUserId) {
-            fetchFollowStatus();
-        }
-    }, [targetUserId, currentUserId]);
-
-    return {
-        isFollowing,
-        followersCount,
-        followingCount,
+    return useMemo(() => ({
+        isFollowing: data.isFollowing,
+        followersCount: data.followersCount,
+        followingCount: data.followingCount,
         loading,
+        error,
         toggleFollow,
-    };
-};
-
-export default useFollowUser;
+        refetch: execute,
+    }), [data, loading, error, toggleFollow, execute]);
+}

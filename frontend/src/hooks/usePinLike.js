@@ -1,41 +1,38 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
+import useAsync from './common/useAsync';
 import { likePin, unlikePin, isPinLiked, getLikeStatus } from '../services/pinService';
 
-const usePinLike = (pinId) => {
-    const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(0);
+export default function usePinLike(pinId) {
+    const { data, loading, error, execute, setData } = useAsync(
+        async () => {
+            if (!pinId) return { liked: false, likeCount: 0 };
+            const [likedRes, countRes] = await Promise.all([isPinLiked(pinId), getLikeStatus(pinId)]);
+            return {
+                liked: !!((likedRes && likedRes.isLiked) ?? (likedRes && likedRes.data && likedRes.data.isLiked)),
+                likeCount: (countRes && countRes.count) != null ? countRes.count : (countRes && countRes.data && countRes.data.count) || 0,
+            };
+        },
+        [pinId],
+        { immediate: Boolean(pinId), initialData: { liked: false, likeCount: 0 } }
+    );
 
-    const fetchLikeStatus = async () => {
+    const toggleLike = useCallback(async () => {
+        if (!pinId) return;
         try {
-            const [likedRes, countRes] = await Promise.all([
-                isPinLiked(pinId),
-                getLikeStatus(pinId)
-            ]);
-            setLiked(likedRes.isLiked);
-            setLikeCount(countRes.count); // ✅ FIXED HERE
-        } catch (err) {
-            console.error('Error fetching like status', err);
-        }
-    };
-
-    useEffect(() => {
-        if (pinId) fetchLikeStatus();
-    }, [pinId]);
-
-    const toggleLike = async () => {
-        try {
-            if (liked) {
+            if (data.liked) {
+                setData((prev) => ({ ...prev, liked: false, likeCount: Math.max(prev.likeCount - 1, 0) }));
                 await unlikePin(pinId);
             } else {
+                setData((prev) => ({ ...prev, liked: true, likeCount: prev.likeCount + 1 }));
                 await likePin(pinId);
             }
-            await fetchLikeStatus(); // refresh from backend
         } catch (err) {
-            console.error('Error toggling like', err);
+            await execute();
         }
-    };
+    }, [pinId, data.liked, setData, execute]);
 
-    return { liked, likeCount, toggleLike };
-};
-
-export default usePinLike;
+    return useMemo(
+        () => ({ liked: data.liked, likeCount: data.likeCount, loading, error, toggleLike, refetch: execute }),
+        [data, loading, error, toggleLike, execute]
+    );
+}
