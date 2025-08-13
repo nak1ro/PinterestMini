@@ -55,19 +55,19 @@ public class BoardController : ControllerBase
         return Ok(boards);
     }
 
-    [HttpGet("{boardId:guid}/pins")]
-    [Authorize]
-    public async Task<IActionResult> GetPinsForBoard([FromRoute] Guid boardId)
-    {
-        var pins = await _boardService.GetPinsForBoardAsync(boardId, User);
-        return Ok(pins);
-    }
-
     [HttpGet("{boardId:guid}/pins-count")]
     [AllowAnonymous]
     public async Task<IActionResult> GetPinsCount(Guid boardId)
     {
         var count = await _boardService.GetPinsCountAsync(boardId);
         return Ok(new { count });
+    }
+    
+    [HttpGet("{boardId:guid}/pins")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetPinsOfBoard([FromRoute] Guid boardId)
+    {
+        var pins = await _boardService.GetPinsOfBoardAsync(boardId, User);
+        return Ok(pins);
     }
 }

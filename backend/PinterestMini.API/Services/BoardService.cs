@@ -91,26 +91,31 @@ public class BoardService : IBoardService
         return await _unitOfWork.Boards.GetPinsCountAsync(boardId);
     }
 
-    public async Task<IEnumerable<PinDto>> GetPinsForBoardAsync(Guid boardId, ClaimsPrincipal user)
-    {
-        var board = await _unitOfWork.Boards.GetByIdAsync(boardId)
-                    ?? throw new AppNotFoundException("Board not found");
-
-        if (board.IsPrivate)
-        {
-            var userId = _userContext.GetUserId(user);
-            if (board.UserId != userId)
-                throw new AppUnauthorizedException("This board is private.");
-        }
-
-        var pins = await _unitOfWork.Boards.GetPinsForBoardAsync(boardId);
-        return _mapper.Map<IEnumerable<PinDto>>(pins);
-    }
-
     public async Task<IEnumerable<BoardDto>> GetBoardsByUserAsync(Guid userId)
     {
         var boards = await _unitOfWork.Boards.GetPublicBoardsByUserIdAsync(userId);
         return _mapper.Map<IEnumerable<BoardDto>>(boards);
+    }
+
+    public async Task<IEnumerable<PinDto>> GetPinsOfBoardAsync(Guid boardId, ClaimsPrincipal user)
+    {
+        var board = await _unitOfWork.Boards.GetByIdAsync(boardId)
+                    ?? throw new AppNotFoundException("Board not found");
+
+        Guid? requesterId = null;
+        if (user?.Identity?.IsAuthenticated == true)
+        {
+            requesterId = _userContext.GetUserId(user);
+        }
+
+        if (board.IsPrivate && (requesterId == null || requesterId.Value != board.UserId))
+        {
+            throw new AppUnauthorizedException("This board is private.");
+        }
+
+        var pins = await _unitOfWork.Boards.GetPinsForBoardByUserAsync(boardId, board.UserId);
+
+        return _mapper.Map<IEnumerable<PinDto>>(pins);
     }
 
     private async Task<string> SaveImageAsync(IFormFile image)

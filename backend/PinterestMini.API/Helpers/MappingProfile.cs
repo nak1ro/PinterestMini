@@ -34,8 +34,9 @@ public class MappingProfile : Profile
         CreateMap<Board, BoardPreviewDto>();
 
         // ✅ User → OwnerDto (for embedding inside PinDto)
-        CreateMap<User, OwnerDto>();
-
+        CreateMap<User, OwnerDto>()
+            .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName));
+        
         // ✅ Pin → PinDto (unified version)
         CreateMap<Pin, PinDto>()
             .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.Owner))

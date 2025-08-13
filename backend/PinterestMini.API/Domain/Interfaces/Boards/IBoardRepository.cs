@@ -11,6 +11,5 @@ public interface IBoardRepository
     Task<List<Board>> GetByUserIdAsync(Guid userId);
     Task<List<Board>> GetPublicBoardsByUserIdAsync(Guid userId);
     Task<int> GetPinsCountAsync(Guid boardId);
-    Task<List<Pin>> GetPinsForBoardAsync(Guid boardId);
     Task<List<Pin>> GetPinsForBoardByUserAsync(Guid boardId, Guid userId);
 }

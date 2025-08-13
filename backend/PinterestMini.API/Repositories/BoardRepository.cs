@@ -58,21 +58,25 @@ public class BoardRepository : IBoardRepository
         return await _context.PinBoards.CountAsync(pb => pb.BoardId == boardId);
     }
 
-    public async Task<List<Pin>> GetPinsForBoardAsync(Guid boardId)
-    {
-        return await _context.PinBoards
-            .Where(pb => pb.BoardId == boardId)
-            .Include(pb => pb.Pin)
-            .Include(pb => pb.User)
-            .Select(pb => pb.Pin)
-            .ToListAsync();
-    }
-
     public async Task<List<Pin>> GetPinsForBoardByUserAsync(Guid boardId, Guid userId)
     {
         return await _context.PinBoards
             .Where(pb => pb.BoardId == boardId && pb.UserId == userId)
+
+            // Load the Pin and its Owner
             .Include(pb => pb.Pin)
+            .ThenInclude(p => p.Owner)
+
+            // Load PinTags -> Tag (for PinDto.Tags)
+            .Include(pb => pb.Pin)
+            .ThenInclude(p => p.PinTags)
+            .ThenInclude(pt => pt.Tag)
+
+            // Load PinBoards -> Board (for PinDto.Boards)
+            .Include(pb => pb.Pin)
+            .ThenInclude(p => p.PinBoards)
+            .ThenInclude(pbb => pbb.Board)
+
             .Select(pb => pb.Pin)
             .ToListAsync();
     }
