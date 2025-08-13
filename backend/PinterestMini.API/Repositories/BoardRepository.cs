@@ -63,6 +63,7 @@ public class BoardRepository : IBoardRepository
         return await _context.PinBoards
             .Where(pb => pb.BoardId == boardId)
             .Include(pb => pb.Pin)
+            .Include(pb => pb.User)
             .Select(pb => pb.Pin)
             .ToListAsync();
     }
