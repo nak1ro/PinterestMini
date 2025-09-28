@@ -10,6 +10,10 @@ export const getCreatedPins = async () => {
     return res.data;
 };
 
+export const updatePin = async (pinId) => {
+    const res = await axiosClient.put(`/pin/${pinId}`);
+    return res.data;
+};
 
 export const savePin = async (pinId) => {
     await axiosClient.post(`/pin/${pinId}/save`);

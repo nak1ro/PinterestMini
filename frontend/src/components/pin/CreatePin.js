@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Container, Form, Row, Col, FloatingLabel, Image, Button, Alert, ProgressBar, Spinner } from 'react-bootstrap';
-import { createPin } from '../../services/pinService';
-import { getMyBoards } from '../../services/boardService';
-import { useDropzone } from 'react-dropzone';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, {useState, useEffect, useCallback} from 'react';
+import {Container, Form, Row, Col, FloatingLabel, Image, Button, Alert, ProgressBar, Spinner} from 'react-bootstrap';
+import {createPin} from '../../services/pinService';
+import {getMyBoards} from '../../services/boardService';
+import {useDropzone} from 'react-dropzone';
+import {motion, AnimatePresence} from 'framer-motion';
+import PinTagsControl from '../common/PinTagsControl';
 
-const TagInput = ({ tags, setTags }) => {
+const TagInput = ({tags, setTags}) => {
     const handleTagInput = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -19,38 +20,20 @@ const TagInput = ({ tags, setTags }) => {
 
     return (
         <>
-            <Form.Label>Tags</Form.Label>
-            <div className="d-flex flex-wrap gap-2 mb-2">
-                {tags.map((tag, idx) => (
-                    <span
-                        key={idx}
-                        className="badge bg-secondary d-flex align-items-center"
-                        style={{ padding: '0.5em 0.75em' }}
-                    >
-                        {tag}
-                        <Button
-                            variant="link"
-                            size="sm"
-                            onClick={() => setTags(tags.filter((_, i) => i !== idx))}
-                            className="ms-2 p-0 text-white"
-                            aria-label="Remove tag"
-                            style={{ fontSize: '1rem', lineHeight: 1 }}
-                        >
-                            ×
-                        </Button>
-                    </span>
-                ))}
-            </div>
-            <Form.Control
-                type="text"
+            <PinTagsControl
+                value={tags}
+                onChange={setTags}
+                mode="string"
+                label="Tags"
                 placeholder="Type and press Enter"
-                onKeyDown={handleTagInput}
+                maxTags={15}
+                allowDuplicates={false}
             />
         </>
     );
 };
 
-const BoardSelector = ({ boards, selectedBoards, setSelectedBoards }) => {
+const BoardSelector = ({boards, selectedBoards, setSelectedBoards}) => {
     const toggleBoardSelection = (boardId) => {
         setSelectedBoards((prevBoards) =>
             prevBoards.includes(boardId)
@@ -79,7 +62,7 @@ const BoardSelector = ({ boards, selectedBoards, setSelectedBoards }) => {
     );
 };
 
-const PinImageInput = ({ selectedFile, setSelectedFile, previewUrl, setPreviewUrl }) => {
+const PinImageInput = ({selectedFile, setSelectedFile, previewUrl, setPreviewUrl}) => {
     const handleFile = useCallback((file) => {
         if (
             !file ||
@@ -103,9 +86,9 @@ const PinImageInput = ({ selectedFile, setSelectedFile, previewUrl, setPreviewUr
         handleFile(file);
     }, [handleFile]);
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({
         onDrop,
-        accept: { 'image/*': [] },
+        accept: {'image/*': []},
         multiple: false
     });
 
@@ -265,10 +248,10 @@ const CreatePinPage = () => {
                 {successMessage && (
                     <motion.div
                         key="success-alert"
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.4 }}
+                        initial={{opacity: 0, y: -20}}
+                        animate={{opacity: 1, y: 0}}
+                        exit={{opacity: 0, y: -20}}
+                        transition={{duration: 0.4}}
                     >
                         <Alert
                             variant="success"
@@ -308,7 +291,7 @@ const CreatePinPage = () => {
                             <Form.Control
                                 as="textarea"
                                 placeholder=" "
-                                style={{ height: '120px' }}
+                                style={{height: '120px'}}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
@@ -337,11 +320,11 @@ const CreatePinPage = () => {
                 </Row>
 
                 {error && <Alert variant="danger">{error}</Alert>}
-                {sending && <ProgressBar now={uploadPct} animated className="mt-2" />}
+                {sending && <ProgressBar now={uploadPct} animated className="mt-2"/>}
 
                 <div className="mt-4 d-flex justify-content-end">
                     <Button variant="primary" type="submit" disabled={sending}>
-                        {sending && <Spinner size="sm" animation="border" className="me-2" />}
+                        {sending && <Spinner size="sm" animation="border" className="me-2"/>}
                         Create pin
                     </Button>
                 </div>

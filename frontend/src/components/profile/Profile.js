@@ -1,10 +1,10 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { useParams } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
-import { ArrowLeft, Eye } from 'react-bootstrap-icons';
+import {motion} from 'framer-motion';
+import {useParams} from 'react-router-dom';
+import {Button} from 'react-bootstrap';
+import {ArrowLeft, Eye} from 'react-bootstrap-icons';
 
-import { useAppContext } from '../../context/AppContext';
+import {useAppContext} from '../../context/AppContext';
 import useProfileController from '../../hooks/useProfileController';
 
 import BoardsTab from './profileTabs/BoardsTab';
@@ -13,21 +13,21 @@ import OtherUserProfile from './OtherUserProfile';
 import UserListModal from '../common/UserListModal';
 
 const Profile = () => {
-    const { username } = useParams();
-    const { user, userId } = useAppContext();
+    const {username} = useParams();
+    const {user, userId} = useAppContext();
 
     // All logic/state lives in the controller hook
-    const ctrl = useProfileController({ username, user, userId });
+    const ctrl = useProfileController({username, user, userId});
 
     if (ctrl.viewAsOther) return renderOtherUserView();
 
     return (
         <motion.div
             className="container-fluid py-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            style={{ color: '#111', minHeight: '100vh' }}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.3}}
+            style={{color: '#111', minHeight: '100vh'}}
         >
             <div className="row">
                 <div className="col-lg-9">
@@ -35,7 +35,7 @@ const Profile = () => {
                     {renderTabButtons()}
                     {ctrl.activeTab === 'pins'
                         ? renderPinsTab()
-                        : <BoardsTab />}
+                        : <BoardsTab/>}
                 </div>
                 <div className="col-lg-3">{renderSidebar()}</div>
             </div>
@@ -55,7 +55,7 @@ const Profile = () => {
     function renderHeader() {
         return (
             <div className="d-flex justify-content-between align-items-center mb-4 px-3">
-                <h1 className="fw-bold fs-2 mb-0" style={{ color: '#111' }}>
+                <h1 className="fw-bold fs-2 mb-0" style={{color: '#111'}}>
                     Your saved ideas
                 </h1>
             </div>
@@ -66,7 +66,7 @@ const Profile = () => {
         return (
             <div
                 className="d-flex justify-content-start px-3 border-bottom border-bottom"
-                style={{ borderColor: '#ddd' }}
+                style={{borderColor: '#ddd'}}
             >
                 {renderTabButton('pins', 'Pins')}
                 {renderTabButton('boards', 'Boards')}
@@ -131,7 +131,7 @@ const Profile = () => {
                             if (!e.target.src.endsWith(fallback)) e.target.src = fallback;
                         }}
                     />
-                    <h5 className="fw-bold mb-1" style={{ color: '#111' }}>
+                    <h5 className="fw-bold mb-1" style={{color: '#111'}}>
                         {ctrl.user?.username || 'Unknown'}
                     </h5>
 
@@ -139,24 +139,24 @@ const Profile = () => {
                     <div className="d-flex justify-content-center gap-5 mt-3 mb-4">
                         <div
                             className="text-center border rounded-3 py-2 px-3"
-                            style={{ cursor: 'pointer', minWidth: '100px' }}
+                            style={{cursor: 'pointer', minWidth: '100px'}}
                             onClick={ctrl.openFollowers}
                         >
-                            <div className="fw-bold" style={{ color: '#111' }}>
+                            <div className="fw-bold" style={{color: '#111'}}>
                                 {ctrl.followersCount ?? 0}
                             </div>
-                            <div className="small" style={{ color: '#777' }}>Followers</div>
+                            <div className="small" style={{color: '#777'}}>Followers</div>
                         </div>
 
                         <div
                             className="text-center border rounded-3 py-2 px-3"
-                            style={{ cursor: 'pointer', minWidth: '100px' }}
+                            style={{cursor: 'pointer', minWidth: '100px'}}
                             onClick={ctrl.openFollowing}
                         >
-                            <div className="fw-bold" style={{ color: '#111' }}>
+                            <div className="fw-bold" style={{color: '#111'}}>
                                 {ctrl.followingCount ?? 0}
                             </div>
-                            <div className="small" style={{ color: '#777' }}>Following</div>
+                            <div className="small" style={{color: '#777'}}>Following</div>
                         </div>
                     </div>
 
@@ -181,25 +181,25 @@ const Profile = () => {
                             e.target.style.transform = 'translateY(0)';
                         }}
                     >
-                        <Eye size={16} className="me-2" />
+                        <Eye size={16} className="me-2"/>
                         View profile
                     </Button>
                 </div>
 
                 {/* Stats */}
-                <div className="border-top pt-3" style={{ borderColor: '#ddd' }}>
+                <div className="border-top pt-3" style={{borderColor: '#ddd'}}>
                     <div className="row text-center">
                         <div className="col-6">
-                            <div className="fw-bold" style={{ color: '#111' }}>
+                            <div className="fw-bold" style={{color: '#111'}}>
                                 {ctrl.createdPins?.length ?? 0}
                             </div>
-                            <div className="small" style={{ color: '#777' }}>Created</div>
+                            <div className="small" style={{color: '#777'}}>Created</div>
                         </div>
                         <div className="col-6">
-                            <div className="fw-bold" style={{ color: '#111' }}>
+                            <div className="fw-bold" style={{color: '#111'}}>
                                 {ctrl.savedPins?.length ?? 0}
                             </div>
-                            <div className="small" style={{ color: '#777' }}>Saved</div>
+                            <div className="small" style={{color: '#777'}}>Saved</div>
                         </div>
                     </div>
                 </div>
@@ -210,7 +210,7 @@ const Profile = () => {
     function renderOtherUserView() {
         return (
             <div>
-                <div className="position-fixed top-0 start-0 p-3" style={{ zIndex: 1050 }}>
+                <div className="position-fixed top-0 start-0 p-3" style={{zIndex: 1050}}>
                     <Button
                         variant="light"
                         className="rounded-pill px-3 py-2 shadow-sm"
@@ -230,14 +230,11 @@ const Profile = () => {
                             e.target.style.transform = 'scale(1)';
                         }}
                     >
-                        <ArrowLeft size={16} className="me-2" />
+                        <ArrowLeft size={16} className="me-2"/>
                         Back to My Profile
                     </Button>
                 </div>
-
-                {/* You said to keep the "view as other" design inside this component.
-            If you decide to inline that UI fully, replace <OtherUserProfile /> here. */}
-                <OtherUserProfile />
+                <OtherUserProfile/>
             </div>
         );
     }

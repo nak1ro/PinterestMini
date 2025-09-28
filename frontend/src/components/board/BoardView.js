@@ -1,12 +1,12 @@
-// src/components/common/layout/board/BoardView.jsx
-import React, { useMemo, useState } from 'react';
-import { Button, Dropdown, Alert, Spinner } from 'react-bootstrap';
-import { ArrowLeft, Grid3x3GapFill, SortDownAlt } from 'react-bootstrap-icons';
+import React, {useMemo, useState} from 'react';
+import {Button, Dropdown, Alert, Spinner} from 'react-bootstrap';
+import {ArrowLeft, Grid3x3GapFill, SortDownAlt} from 'react-bootstrap-icons';
 import useBoardPins from '../../hooks/useBoardPins';
+import PinGrid from '../pin/PinGrid'; // <-- reusing your existing Masonry grid
 
-const BoardView = ({ board, onBack }) => {
+const BoardView = ({board, onBack}) => {
     const [sortKey, setSortKey] = useState('recent'); // 'recent' | 'title'
-    const { pins, loading, error, refresh } = useBoardPins(board?.id);
+    const {pins, loading, error, refresh} = useBoardPins(board?.id);
 
     const sortedPins = useMemo(() => {
         const arr = [...pins];
@@ -21,12 +21,18 @@ const BoardView = ({ board, onBack }) => {
 
     return (
         <div className="container-fluid">
-            {/* Header */}
+            {/* Title */}
+            <h2 className="fw-bold mb-3" style={{color: '#111'}}>
+                {board?.name || 'Board'}
+            </h2>
+
+            {/* Header row */}
             <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                {/* Left: Back button */}
                 <div className="d-flex align-items-center gap-2">
                     <Button
                         variant="light"
-                        className="rounded-pill px-3 py-2 shadow-sm"
+                        className="rounded-3 px-3 py-2 shadow-sm"
                         onClick={onBack}
                         style={{
                             backgroundColor: 'rgba(255,255,255,0.9)',
@@ -42,20 +48,18 @@ const BoardView = ({ board, onBack }) => {
                             e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.9)';
                             e.currentTarget.style.transform = 'scale(1)';
                         }}
+                        aria-label="Back to Boards"
                     >
-                        <ArrowLeft size={16} className="me-2" />
+                        <ArrowLeft size={16} className="me-2"/>
                         Back to Boards
                     </Button>
-
-                    <h2 className="fw-bold mb-0" style={{ color: '#111' }}>
-                        {board?.name || 'Board'}
-                    </h2>
                 </div>
 
+                {/* Right: Controls */}
                 <div className="d-flex align-items-center gap-2">
                     <Dropdown align="end">
-                        <Dropdown.Toggle variant="outline-secondary" className="rounded-pill">
-                            <SortDownAlt className="me-2" /> Sort
+                        <Dropdown.Toggle variant="outline-dark" className="rounded-3">
+                            <SortDownAlt className="me-2"/> Sort
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item active={sortKey === 'recent'} onClick={() => setSortKey('recent')}>
@@ -68,7 +72,7 @@ const BoardView = ({ board, onBack }) => {
                     </Dropdown>
 
                     <span className="text-muted small d-none d-md-inline-flex align-items-center">
-            <Grid3x3GapFill size={16} className="me-1" />
+            <Grid3x3GapFill size={16} className="me-1"/>
                         {sortedPins.length} pin{sortedPins.length === 1 ? '' : 's'}
           </span>
                 </div>
@@ -77,7 +81,7 @@ const BoardView = ({ board, onBack }) => {
             {/* States */}
             {loading && (
                 <div className="text-center py-5">
-                    <Spinner animation="border" />
+                    <Spinner animation="border"/>
                     <p className="text-muted mt-3 mb-0">Loading pins…</p>
                 </div>
             )}
@@ -117,66 +121,12 @@ const BoardView = ({ board, onBack }) => {
                 </div>
             )}
 
-            {/* Pins Grid */}
+            {/* Pins: reuse your Masonry PinGrid */}
             {!loading && !error && sortedPins.length > 0 && (
-                <div className="row" style={{ columnGap: '1rem' }}>
-                    {/* 4 masonry-style columns */}
-                    <div className="col-12 col-sm-6 col-md-4 col-lg-3">
-                        {sortedPins.filter((_, i) => i % 4 === 0).map(renderPin)}
-                    </div>
-                    <div className="col-12 col-sm-6 col-md-4 col-lg-3">
-                        {sortedPins.filter((_, i) => i % 4 === 1).map(renderPin)}
-                    </div>
-                    <div className="col-12 col-sm-6 col-md-4 col-lg-3">
-                        {sortedPins.filter((_, i) => i % 4 === 2).map(renderPin)}
-                    </div>
-                    <div className="col-12 col-sm-6 col-md-4 col-lg-3 d-none d-lg-block">
-                        {sortedPins.filter((_, i) => i % 4 === 3).map(renderPin)}
-                    </div>
-                </div>
+                <PinGrid pins={sortedPins}/>
             )}
         </div>
     );
 };
-
-function renderPin(pin) {
-    return (
-        <div key={pin.id} className="mb-4">
-            <div
-                className="rounded-4 shadow-sm overflow-hidden"
-                style={{
-                    backgroundColor: '#f8f9fa',
-                    transition: 'transform .15s ease, box-shadow .15s ease',
-                    cursor: 'pointer',
-                }}
-                onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 0.75rem 1.5rem rgba(0,0,0,.12)';
-                }}
-                onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 .125rem .5rem rgba(0,0,0,.08)';
-                }}
-            >
-                {/* Natural aspect ratio; image height adjusts automatically */}
-                <img
-                    src={pin.imageUrl}
-                    alt={pin.title}
-                    style={{
-                        display: 'block',
-                        width: '100%',
-                        height: 'auto',
-                        objectFit: 'cover',
-                    }}
-                />
-            </div>
-            <div className="mt-2 px-1">
-                <div className="text-truncate fw-semibold" title={pin.title} style={{ color: '#111' }}>
-                    {pin.title}
-                </div>
-            </div>
-        </div>
-    );
-}
 
 export default BoardView;

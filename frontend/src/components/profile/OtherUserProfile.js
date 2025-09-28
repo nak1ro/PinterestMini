@@ -12,10 +12,10 @@ import useFollowUser from '../../hooks/useFollowUser';
 import PinGrid from '../pin/PinGrid';
 
 const OtherUserProfile = () => {
-    const { username } = useParams();
+    const { username: routeUsername } = useParams();
+    const { user, userId } = useAppContext();
+    const username = routeUsername ?? user?.username ?? '';
     const [activeTab, setActiveTab] = useState('created');
-
-    const { userId } = useAppContext();
     const { profile, loading: loadingProfile, error: profileError } = useUserProfile(username);
     const { createdPins, loading: loadingCreated } = useCreatedPins(username);
     const { savedPins, loading: loadingSaved } = useSavedPins(username);
@@ -32,7 +32,7 @@ const OtherUserProfile = () => {
     const isLoadingPins = activeTab === 'created' ? loadingCreated : loadingSaved;
 
     const avatarSrc = profile?.profilePictureUrl || '/assets/avatar-default.svg';
-    const displayName = profile?.username || 'Unknown user';
+    const displayName = profile?.username || username || 'Unknown user';
     const bio = profile?.bio || 'No bio provided.';
 
     if (loadingProfile) {
@@ -40,7 +40,7 @@ const OtherUserProfile = () => {
     }
 
     if (profileError) {
-        return <div>Error: {profileError}</div>;
+        return <div>Error: {String(profileError)}</div>;
     }
 
     return (
@@ -49,10 +49,7 @@ const OtherUserProfile = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            style={{
-                color: '#111',
-                minHeight: '100vh',
-            }}
+            style={{ color: '#111', minHeight: '100vh' }}
         >
             {/* User Info */}
             <div className="d-flex flex-column align-items-center text-center mb-5">
@@ -60,12 +57,7 @@ const OtherUserProfile = () => {
                     src={avatarSrc}
                     alt={displayName}
                     className="rounded-circle mb-4 border border-3"
-                    style={{
-                        width: '140px',
-                        height: '140px',
-                        objectFit: 'cover',
-                        borderColor: '#ddd',
-                    }}
+                    style={{ width: '140px', height: '140px', objectFit: 'cover', borderColor: '#ddd' }}
                     onError={(e) => {
                         const fallback = '/assets/avatar-default.svg';
                         if (!e.target.src.endsWith(fallback)) {
@@ -76,13 +68,7 @@ const OtherUserProfile = () => {
                 <h1 className="fw-bold fs-2 mb-2" style={{ color: '#111' }}>
                     {displayName}
                 </h1>
-                <p
-                    className="text-center mx-auto mb-4"
-                    style={{
-                        maxWidth: '500px',
-                        color: '#777',
-                    }}
-                >
+                <p className="text-center mx-auto mb-4" style={{ maxWidth: '500px', color: '#777' }}>
                     {bio}
                 </p>
 
@@ -132,10 +118,7 @@ const OtherUserProfile = () => {
             </div>
 
             {/* Tabs */}
-            <div
-                className="d-flex justify-content-center border-bottom mb-5"
-                style={{ borderColor: '#ddd' }}
-            >
+            <div className="d-flex justify-content-center border-bottom mb-5" style={{ borderColor: '#ddd' }}>
                 <button
                     className={`btn fw-semibold px-4 py-3 border-0 ${activeTab === 'created' ? 'border-bottom border-3' : ''}`}
                     onClick={() => setActiveTab('created')}

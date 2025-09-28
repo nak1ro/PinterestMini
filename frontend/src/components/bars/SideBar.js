@@ -34,7 +34,7 @@ const Sidebar = () => {
             >
                 <div className="d-grid gap-5">
 
-                    <a href="/public" className="text-white fs-3 text-decoration-none">
+                    <a href="/" className="text-white fs-3 text-decoration-none">
                         <div className="hover-container">
                             <img
                                 src="/assets/Pinterest-logo.png"
@@ -45,7 +45,7 @@ const Sidebar = () => {
                         </div>
                     </a>
 
-                    <a href="/public" className="nav-link text-white">
+                    <a href="/" className="nav-link text-white">
                         <div className="hover-container">
                             <img
                                 src="/assets/home.png"

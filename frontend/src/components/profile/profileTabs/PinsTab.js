@@ -1,18 +1,45 @@
-import React from 'react';
-import { Spinner, Form, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { Plus } from 'react-bootstrap-icons';
-import PinGrid from '../../pin/PinGrid';
+import React, {useMemo, useState} from 'react';
+import {Spinner, Button, Dropdown} from 'react-bootstrap';
+import {useNavigate} from 'react-router-dom';
+import {Plus, SortDownAlt} from 'react-bootstrap-icons';
 import {motion} from 'framer-motion';
+import PinGrid from '../../pin/PinGrid';
 
-const PinsTab = ({ pins, loading, onlyMyPins, setOnlyMyPins }) => {
+import Portal from 'react-overlays/Portal';
+
+const PortalMenu = React.forwardRef(({children, style, ...props}, ref) => (
+    <Portal>
+        <div ref={ref} {...props} style={{zIndex: 2000, ...style}}>
+            {children}
+        </div>
+    </Portal>
+));
+PortalMenu.displayName = 'PortalMenu';
+
+const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins}) => {
     const navigate = useNavigate();
+
+    const [sortKey, setSortKey] = useState('recent');
+
+    const sortedPins = useMemo(() => {
+        const arr = Array.isArray(pins) ? [...pins] : [];
+        if (sortKey === 'title') {
+            arr.sort((a, b) => (a?.title || '').localeCompare(b?.title || ''));
+        } else {
+            // Most recent by createdAt (fallback to 0)
+            arr.sort(
+                (a, b) =>
+                    new Date(b?.createdAt || 0).getTime() - new Date(a?.createdAt || 0).getTime()
+            );
+        }
+        return arr;
+    }, [pins, sortKey]);
 
     return (
         <div className="px-3 py-4">
-            {/* Top controls: toggle + button */}
-
+            {/* Top controls: toggle + sort + create button */}
             <div className="d-flex justify-content-between align-items-center mb-4">
+                {/* Left: Toggle */}
                 <motion.div
                     className="d-flex fw-bold align-items-center px-3 py-2 rounded-3 fw-medium"
                     style={{
@@ -23,54 +50,86 @@ const PinsTab = ({ pins, loading, onlyMyPins, setOnlyMyPins }) => {
                         color: onlyMyPins ? '#fff' : '#333',
                         border: 'none',
                         userSelect: 'none',
-                        boxShadow: onlyMyPins ? '0 4px 12px rgba(230, 0, 35, 0.2)': 'none'
+                        boxShadow: onlyMyPins ? '0 4px 12px rgba(230, 0, 35, 0.2)' : 'none',
                     }}
                     whileHover={{
                         scale: 1.03,
                         y: -1,
-                        boxShadow: onlyMyPins ? '0 6px 20px rgba(230, 0, 35, 0.3)' : '0 3px 10px rgba(10, 10, 10, 0.25)'
+                        boxShadow: onlyMyPins
+                            ? '0 6px 20px rgba(230, 0, 35, 0.3)'
+                            : '0 3px 10px rgba(10, 10, 10, 0.25)',
                     }}
-                    whileTap={{
-                        scale: 0.97,
-                        y: 0
-                    }}
+                    whileTap={{scale: 0.97, y: 0}}
                     onClick={() => setOnlyMyPins(!onlyMyPins)}
                 >
                     Created by you
                 </motion.div>
 
+                {/* Right: Sort + Create */}
+                <div className="d-flex align-items-center gap-4">
+                    <Dropdown
+                        align="end"
+                        onSelect={(val) => {
+                            if (!val) return;
+                            setSortKey(val);
+                        }}
+                    >
+                        <Dropdown.Toggle variant="outline-dark" className="px-3 py-2 rounded-3"
+                        >
+                            <SortDownAlt className="me-2"/> Sort
+                        </Dropdown.Toggle>
 
-                <Button
-                    className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center"
-                    onClick={() => navigate('/create-pin')}
-                    style={{
-                        background: 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
-                        border: 'none',
-                        transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                        e.target.style.transform = 'translateY(-1px) scale(1.02)';
-                        e.target.style.boxShadow = '0 6px 20px rgba(230, 0, 35, 0.3)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.target.style.transform = 'translateY(0) scale(1)';
-                        e.target.style.boxShadow = 'none';
-                    }}
-                >
-                    <Plus className="me-2 fw-bold" size={23} />
-                    Create Pin
-                </Button>
+                        <Dropdown.Menu
+                            as={PortalMenu}
+                            popperConfig={{
+                                strategy: 'fixed',
+                                modifiers: [
+                                    {name: 'offset', options: {offset: [0, 6]}},
+                                    {name: 'preventOverflow', options: {boundary: 'viewport'}},
+                                ],
+                            }}
+                        >
+                            <Dropdown.Item eventKey="recent" active={sortKey === 'recent'}>
+                                Most recent
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="title" active={sortKey === 'title'}>
+                                Title (A–Z)
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+                    <Button
+                        className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center"
+                        onClick={() => navigate('/create-pin')}
+                        style={{
+                            background: 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
+                            border: 'none',
+                            transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-1px) scale(1.02)';
+                            e.currentTarget.style.boxShadow = '0 6px 20px rgba(230, 0, 35, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                            e.currentTarget.style.boxShadow = 'none';
+                        }}
+                    >
+                        <Plus className="me-2 fw-bold" size={23}/>
+                        Create Pin
+                    </Button>
+                </div>
             </div>
 
-            {/* Content: loading or grid */}
+            {/* Content */}
             {loading ? (
                 <div className="text-center py-5">
-                    <Spinner animation="border" variant="primary" />
+                    <Spinner animation="border" variant="primary"/>
                     <p className="text-muted mt-3">Loading pins...</p>
                 </div>
-            ) : pins.length > 0 ? (
-                <div style={{ marginTop: '1rem' }}>
-                    <PinGrid pins={pins} />
+            ) : sortedPins.length > 0 ? (
+                <div style={{marginTop: '1rem'}}>
+                    <PinGrid pins={sortedPins}/>
                 </div>
             ) : (
                 <div className="text-center py-5">
