@@ -53,13 +53,16 @@ public class PinRepository : IPinRepository
             .Where(sp => sp.UserId == userId)
             .Select(sp => sp.PinId)
             .ToListAsync();
-
+        
         return await _context.Pins
             .Where(p =>
                 savedIds.Contains(p.Id) &&
-                (EF.Functions.ILike(p.Title, $"%{query}%") ||
-                 EF.Functions.ILike(p.Description, $"%{query}%") ||
-                 p.PinTags.Any(pt => EF.Functions.ILike(pt.Tag.Name, $"%{query}%"))))
+                (
+                    p.Title.ToLower().Contains(query.ToLower()) ||
+                    p.Description.ToLower().Contains(query.ToLower()) ||
+                    p.PinTags.Any(pt => pt.Tag.Name.ToLower().Contains(query.ToLower()))
+                )
+            )
             .Include(p => p.Owner)
             .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
             .Include(p => p.PinBoards).ThenInclude(pb => pb.Board)
@@ -106,9 +109,11 @@ public class PinRepository : IPinRepository
         query = query.Trim().ToLower();
 
         return await _context.Pins
-            .Where(p => EF.Functions.ILike(p.Title, $"%{query}%") ||
-                        EF.Functions.ILike(p.Description, $"%{query}%") ||
-                        p.PinTags.Any(pt => EF.Functions.ILike(pt.Tag.Name, $"%{query}%")))
+            .Where(p =>
+                p.Title.Contains(query) ||
+                p.Description.Contains(query) ||
+                p.PinTags.Any(pt => pt.Tag.Name.Contains(query))
+            )
             .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
             .OrderByDescending(p => p.CreatedAt)
             .Skip((page - 1) * pageSize)

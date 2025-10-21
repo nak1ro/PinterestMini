@@ -26,14 +26,13 @@ using PinterestMini.API.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Kestrel will listen on 0.0.0.0:5005 for external access
-builder.WebHost.UseUrls("http://0.0.0.0:5005");
 
 // Serve static files like images from wwwroot
 builder.WebHost.UseWebRoot("wwwroot");
 
 // Database setup
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Identity setup with basic password rules
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
