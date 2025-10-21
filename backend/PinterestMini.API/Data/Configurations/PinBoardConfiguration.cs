@@ -20,7 +20,6 @@ public class PinBoardConfiguration : IEntityTypeConfiguration<PinBoard>
             .HasForeignKey(pb => pb.PinId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Avoid second cascade path from User
         builder
             .HasOne(pb => pb.User)
             .WithMany() // or .WithMany(u => u.PinBoards) if you have the nav

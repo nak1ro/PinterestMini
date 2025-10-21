@@ -262,8 +262,7 @@ namespace PinterestMini.API.Migrations
                         name: "FK_Comments_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Comments_Pins_PinId",
                         column: x => x.PinId,
@@ -312,8 +311,7 @@ namespace PinterestMini.API.Migrations
                         name: "FK_PinBoards_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PinBoards_Boards_BoardId",
                         column: x => x.BoardId,
@@ -358,8 +356,7 @@ namespace PinterestMini.API.Migrations
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PinId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SavedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PinId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    SavedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -368,19 +365,13 @@ namespace PinterestMini.API.Migrations
                         name: "FK_SavedPins_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_SavedPins_Pins_PinId",
                         column: x => x.PinId,
                         principalTable: "Pins",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SavedPins_Pins_PinId1",
-                        column: x => x.PinId1,
-                        principalTable: "Pins",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -471,11 +462,6 @@ namespace PinterestMini.API.Migrations
                 name: "IX_SavedPins_PinId",
                 table: "SavedPins",
                 column: "PinId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SavedPins_PinId1",
-                table: "SavedPins",
-                column: "PinId1");
         }
 
         /// <inheritdoc />

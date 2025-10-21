@@ -12,7 +12,7 @@ using PinterestMini.API.Data;
 namespace PinterestMini.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251021193440_InitialCreate")]
+    [Migration("20251021233746_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -331,17 +331,12 @@ namespace PinterestMini.API.Migrations
                     b.Property<Guid>("PinId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PinId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("SavedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "PinId");
 
                     b.HasIndex("PinId");
-
-                    b.HasIndex("PinId1");
 
                     b.ToTable("SavedPins");
                 });
@@ -515,7 +510,7 @@ namespace PinterestMini.API.Migrations
                     b.HasOne("PinterestMini.API.Domain.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Pin");
@@ -589,7 +584,7 @@ namespace PinterestMini.API.Migrations
                     b.HasOne("PinterestMini.API.Domain.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Board");
@@ -621,19 +616,15 @@ namespace PinterestMini.API.Migrations
             modelBuilder.Entity("PinterestMini.API.Domain.Models.SavedPin", b =>
                 {
                     b.HasOne("PinterestMini.API.Domain.Models.Pin", "Pin")
-                        .WithMany()
+                        .WithMany("SavedPins")
                         .HasForeignKey("PinId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PinterestMini.API.Domain.Models.Pin", null)
-                        .WithMany("SavedPins")
-                        .HasForeignKey("PinId1");
-
                     b.HasOne("PinterestMini.API.Domain.Models.User", "User")
                         .WithMany("SavedPins")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Pin");
