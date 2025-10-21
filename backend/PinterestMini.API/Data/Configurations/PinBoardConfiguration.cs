@@ -12,16 +12,19 @@ public class PinBoardConfiguration : IEntityTypeConfiguration<PinBoard>
 
         builder.HasOne(pb => pb.Board)
             .WithMany(b => b.PinBoards)
-            .HasForeignKey(pb => pb.BoardId);
+            .HasForeignKey(pb => pb.BoardId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(pb => pb.Pin)
             .WithMany(p => p.PinBoards)
-            .HasForeignKey(pb => pb.PinId);
-        
+            .HasForeignKey(pb => pb.PinId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Avoid second cascade path from User
         builder
             .HasOne(pb => pb.User)
-            .WithMany()
+            .WithMany() // or .WithMany(u => u.PinBoards) if you have the nav
             .HasForeignKey(pb => pb.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
