@@ -8,6 +8,7 @@ using PinterestMini.API.Services;
 using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.OpenApi.Models;
 using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Auth;
 using PinterestMini.API.Domain.Interfaces.Boards;
@@ -111,6 +112,37 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "PinterestMini API",
+        Version = "v1"
+    });
+
+    // Add JWT bearer auth to Swagger
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Description = "Put **ONLY** your JWT token here (no 'Bearer ' prefix)",
+        Reference = new OpenApiReference
+        {
+            Id = "Bearer",
+            Type = ReferenceType.SecurityScheme
+        }
+    };
+
+    c.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
+});
+
 var app = builder.Build();
 
 // Middleware order matters
@@ -120,6 +152,14 @@ app.UseHttpsRedirection();
 app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "PinterestMini API v1");
+    c.RoutePrefix = "swagger"; // UI at /swagger
+});
+
 app.MapControllers();
 
 // Ensure DB is created and roles are seeded
