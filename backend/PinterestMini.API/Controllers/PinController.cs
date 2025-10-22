@@ -159,4 +159,12 @@ public class PinController : ControllerBase
         await _pinService.UnlikePinAsync(pinId, User);
         return Ok(new { message = "Pin unliked successfully." });
     }
+    
+    [HttpGet("{pinId:guid}/saved/is-saved")]
+    [Authorize]
+    public async Task<IActionResult> IsSaved(Guid pinId)
+    {
+        var isSaved = await _pinService.IsPinSavedAsync(pinId, User);
+        return Ok(new { isSaved });
+    }
 }

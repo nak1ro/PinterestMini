@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using PinterestMini.API.Data;
 using PinterestMini.API.Domain.Interfaces.Pins;
@@ -231,4 +232,7 @@ public class PinRepository : IPinRepository
     {
         _context.Pins.Remove(pin);
     }
+
+    public Task<bool> AnyAsync(Expression<Func<SavedPin,bool>> predicate) =>
+        _context.SavedPins.AnyAsync(predicate);
 }

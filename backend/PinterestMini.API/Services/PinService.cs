@@ -222,6 +222,13 @@ public class PinService : IPinService
         await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task<bool> IsPinSavedAsync(Guid pinId, ClaimsPrincipal user)
+    {
+        var userId = _userContext.GetUserId(user); // or however you extract Guid
+        return await _unitOfWork.Pins
+            .AnyAsync(sp => sp.PinId == pinId && sp.UserId == userId);
+    }
+
     private async Task SetBoardsAsync(Pin pin, List<Guid>? boardIds, Guid userId)
     {
         pin.PinBoards = new List<PinBoard>(); // clear existing

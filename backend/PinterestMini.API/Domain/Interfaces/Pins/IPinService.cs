@@ -21,4 +21,5 @@ public interface IPinService
     Task<bool> IsPinLikedAsync(Guid pinId, ClaimsPrincipal user);
     Task LikePinAsync(Guid pinId, ClaimsPrincipal user);
     Task UnlikePinAsync(Guid pinId, ClaimsPrincipal user);
+    Task<bool> IsPinSavedAsync(Guid pinId, ClaimsPrincipal user);
 }

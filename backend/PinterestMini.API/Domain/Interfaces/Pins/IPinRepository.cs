@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using PinterestMini.API.Domain.Models;
 
 namespace PinterestMini.API.Domain.Interfaces.Pins;
@@ -24,4 +25,5 @@ public interface IPinRepository
     Task AddAsync(Pin pin);
     void Update(Pin pin);
     void Delete(Pin pin);
+    Task<bool> AnyAsync(Expression<Func<SavedPin, bool>> predicate);
 }
