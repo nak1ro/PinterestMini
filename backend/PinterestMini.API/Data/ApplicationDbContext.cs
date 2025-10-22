@@ -27,11 +27,13 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
     {
         base.OnModelCreating(builder);
 
+        builder.ApplyConfiguration(new BoardConfiguration());
+        builder.ApplyConfiguration(new PinConfiguration());
+        builder.ApplyConfiguration(new CommentConfiguration());
         builder.ApplyConfiguration(new LikeConfiguration());
         builder.ApplyConfiguration(new FollowConfiguration());
-        builder.ApplyConfiguration(new PinTagConfiguration());
         builder.ApplyConfiguration(new PinBoardConfiguration());
-        builder.ApplyConfiguration(new CommentConfiguration());
+        builder.ApplyConfiguration(new PinTagConfiguration());
         builder.ApplyConfiguration(new SavedPinConfiguration());
     }
 }

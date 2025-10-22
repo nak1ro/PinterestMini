@@ -13,12 +13,12 @@ public class PinBoardConfiguration : IEntityTypeConfiguration<PinBoard>
         builder.HasOne(pb => pb.Board)
             .WithMany(b => b.PinBoards)
             .HasForeignKey(pb => pb.BoardId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(pb => pb.Pin)
             .WithMany(p => p.PinBoards)
             .HasForeignKey(pb => pb.PinId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(pb => pb.User)

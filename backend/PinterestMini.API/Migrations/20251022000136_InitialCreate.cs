@@ -192,8 +192,7 @@ namespace PinterestMini.API.Migrations
                         name: "FK_Boards_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -240,8 +239,7 @@ namespace PinterestMini.API.Migrations
                         name: "FK_Pins_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -286,14 +284,12 @@ namespace PinterestMini.API.Migrations
                         name: "FK_Likes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Likes_Pins_PinId",
                         column: x => x.PinId,
                         principalTable: "Pins",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -316,14 +312,12 @@ namespace PinterestMini.API.Migrations
                         name: "FK_PinBoards_Boards_BoardId",
                         column: x => x.BoardId,
                         principalTable: "Boards",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PinBoards_Pins_PinId",
                         column: x => x.PinId,
                         principalTable: "Pins",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -340,8 +334,7 @@ namespace PinterestMini.API.Migrations
                         name: "FK_PinTags_Pins_PinId",
                         column: x => x.PinId,
                         principalTable: "Pins",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PinTags_Tags_TagId",
                         column: x => x.TagId,
