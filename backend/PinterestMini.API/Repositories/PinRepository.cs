@@ -54,7 +54,7 @@ public class PinRepository : IPinRepository
             .Where(sp => sp.UserId == userId)
             .Select(sp => sp.PinId)
             .ToListAsync();
-        
+
         return await _context.Pins
             .Where(p =>
                 savedIds.Contains(p.Id) &&
@@ -169,20 +169,20 @@ public class PinRepository : IPinRepository
 
     public async Task<IEnumerable<Pin>> GetSavedPinsAsync(Guid userId)
     {
-        var pinIds = await _context.SavedPins
-            .Where(sp => sp.UserId == userId)
-            .OrderByDescending(sp => sp.SavedAt)
-            .Select(sp => sp.PinId)
-            .ToListAsync();
+        var query =
+            from sp in _context.SavedPins
+            where sp.UserId == userId
+            join p in _context.Pins on sp.PinId equals p.Id
+            orderby sp.SavedAt descending
+            select p;
 
-        return await _context.Pins
-            .Where(p => pinIds.Contains(p.Id))
+        return await query
             .Include(p => p.Owner)
             .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
             .Include(p => p.PinBoards).ThenInclude(pb => pb.Board)
-            .OrderByDescending(p => pinIds.IndexOf(p.Id)) // Preserve saved order
             .ToListAsync();
     }
+
 
     public async Task<int> GetLikeCountAsync(Guid pinId)
     {
@@ -233,6 +233,6 @@ public class PinRepository : IPinRepository
         _context.Pins.Remove(pin);
     }
 
-    public Task<bool> AnyAsync(Expression<Func<SavedPin,bool>> predicate) =>
+    public Task<bool> AnyAsync(Expression<Func<SavedPin, bool>> predicate) =>
         _context.SavedPins.AnyAsync(predicate);
 }

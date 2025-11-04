@@ -1,19 +1,55 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {motion, AnimatePresence} from 'framer-motion';
 import {Link} from 'react-router-dom';
 import useSavedPins from '../../hooks/useSavedPins';
 import PinPreviewModal from './PinPreviewModal';
 
 const PinCard = ({pin}) => {
-    const {savePin, unsavePin, isPinSaved} = useSavedPins();
-    const saved = isPinSaved(pin.id);
+    const {savePin, unsavePin, savedPins, isPinSaved} = useSavedPins();
+    const [saved, setSaved] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
+    const [checkedSavedStatus, setCheckedSavedStatus] = useState(false);
 
-    const handleSaveClick = (e) => {
+    // Check savedPins array first (optimistic check)
+    useEffect(() => {
+        if (savedPins && Array.isArray(savedPins)) {
+            const isInSavedPins = savedPins.some(p => p.id === pin.id);
+            setSaved(isInSavedPins);
+        }
+    }, [savedPins, pin.id]);
+
+    // When hovering starts, check saved status via API
+    useEffect(() => {
+        if (isHovered && !checkedSavedStatus) {
+            setCheckedSavedStatus(true);
+            isPinSaved(pin.id)
+                .then((isSaved) => {
+                    setSaved(isSaved);
+                })
+                .catch(() => {
+                    // Keep current saved state on error
+                });
+        }
+    }, [isHovered, pin.id, isPinSaved, checkedSavedStatus]);
+
+    // Reset checked flag when hover ends
+    useEffect(() => {
+        if (!isHovered) {
+            setCheckedSavedStatus(false);
+        }
+    }, [isHovered]);
+
+    const handleSaveClick = async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        saved ? unsavePin(pin.id) : savePin(pin.id);
+        if (saved) {
+            await unsavePin(pin.id);
+            setSaved(false);
+        } else {
+            await savePin(pin.id);
+            setSaved(true);
+        }
     };
 
     const handlePinClick = (e) => {

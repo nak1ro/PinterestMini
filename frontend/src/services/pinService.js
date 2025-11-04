@@ -100,3 +100,8 @@ export const getLikeStatus = async (pinId) => {
     const res = await axiosClient.get(`/pin/${pinId}/likes/count`);
     return res.data; // { likeCount: number }
 };
+
+export const getIsPinSaved = async (pinId) => {
+    const res = await axiosClient.get(`/pin/${pinId}/saved/is-saved`);
+    return res.data; // { isSaved: boolean }
+};

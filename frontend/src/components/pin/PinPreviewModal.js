@@ -92,19 +92,21 @@ const CommentList = ({comments, loading}) => {
 // -- Pin preview modal (LEFT preview + RIGHT editor portal) --------------------
 const PinPreviewModal = ({pin, onClose}) => {
     // Hooks for saved / likes / comments
-    const {savePin, unsavePin, isPinSaved} = useSavedPins();
+    const {savePin, unsavePin, savedPins, isPinSaved} = useSavedPins();
     const {liked, likeCount, toggleLike} = usePinLike(pin?.id);
     const {comments, loading: loadingComments, addComment} = useComments(pin?.id);
 
     // Local state for new comment + editor flag
     const [newComment, setNewComment] = useState('');
     const [showEdit, setShowEdit] = useState(false);
+    const [saved, setSaved] = useState(false);
 
     // Local working copy so edits reflect immediately in the preview
     const [localPin, setLocalPin] = useState(pin);
     useEffect(() => setLocalPin(pin), [pin]);
 
     const commentRef = useRef(null);
+    const lastCheckedPinId = useRef(null);
     const navigate = useNavigate();
 
     const {userId} = useAppContext();
@@ -112,9 +114,30 @@ const PinPreviewModal = ({pin, onClose}) => {
         (localPin && localPin.ownerId && localPin.ownerId === userId) ||
         (localPin && localPin.owner && localPin.owner.id === userId);
 
-    const saved = isPinSaved(localPin?.id);
     const avatarUrl = localPin?.owner?.profilePictureUrl || '/assets/avatar-default.svg';
     const username = localPin?.owner?.username || 'Unknown';
+
+    // Check savedPins array first (optimistic check)
+    useEffect(() => {
+        if (savedPins && Array.isArray(savedPins) && localPin?.id) {
+            const isInSavedPins = savedPins.some(p => p.id === localPin.id);
+            setSaved(isInSavedPins);
+        }
+    }, [savedPins, localPin?.id]);
+
+    // When modal opens or pin changes, check saved status via API
+    useEffect(() => {
+        if (localPin?.id && lastCheckedPinId.current !== localPin.id) {
+            lastCheckedPinId.current = localPin.id;
+            isPinSaved(localPin.id)
+                .then((isSaved) => {
+                    setSaved(isSaved);
+                })
+                .catch(() => {
+                    // Keep current saved state on error
+                });
+        }
+    }, [localPin?.id, isPinSaved]);
 
     // -- Header actions ----------------------------------------------------------
     const handleDownload = (e) => {
@@ -131,10 +154,16 @@ const PinPreviewModal = ({pin, onClose}) => {
         setShowEdit(true);
     };
 
-    const handleSaveClick = (e) => {
+    const handleSaveClick = async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        saved ? unsavePin(localPin.id) : savePin(localPin.id);
+        if (saved) {
+            await unsavePin(localPin.id);
+            setSaved(false);
+        } else {
+            await savePin(localPin.id);
+            setSaved(true);
+        }
     };
 
     // -- Comments ----------------------------------------------------------------

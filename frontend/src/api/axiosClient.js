@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-    baseURL: 'http://77.110.116.229:5005/api', // ← вот тут настрой IP-адрес бэка
+    baseURL: 'https://pinterestmini-g0gzcsbdb7gvgbej.polandcentral-01.azurewebsites.net/api',
     headers: {
         'Content-Type': 'application/json',
         // добавь заголовки если есть токен

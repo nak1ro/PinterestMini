@@ -1,5 +1,5 @@
 import useAsync from './common/useAsync';
-import { getSavedPins, savePin as savePinApi, unsavePin as unsavePinApi } from '../services/pinService';
+import { getSavedPins, savePin as savePinApi, unsavePin as unsavePinApi, getIsPinSaved } from '../services/pinService';
 
 export default function useSavedPins() {
     const { data, loading, error, execute, setData } = useAsync(
@@ -23,7 +23,15 @@ export default function useSavedPins() {
         await execute();
     };
 
-    const isPinSaved = (pinId) => data.some((p) => p.id === pinId);
+    const isPinSaved = async (pinId) => {
+        try {
+            const res = await getIsPinSaved(pinId);
+            return res.isSaved;
+        } catch (error) {
+            console.error('Error checking if pin is saved:', error);
+            return false;
+        }
+    };
 
     return {
         savedPins: data,
