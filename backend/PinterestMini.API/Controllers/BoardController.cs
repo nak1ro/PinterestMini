@@ -78,4 +78,12 @@ public class BoardController : ControllerBase
         await _boardService.SavePinToBoardAsync(boardId, pinId, User);
         return Ok(new { message = "Pin saved to board successfully." });
     }
+
+    [HttpDelete("{boardId:guid}/pins/{pinId:guid}")]
+    [Authorize]
+    public async Task<IActionResult> RemovePinFromBoard([FromRoute] Guid boardId, [FromRoute] Guid pinId)
+    {
+        await _boardService.RemovePinFromBoardAsync(boardId, pinId, User);
+        return Ok(new { message = "Pin removed from board successfully." });
+    }
 }

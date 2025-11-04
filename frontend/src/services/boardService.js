@@ -34,3 +34,7 @@ export const savePinToBoard = async (boardId, pinId) => {
     return axiosClient.post(`/board/${boardId}/pins/${pinId}`);
 };
 
+export const removePinFromBoard = async (boardId, pinId) => {
+    return axiosClient.delete(`/board/${boardId}/pins/${pinId}`);
+};
+

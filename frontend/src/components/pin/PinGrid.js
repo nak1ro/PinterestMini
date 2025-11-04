@@ -3,7 +3,7 @@ import imagesLoaded from 'imagesloaded';
 import {useEffect, useRef} from 'react';
 import PinCard from './PinCard';
 
-const PinGrid = ({pins}) => {
+const PinGrid = ({pins, boardId, onRemoveFromBoard}) => {
     const gridRef = useRef();
 
     useEffect(() => {
@@ -33,7 +33,11 @@ const PinGrid = ({pins}) => {
         >
             {(pins || []).map(pin => (
                 <div key={pin.id} className="masonry-item" style={{width: '305px'}}>
-                    <PinCard pin={pin}/>
+                    <PinCard 
+                        pin={pin} 
+                        boardId={boardId}
+                        onRemoveFromBoard={onRemoveFromBoard}
+                    />
                 </div>
             ))}
         </div>

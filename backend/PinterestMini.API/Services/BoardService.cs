@@ -146,6 +146,24 @@ public class BoardService : IBoardService
         await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task RemovePinFromBoardAsync(Guid boardId, Guid pinId, ClaimsPrincipal user)
+    {
+        var userId = _userContext.GetUserId(user);
+
+        var board = await _unitOfWork.Boards.GetByIdAsync(boardId)
+                    ?? throw new AppNotFoundException("Board not found");
+
+        if (board.UserId != userId)
+            throw new AppUnauthorizedException("You can only remove pins from your own boards.");
+
+        var exists = await _unitOfWork.PinBoards.ExistsAsync(pinId, boardId, userId);
+        if (!exists)
+            throw new AppNotFoundException("Pin is not saved to this board.");
+
+        await _unitOfWork.PinBoards.RemoveAsync(pinId, boardId, userId);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     private async Task<string> SaveImageAsync(IFormFile image)
     {
         return await _imageUploader.UploadAsync(image, "boards");

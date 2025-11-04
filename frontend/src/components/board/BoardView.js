@@ -3,10 +3,11 @@ import {Button, Dropdown, Alert, Spinner} from 'react-bootstrap';
 import {ArrowLeft, Grid3x3GapFill, SortDownAlt} from 'react-bootstrap-icons';
 import useBoardPins from '../../hooks/useBoardPins';
 import PinGrid from '../pin/PinGrid'; // <-- reusing your existing Masonry grid
+import {removePinFromBoard} from '../../services/boardService';
 
 const BoardView = ({board, onBack}) => {
     const [sortKey, setSortKey] = useState('recent'); // 'recent' | 'title'
-    const {pins, loading, error, refresh} = useBoardPins(board?.id);
+    const {pins, loading, error, refresh, setPins} = useBoardPins(board?.id);
 
     const sortedPins = useMemo(() => {
         const arr = [...pins];
@@ -18,6 +19,23 @@ const BoardView = ({board, onBack}) => {
         }
         return arr;
     }, [pins, sortKey]);
+
+    const handleRemoveFromBoard = async (pinId) => {
+        if (!board?.id) return;
+        
+        try {
+            await removePinFromBoard(board.id, pinId);
+            // Optimistically update the pins list
+            setPins((prevPins) => prevPins.filter(p => p.id !== pinId));
+            // Refresh to ensure consistency
+            await refresh();
+        } catch (err) {
+            console.error('Failed to remove pin from board:', err);
+            alert('Failed to remove pin from board. Please try again.');
+            // Refresh to get the correct state
+            await refresh();
+        }
+    };
 
     return (
         <div className="container-fluid">
@@ -123,7 +141,11 @@ const BoardView = ({board, onBack}) => {
 
             {/* Pins: reuse your Masonry PinGrid */}
             {!loading && !error && sortedPins.length > 0 && (
-                <PinGrid pins={sortedPins}/>
+                <PinGrid 
+                    pins={sortedPins}
+                    boardId={board?.id}
+                    onRemoveFromBoard={handleRemoveFromBoard}
+                />
             )}
         </div>
     );

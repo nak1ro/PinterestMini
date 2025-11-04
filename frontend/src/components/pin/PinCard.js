@@ -5,7 +5,7 @@ import useSavedPins from '../../hooks/useSavedPins';
 import PinPreviewModal from './PinPreviewModal';
 import SaveToBoardModal from './SaveToBoardModal';
 
-const PinCard = ({pin}) => {
+const PinCard = ({pin, boardId, onRemoveFromBoard}) => {
     const {savePin, unsavePin, savedPins, isPinSaved, refetch} = useSavedPins();
     const [saved, setSaved] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -62,6 +62,14 @@ const PinCard = ({pin}) => {
         setShowSaveToBoardModal(true);
     };
 
+    const handleRemoveFromBoardClick = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (boardId && onRemoveFromBoard) {
+            await onRemoveFromBoard(pin.id);
+        }
+    };
+
     const handleSavedToBoard = async (boardId) => {
         // Just save to board, don't save the pin separately
         await refetch(); // Refresh in case we need to update UI
@@ -104,7 +112,7 @@ const PinCard = ({pin}) => {
 
                         {/* Top Row */}
                         <div className="d-flex fw-bold justify-content-between align-items-center p-3 gap-2">
-                            {/* Left side: Save button and Save to board button */}
+                            {/* Left side: Save button, Save to board button, and Remove from board (if in board view) */}
                             <div className="d-flex gap-2 align-items-center">
                                 <motion.button
                                     className={`btn btn-sm px-3 fw-bold rounded-3 d-flex align-items-center justify-content-center`}
@@ -123,26 +131,51 @@ const PinCard = ({pin}) => {
                                     {saved ? 'Saved' : 'Save'}
                                 </motion.button>
                                 
-                                {/* Save to board button */}
-                                <motion.button
-                                    className="btn btn-sm px-2 rounded-3 d-flex align-items-center justify-content-center"
-                                    onClick={handleSaveToBoardClick}
-                                    style={{
-                                        fontSize: '0.9rem',
-                                        border: '1px solid rgba(255,255,255,0.5)',
-                                        height: '36px',
-                                        width: '36px',
-                                        background: 'rgba(255,255,255,0.2)',
-                                        color: '#fff',
-                                    }}
-                                    whileHover={{scale: 1.04}}
-                                    whileTap={{scale: 0.97}}
-                                    title="Save to board"
-                                >
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                                    </svg>
-                                </motion.button>
+                                {/* Save to board button (hide if already in board view) */}
+                                {!boardId && (
+                                    <motion.button
+                                        className="btn btn-sm px-2 rounded-3 d-flex align-items-center justify-content-center"
+                                        onClick={handleSaveToBoardClick}
+                                        style={{
+                                            fontSize: '0.9rem',
+                                            border: '1px solid rgba(255,255,255,0.5)',
+                                            height: '36px',
+                                            width: '36px',
+                                            background: 'rgba(255,255,255,0.2)',
+                                            color: '#fff',
+                                        }}
+                                        whileHover={{scale: 1.04}}
+                                        whileTap={{scale: 0.97}}
+                                        title="Save to board"
+                                    >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                        </svg>
+                                    </motion.button>
+                                )}
+
+                                {/* Remove from board button (only show when viewing a board) */}
+                                {boardId && (
+                                    <motion.button
+                                        className="btn btn-sm px-2 rounded-3 d-flex align-items-center justify-content-center"
+                                        onClick={handleRemoveFromBoardClick}
+                                        style={{
+                                            fontSize: '0.9rem',
+                                            border: '1px solid rgba(255,255,255,0.5)',
+                                            height: '36px',
+                                            width: '36px',
+                                            background: 'rgba(220, 53, 69, 0.8)',
+                                            color: '#fff',
+                                        }}
+                                        whileHover={{scale: 1.04}}
+                                        whileTap={{scale: 0.97}}
+                                        title="Remove from board"
+                                    >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 13H5v-2h14v2z"/>
+                                        </svg>
+                                    </motion.button>
+                                )}
                             </div>
 
                             {/* Owner link (right) */}
