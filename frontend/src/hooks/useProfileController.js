@@ -11,8 +11,8 @@ const useProfileController = ({ username, user, userId }) => {
     const [viewAsOther, setViewAsOther] = useState(false);
 
     // Data
-    const { createdPins, loading: loadingCreated } = useCreatedPins(username);
-    const { savedPins, loading: loadingSaved } = useSavedPins();
+    const { createdPins, loading: loadingCreated, refetch: refetchCreated } = useCreatedPins(username);
+    const { savedPins, loading: loadingSaved, refetch: refetchSaved } = useSavedPins();
     const { followersCount } = useFollowCounts(userId);
     const { followingCount } = useFollowCounts(userId);
 
@@ -104,6 +104,10 @@ const useProfileController = ({ username, user, userId }) => {
         setActiveTab,
         setOnlyMyPins,
         setViewAsOther,
+
+        // refetch functions for data updates
+        refetchCreated,
+        refetchSaved,
     };
 };
 

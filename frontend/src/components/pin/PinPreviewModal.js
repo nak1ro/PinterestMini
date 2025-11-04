@@ -8,6 +8,7 @@ import useSavedPins from '../../hooks/useSavedPins';
 import usePinLike from '../../hooks/usePinLike';
 import useComments from '../../hooks/useComments';
 import {useAppContext} from '../../context/AppContext';
+import {deletePin} from '../../services/pinService';
 
 // -- Small animated icon button ------------------------------------------------
 const ActionButton = ({icon, onClick, alt, animationKey}) => (
@@ -91,7 +92,7 @@ const CommentList = ({comments, loading}) => {
 };
 
 // -- Pin preview modal (LEFT preview + RIGHT editor portal) --------------------
-const PinPreviewModal = ({pin, onClose}) => {
+const PinPreviewModal = ({pin, onClose, onDelete}) => {
     // Hooks for saved / likes / comments
     const {savePin, unsavePin, savedPins, isPinSaved, refetch} = useSavedPins();
     const {liked, likeCount, toggleLike} = usePinLike(pin?.id);
@@ -102,6 +103,7 @@ const PinPreviewModal = ({pin, onClose}) => {
     const [showEdit, setShowEdit] = useState(false);
     const [saved, setSaved] = useState(false);
     const [showSaveToBoardModal, setShowSaveToBoardModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Local working copy so edits reflect immediately in the preview
     const [localPin, setLocalPin] = useState(pin);
@@ -154,6 +156,31 @@ const PinPreviewModal = ({pin, onClose}) => {
         e.preventDefault();
         e.stopPropagation();
         setShowEdit(true);
+    };
+
+    const handleDeleteClick = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!window.confirm('Are you sure you want to delete this pin? This action cannot be undone.')) {
+            return;
+        }
+
+        setIsDeleting(true);
+        try {
+            await deletePin(localPin.id);
+            // Close the modal
+            onClose();
+            // Notify parent component if callback provided
+            if (onDelete) {
+                onDelete(localPin.id);
+            }
+        } catch (err) {
+            console.error('Failed to delete pin:', err);
+            alert('Failed to delete pin. Please try again.');
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     const handleSaveClick = async (e) => {
@@ -243,7 +270,7 @@ const PinPreviewModal = ({pin, onClose}) => {
                 <div className="overflow-auto" style={{flex: 1}}>
                     {/* HEADER */}
                     <div className="card-header d-flex justify-content-between align-items-center p-3">
-                        {/* -- Left: like / comments / share / edit */}
+                        {/* -- Left: like / comments / share / edit / delete */}
                         <div className="d-flex align-items-center gap-3">
                             <div
                                 className="d-flex align-items-center justify-content-start"
@@ -279,12 +306,45 @@ const PinPreviewModal = ({pin, onClose}) => {
                             />
 
                             {isOwner && (
-                                <ActionButton
-                                    icon="/assets/edit-text.png"
-                                    onClick={handleEditClick}
-                                    alt="edit"
-                                    animationKey="edit"
-                                />
+                                <>
+                                    <ActionButton
+                                        icon="/assets/edit-text.png"
+                                        onClick={handleEditClick}
+                                        alt="edit"
+                                        animationKey="edit"
+                                    />
+                                    <motion.button
+                                        className="btn btn-sm d-flex align-items-center"
+                                        onClick={handleDeleteClick}
+                                        disabled={isDeleting}
+                                        style={{
+                                            outline: 'none',
+                                            boxShadow: 'none',
+                                            borderColor: 'transparent',
+                                            background: 'transparent',
+                                            opacity: isDeleting ? 0.6 : 1,
+                                        }}
+                                        whileHover={{scale: 1.05}}
+                                        transition={{type: 'spring', stiffness: 300, damping: 20}}
+                                        title="Delete pin"
+                                    >
+                                        {isDeleting ? (
+                                            <motion.div
+                                                style={{width: 26, height: 26}}
+                                                animate={{rotate: 360}}
+                                                transition={{duration: 1, repeat: Infinity, ease: 'linear'}}
+                                            >
+                                                <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                                </svg>
+                                            </motion.div>
+                                        ) : (
+                                            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                            </svg>
+                                        )}
+                                    </motion.button>
+                                </>
                             )}
                         </div>
 

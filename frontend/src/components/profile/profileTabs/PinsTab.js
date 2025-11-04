@@ -16,7 +16,7 @@ const PortalMenu = React.forwardRef(({children, style, ...props}, ref) => (
 ));
 PortalMenu.displayName = 'PortalMenu';
 
-const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins}) => {
+const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins, onDelete}) => {
     const navigate = useNavigate();
 
     const [sortKey, setSortKey] = useState('recent');
@@ -129,7 +129,7 @@ const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins}) => {
                 </div>
             ) : sortedPins.length > 0 ? (
                 <div style={{marginTop: '1rem'}}>
-                    <PinGrid pins={sortedPins}/>
+                    <PinGrid pins={sortedPins} onDelete={onDelete}/>
                 </div>
             ) : (
                 <div className="text-center py-5">

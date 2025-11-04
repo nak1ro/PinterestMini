@@ -3,7 +3,7 @@ import imagesLoaded from 'imagesloaded';
 import {useEffect, useRef} from 'react';
 import PinCard from './PinCard';
 
-const PinGrid = ({pins, boardId, onRemoveFromBoard}) => {
+const PinGrid = ({pins, boardId, onRemoveFromBoard, onDelete}) => {
     const gridRef = useRef();
 
     useEffect(() => {
@@ -37,6 +37,7 @@ const PinGrid = ({pins, boardId, onRemoveFromBoard}) => {
                         pin={pin} 
                         boardId={boardId}
                         onRemoveFromBoard={onRemoveFromBoard}
+                        onDelete={onDelete}
                     />
                 </div>
             ))}

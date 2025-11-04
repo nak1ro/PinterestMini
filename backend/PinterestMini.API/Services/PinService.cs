@@ -228,7 +228,25 @@ public class PinService : IPinService
         return await _unitOfWork.Pins
             .AnyAsync(sp => sp.PinId == pinId && sp.UserId == userId);
     }
+    
+    public async Task DeletePinAsync(Guid pinId, ClaimsPrincipal user)
+    {
+        var pin = await _unitOfWork.Pins.GetByIdWithTagsAndBoardsAsync(pinId);
+        if (pin == null)
+            throw new AppNotFoundException("Pin not found.");
 
+        var userId = _userContext.GetUserId(user);
+        if (pin.OwnerId != userId)
+            throw new AppUnauthorizedException("You don't own this pin.");
+
+        var tagIds = pin.PinTags?.Select(pt => pt.TagId).ToHashSet() ?? new HashSet<Guid>();
+        if (tagIds.Count > 0)
+            await DecrementUsageCountsAsync(tagIds);
+
+        _unitOfWork.Pins.Delete(pin);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    
     private async Task SetBoardsAsync(Pin pin, List<Guid>? boardIds, Guid userId)
     {
         pin.PinBoards = new List<PinBoard>(); // clear existing

@@ -31,6 +31,10 @@ export const createPin = async (formData) => {
     });
 }
 
+export const deletePin = async (pinId) => {
+    return axiosClient.delete(`/pin/${pinId}`);
+};
+
 export const getPublicPins = (page = 1, pageSize = 20) => {
     return axiosClient.get('/pin/feed', {
         skipAuth: true,

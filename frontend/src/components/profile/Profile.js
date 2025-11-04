@@ -94,12 +94,18 @@ const Profile = () => {
     }
 
     function renderPinsTab() {
+        const handlePinDelete = async (pinId) => {
+            // Refetch both lists to update the UI after deletion
+            await Promise.all([ctrl.refetchCreated(), ctrl.refetchSaved()]);
+        };
+
         return (
             <PinsTab
                 pins={ctrl.pinsToShow}
                 loading={ctrl.isLoadingPins}
                 onlyMyPins={ctrl.onlyMyPins}
                 setOnlyMyPins={ctrl.setOnlyMyPins}
+                onDelete={handlePinDelete}
             />
         );
     }

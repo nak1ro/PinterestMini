@@ -35,6 +35,14 @@ public class PinController : ControllerBase
         await _pinService.UpdatePinAsync(id, dto, User);
         return NoContent();
     }
+    
+    [HttpDelete("{id:guid}")]
+    [Authorize]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _pinService.DeletePinAsync(id, User);
+        return NoContent();
+    }
 
     [HttpGet("feed")]
     [AllowAnonymous]
