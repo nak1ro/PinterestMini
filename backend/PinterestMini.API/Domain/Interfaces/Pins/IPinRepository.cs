@@ -8,6 +8,7 @@ public interface IPinRepository
     Task<bool> ExistsAsync(Guid userId);
     Task<Pin?> GetByIdAsync(Guid id);
     Task<Pin?> GetByIdWithTagsAndBoardsAsync(Guid id);
+    Task<Pin?> GetByIdWithAllRelationsAsync(Guid id);
     Task<List<Pin>> GetPinsByOwnerAsync(Guid ownerId);
     Task<List<Pin>> SearchSavedPinsAsync(Guid userId, string query, int page, int pageSize);
     Task<IEnumerable<Pin>> GetRecentPublicPinsAsync(int page, int pageSize);
@@ -25,5 +26,9 @@ public interface IPinRepository
     Task AddAsync(Pin pin);
     void Update(Pin pin);
     void Delete(Pin pin);
+    Task DeletePinBoardsAsync(Guid pinId);
+    Task DeleteCommentsAsync(Guid pinId);
+    Task DeleteLikesAsync(Guid pinId);
+    Task DeletePinTagsAsync(Guid pinId);
     Task<bool> AnyAsync(Expression<Func<SavedPin, bool>> predicate);
 }

@@ -231,7 +231,7 @@ public class PinService : IPinService
     
     public async Task DeletePinAsync(Guid pinId, ClaimsPrincipal user)
     {
-        var pin = await _unitOfWork.Pins.GetByIdWithTagsAndBoardsAsync(pinId);
+        var pin = await _unitOfWork.Pins.GetByIdWithAllRelationsAsync(pinId);
         if (pin == null)
             throw new AppNotFoundException("Pin not found.");
 
@@ -239,10 +239,18 @@ public class PinService : IPinService
         if (pin.OwnerId != userId)
             throw new AppUnauthorizedException("You don't own this pin.");
 
+        // Decrement tag usage counts before deleting PinTags
         var tagIds = pin.PinTags?.Select(pt => pt.TagId).ToHashSet() ?? new HashSet<Guid>();
         if (tagIds.Count > 0)
             await DecrementUsageCountsAsync(tagIds);
 
+        // Delete all related entities manually (they have DeleteBehavior.NoAction)
+        await _unitOfWork.Pins.DeletePinBoardsAsync(pinId);
+        await _unitOfWork.Pins.DeleteCommentsAsync(pinId);
+        await _unitOfWork.Pins.DeleteLikesAsync(pinId);
+        await _unitOfWork.Pins.DeletePinTagsAsync(pinId);
+
+        // Delete the pin itself
         _unitOfWork.Pins.Delete(pin);
         await _unitOfWork.SaveChangesAsync();
     }

@@ -34,6 +34,16 @@ public class PinRepository : IPinRepository
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
+    public async Task<Pin?> GetByIdWithAllRelationsAsync(Guid id)
+    {
+        return await _context.Pins
+            .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
+            .Include(p => p.PinBoards)
+            .Include(p => p.Comments)
+            .Include(p => p.Likes)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
     public async Task<List<Pin>> GetPinsByOwnerAsync(Guid ownerId)
     {
         return await _context.Pins
@@ -231,6 +241,42 @@ public class PinRepository : IPinRepository
     public void Delete(Pin pin)
     {
         _context.Pins.Remove(pin);
+    }
+
+    public async Task DeletePinBoardsAsync(Guid pinId)
+    {
+        var pinBoards = await _context.PinBoards
+            .Where(pb => pb.PinId == pinId)
+            .ToListAsync();
+        
+        _context.PinBoards.RemoveRange(pinBoards);
+    }
+
+    public async Task DeleteCommentsAsync(Guid pinId)
+    {
+        var comments = await _context.Comments
+            .Where(c => c.PinId == pinId)
+            .ToListAsync();
+        
+        _context.Comments.RemoveRange(comments);
+    }
+
+    public async Task DeleteLikesAsync(Guid pinId)
+    {
+        var likes = await _context.Likes
+            .Where(l => l.PinId == pinId)
+            .ToListAsync();
+        
+        _context.Likes.RemoveRange(likes);
+    }
+
+    public async Task DeletePinTagsAsync(Guid pinId)
+    {
+        var pinTags = await _context.PinTags
+            .Where(pt => pt.PinId == pinId)
+            .ToListAsync();
+        
+        _context.PinTags.RemoveRange(pinTags);
     }
 
     public Task<bool> AnyAsync(Expression<Func<SavedPin, bool>> predicate) =>
