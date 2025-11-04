@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useNavigate, Link} from 'react-router-dom';
 import {motion} from 'framer-motion';
 import PinEditModal from './PinEditModal';
+import SaveToBoardModal from './SaveToBoardModal';
 
 import useSavedPins from '../../hooks/useSavedPins';
 import usePinLike from '../../hooks/usePinLike';
@@ -92,7 +93,7 @@ const CommentList = ({comments, loading}) => {
 // -- Pin preview modal (LEFT preview + RIGHT editor portal) --------------------
 const PinPreviewModal = ({pin, onClose}) => {
     // Hooks for saved / likes / comments
-    const {savePin, unsavePin, savedPins, isPinSaved} = useSavedPins();
+    const {savePin, unsavePin, savedPins, isPinSaved, refetch} = useSavedPins();
     const {liked, likeCount, toggleLike} = usePinLike(pin?.id);
     const {comments, loading: loadingComments, addComment} = useComments(pin?.id);
 
@@ -100,6 +101,7 @@ const PinPreviewModal = ({pin, onClose}) => {
     const [newComment, setNewComment] = useState('');
     const [showEdit, setShowEdit] = useState(false);
     const [saved, setSaved] = useState(false);
+    const [showSaveToBoardModal, setShowSaveToBoardModal] = useState(false);
 
     // Local working copy so edits reflect immediately in the preview
     const [localPin, setLocalPin] = useState(pin);
@@ -160,10 +162,23 @@ const PinPreviewModal = ({pin, onClose}) => {
         if (saved) {
             await unsavePin(localPin.id);
             setSaved(false);
+            await refetch();
         } else {
             await savePin(localPin.id);
             setSaved(true);
+            await refetch();
         }
+    };
+
+    const handleSaveToBoardClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setShowSaveToBoardModal(true);
+    };
+
+    const handleSavedToBoard = async (boardId) => {
+        // Just save to board, don't save the pin separately
+        await refetch(); // Refresh in case we need to update UI
     };
 
     // -- Comments ----------------------------------------------------------------
@@ -273,25 +288,45 @@ const PinPreviewModal = ({pin, onClose}) => {
                             )}
                         </div>
 
-                        {/* -- Right: Save button */}
-                        <motion.button
-                            className="btn btn-sm fw-bold px-3 rounded-3 d-flex align-items-center justify-content-center"
-                            onClick={handleSaveClick}
-                            style={{
-                                fontSize: '1rem',
-                                border: saved ? 'solid 1px' : 'none',
-                                height: '36px',
-                                minWidth: '90px',
-                                background: saved
-                                    ? '#dddddd'
-                                    : 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
-                                color: saved ? '#333' : '#fff',
-                            }}
-                            whileHover={{scale: 1.04}}
-                            whileTap={{scale: 0.97}}
-                        >
-                            {saved ? 'Saved' : 'Save'}
-                        </motion.button>
+                        {/* -- Right: Save button and Save to board button */}
+                        <div className="d-flex gap-2 align-items-center">
+                            <motion.button
+                                className="btn btn-sm fw-bold px-3 rounded-3 d-flex align-items-center justify-content-center"
+                                onClick={handleSaveClick}
+                                style={{
+                                    fontSize: '1rem',
+                                    border: saved ? 'solid 1px' : 'none',
+                                    height: '36px',
+                                    minWidth: '90px',
+                                    background: saved
+                                        ? '#dddddd'
+                                        : 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
+                                    color: saved ? '#333' : '#fff',
+                                }}
+                                whileHover={{scale: 1.04}}
+                                whileTap={{scale: 0.97}}
+                            >
+                                {saved ? 'Saved' : 'Save'}
+                            </motion.button>
+                            
+                            {/* Save to board button */}
+                            <motion.button
+                                className="btn btn-sm fw-bold px-3 rounded-3 d-flex align-items-center justify-content-center"
+                                onClick={handleSaveToBoardClick}
+                                style={{
+                                    fontSize: '1rem',
+                                    border: 'solid 1px #ddd',
+                                    height: '36px',
+                                    background: '#fff',
+                                    color: '#333',
+                                }}
+                                whileHover={{scale: 1.04}}
+                                whileTap={{scale: 0.97}}
+                                title="Save to board"
+                            >
+                                Save to board
+                            </motion.button>
+                        </div>
                     </div>
 
                     {/* IMAGE */}
@@ -372,6 +407,14 @@ const PinPreviewModal = ({pin, onClose}) => {
                 onClose={() => setShowEdit(false)}
                 pin={localPin}
                 onApply={handleApplyEdits}
+            />
+
+            {/* SAVE TO BOARD MODAL */}
+            <SaveToBoardModal
+                show={showSaveToBoardModal}
+                onClose={() => setShowSaveToBoardModal(false)}
+                pinId={localPin?.id}
+                onSaved={handleSavedToBoard}
             />
         </motion.div>
     );

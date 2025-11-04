@@ -3,13 +3,15 @@ import {motion, AnimatePresence} from 'framer-motion';
 import {Link} from 'react-router-dom';
 import useSavedPins from '../../hooks/useSavedPins';
 import PinPreviewModal from './PinPreviewModal';
+import SaveToBoardModal from './SaveToBoardModal';
 
 const PinCard = ({pin}) => {
-    const {savePin, unsavePin, savedPins, isPinSaved} = useSavedPins();
+    const {savePin, unsavePin, savedPins, isPinSaved, refetch} = useSavedPins();
     const [saved, setSaved] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [checkedSavedStatus, setCheckedSavedStatus] = useState(false);
+    const [showSaveToBoardModal, setShowSaveToBoardModal] = useState(false);
 
     // Check savedPins array first (optimistic check)
     useEffect(() => {
@@ -46,10 +48,23 @@ const PinCard = ({pin}) => {
         if (saved) {
             await unsavePin(pin.id);
             setSaved(false);
+            await refetch();
         } else {
             await savePin(pin.id);
             setSaved(true);
+            await refetch();
         }
+    };
+
+    const handleSaveToBoardClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setShowSaveToBoardModal(true);
+    };
+
+    const handleSavedToBoard = async (boardId) => {
+        // Just save to board, don't save the pin separately
+        await refetch(); // Refresh in case we need to update UI
     };
 
     const handlePinClick = (e) => {
@@ -89,23 +104,46 @@ const PinCard = ({pin}) => {
 
                         {/* Top Row */}
                         <div className="d-flex fw-bold justify-content-between align-items-center p-3 gap-2">
-                            {/* Save button (left) */}
-                            <motion.button
-                                className={`btn btn-sm px-3 fw-bold rounded-3 d-flex align-items-center justify-content-center`}
-                                onClick={handleSaveClick}
-                                style={{
-                                    fontSize: '0.9rem',
-                                    border: 'none',
-                                    height: '36px',
-                                    minWidth: '70px',
-                                    background: saved ? '#dddddd' : 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
-                                    color: saved ? '#333' : '#fff',
-                                }}
-                                whileHover={{scale: 1.04}}
-                                whileTap={{scale: 0.97}}
-                            >
-                                {saved ? 'Saved' : 'Save'}
-                            </motion.button>
+                            {/* Left side: Save button and Save to board button */}
+                            <div className="d-flex gap-2 align-items-center">
+                                <motion.button
+                                    className={`btn btn-sm px-3 fw-bold rounded-3 d-flex align-items-center justify-content-center`}
+                                    onClick={handleSaveClick}
+                                    style={{
+                                        fontSize: '0.9rem',
+                                        border: 'none',
+                                        height: '36px',
+                                        minWidth: '70px',
+                                        background: saved ? '#dddddd' : 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
+                                        color: saved ? '#333' : '#fff',
+                                    }}
+                                    whileHover={{scale: 1.04}}
+                                    whileTap={{scale: 0.97}}
+                                >
+                                    {saved ? 'Saved' : 'Save'}
+                                </motion.button>
+                                
+                                {/* Save to board button */}
+                                <motion.button
+                                    className="btn btn-sm px-2 rounded-3 d-flex align-items-center justify-content-center"
+                                    onClick={handleSaveToBoardClick}
+                                    style={{
+                                        fontSize: '0.9rem',
+                                        border: '1px solid rgba(255,255,255,0.5)',
+                                        height: '36px',
+                                        width: '36px',
+                                        background: 'rgba(255,255,255,0.2)',
+                                        color: '#fff',
+                                    }}
+                                    whileHover={{scale: 1.04}}
+                                    whileTap={{scale: 0.97}}
+                                    title="Save to board"
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                    </svg>
+                                </motion.button>
+                            </div>
 
                             {/* Owner link (right) */}
                             <motion.div
@@ -148,6 +186,13 @@ const PinCard = ({pin}) => {
         <AnimatePresence>
             {showPreview && (<PinPreviewModal pin={pin} onClose={() => setShowPreview(false)}/>)}
         </AnimatePresence>
+
+        <SaveToBoardModal
+            show={showSaveToBoardModal}
+            onClose={() => setShowSaveToBoardModal(false)}
+            pinId={pin.id}
+            onSaved={handleSavedToBoard}
+        />
     </>);
 };
 

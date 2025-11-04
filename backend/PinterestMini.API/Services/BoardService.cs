@@ -118,6 +118,34 @@ public class BoardService : IBoardService
         return _mapper.Map<IEnumerable<PinDto>>(pins);
     }
 
+    public async Task SavePinToBoardAsync(Guid boardId, Guid pinId, ClaimsPrincipal user)
+    {
+        var userId = _userContext.GetUserId(user);
+
+        var board = await _unitOfWork.Boards.GetByIdAsync(boardId)
+                    ?? throw new AppNotFoundException("Board not found");
+
+        if (board.UserId != userId)
+            throw new AppUnauthorizedException("You can only save pins to your own boards.");
+
+        var pin = await _unitOfWork.Pins.GetByIdAsync(pinId)
+                  ?? throw new AppNotFoundException("Pin not found.");
+
+        var alreadyExists = await _unitOfWork.PinBoards.ExistsAsync(pinId, boardId, userId);
+        if (alreadyExists)
+            throw new AppBadRequestException("Pin is already saved to this board.");
+
+        var pinBoard = new PinBoard
+        {
+            PinId = pinId,
+            BoardId = boardId,
+            UserId = userId
+        };
+
+        await _unitOfWork.PinBoards.AddAsync(pinBoard);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     private async Task<string> SaveImageAsync(IFormFile image)
     {
         return await _imageUploader.UploadAsync(image, "boards");

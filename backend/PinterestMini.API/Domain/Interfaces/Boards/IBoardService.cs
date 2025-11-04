@@ -13,4 +13,5 @@ public interface IBoardService
     Task<int> GetPinsCountAsync(Guid boardId);
     Task<IEnumerable<BoardDto>> GetBoardsByUserAsync(Guid userId);
     Task<IEnumerable<PinDto>> GetPinsOfBoardAsync(Guid boardId, ClaimsPrincipal user);
+    Task SavePinToBoardAsync(Guid boardId, Guid pinId, ClaimsPrincipal user);
 }

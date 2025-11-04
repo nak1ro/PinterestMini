@@ -70,4 +70,12 @@ public class BoardController : ControllerBase
         var pins = await _boardService.GetPinsOfBoardAsync(boardId, User);
         return Ok(pins);
     }
+
+    [HttpPost("{boardId:guid}/pins/{pinId:guid}")]
+    [Authorize]
+    public async Task<IActionResult> SavePinToBoard([FromRoute] Guid boardId, [FromRoute] Guid pinId)
+    {
+        await _boardService.SavePinToBoardAsync(boardId, pinId, User);
+        return Ok(new { message = "Pin saved to board successfully." });
+    }
 }

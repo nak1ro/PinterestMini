@@ -30,3 +30,7 @@ export const getPinsOfBoard = async (boardId) => {
     return axiosClient.get(`/board/${boardId}/pins`);
 };
 
+export const savePinToBoard = async (boardId, pinId) => {
+    return axiosClient.post(`/board/${boardId}/pins/${pinId}`);
+};
+
