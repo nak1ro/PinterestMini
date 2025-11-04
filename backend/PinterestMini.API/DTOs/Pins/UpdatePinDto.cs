@@ -12,3 +12,8 @@ public class UpdatePinDto
     
     public List<Guid>? BoardIds { get; set; }
 }
+
+public class SetPinBoardsDto
+{
+    public List<Guid> BoardIds { get; set; } = new();
+}

@@ -4,6 +4,7 @@ using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Pins;
 using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Models;
+using PinterestMini.API.DTOs.Boards;
 using PinterestMini.API.DTOs.Common;
 using PinterestMini.API.DTOs.Pins;
 using PinterestMini.API.Helpers;
@@ -252,6 +253,74 @@ public class PinService : IPinService
 
         // Delete the pin itself
         _unitOfWork.Pins.Delete(pin);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<List<BoardDto>> GetBoardsForPinAsync(Guid pinId)
+    {
+        var pin = await _unitOfWork.Pins.GetByIdAsync(pinId);
+        if (pin == null)
+            throw new AppNotFoundException("Pin not found.");
+
+        var boards = await _unitOfWork.PinBoards.GetBoardsForPinAsync(pinId);
+        return _mapper.Map<List<BoardDto>>(boards);
+    }
+
+    public async Task SetBoardsForPinAsync(Guid pinId, List<Guid> boardIds, ClaimsPrincipal user)
+    {
+        var pin = await _unitOfWork.Pins.GetByIdWithTagsAndBoardsAsync(pinId);
+        if (pin == null)
+            throw new AppNotFoundException("Pin not found.");
+
+        var userId = _userContext.GetUserId(user);
+        if (pin.OwnerId != userId)
+            throw new AppUnauthorizedException("You don't own this pin.");
+
+        // Remove existing PinBoards for this pin owned by the current user
+        var existingPinBoards = pin.PinBoards?
+            .Where(pb => pb.UserId == userId)
+            .ToList() ?? new List<PinBoard>();
+
+        foreach (var pinBoard in existingPinBoards)
+        {
+            await _unitOfWork.PinBoards.RemoveAsync(pinId, pinBoard.BoardId, userId);
+        }
+
+        // If boardIds is empty, just remove all and return
+        if (boardIds == null || boardIds.Count == 0)
+        {
+            await _unitOfWork.SaveChangesAsync();
+            return;
+        }
+
+        // Validate that all boards belong to the user
+        var boards = await _unitOfWork.Boards.GetByIdsAsync(boardIds);
+        var invalidBoards = boards.Where(b => b.UserId != userId).ToList();
+        if (invalidBoards.Any())
+            throw new AppUnauthorizedException("You can only add pins to your own boards.");
+
+        // Check if all boardIds exist
+        var foundBoardIds = boards.Select(b => b.Id).ToHashSet();
+        var missingBoardIds = boardIds.Where(id => !foundBoardIds.Contains(id)).ToList();
+        if (missingBoardIds.Any())
+            throw new AppNotFoundException($"One or more boards not found: {string.Join(", ", missingBoardIds)}");
+
+        // Create new PinBoard entries
+        foreach (var boardId in boardIds)
+        {
+            var exists = await _unitOfWork.PinBoards.ExistsAsync(pinId, boardId, userId);
+            if (!exists)
+            {
+                var pinBoard = new PinBoard
+                {
+                    PinId = pinId,
+                    BoardId = boardId,
+                    UserId = userId
+                };
+                await _unitOfWork.PinBoards.AddAsync(pinBoard);
+            }
+        }
+
         await _unitOfWork.SaveChangesAsync();
     }
     

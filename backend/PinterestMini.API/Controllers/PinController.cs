@@ -44,6 +44,22 @@ public class PinController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("{pinId:guid}/boards")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetBoardsForPin(Guid pinId)
+    {
+        var boards = await _pinService.GetBoardsForPinAsync(pinId);
+        return Ok(boards);
+    }
+
+    [HttpPut("{pinId:guid}/boards")]
+    [Authorize]
+    public async Task<IActionResult> SetBoardsForPin(Guid pinId, [FromBody] SetPinBoardsDto dto)
+    {
+        await _pinService.SetBoardsForPinAsync(pinId, dto.BoardIds, User);
+        return NoContent();
+    }
+
     [HttpGet("feed")]
     [AllowAnonymous]
     public async Task<ActionResult<PaginatedResult<PinDto>>> GetRecentFeed([FromQuery] int page = 1,

@@ -104,9 +104,9 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
         }
     };
 
-    const handleSavedToBoard = async (boardId) => {
-        // Just save to board, don't save the pin separately
-        await refetch(); // Refresh in case we need to update UI
+    const handleSavedToBoard = async (boardIds) => {
+        // Refresh saved pins list in case we need to update UI
+        await refetch();
     };
 
     const handlePinClick = (e) => {
@@ -146,7 +146,7 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
 
                         {/* Top Row */}
                         <div className="d-flex fw-bold justify-content-between align-items-center p-3 gap-2">
-                            {/* Left side: Save button, Save to board button, Remove from board (if in board view), Delete (if owner) */}
+                            {/* Left side: Save button, Add to boards button, Remove from board (if in board view), Delete (if owner) */}
                             <div className="d-flex gap-2 align-items-center">
                                 <motion.button
                                     className={`btn btn-sm px-3 fw-bold rounded-3 d-flex align-items-center justify-content-center`}
@@ -165,7 +165,7 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
                                     {saved ? 'Saved' : 'Save'}
                                 </motion.button>
                                 
-                                {/* Save to board button (hide if already in board view) */}
+                                {/* Add to boards button (hide if already in board view) */}
                                 {!boardId && (
                                     <motion.button
                                         className="btn btn-sm px-2 rounded-3 d-flex align-items-center justify-content-center"
@@ -180,7 +180,7 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
                                         }}
                                         whileHover={{scale: 1.04}}
                                         whileTap={{scale: 0.97}}
-                                        title="Save to board"
+                                        title="Add to boards"
                                     >
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>

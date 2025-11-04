@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using PinterestMini.API.DTOs.Boards;
 using PinterestMini.API.DTOs.Common;
 using PinterestMini.API.DTOs.Pins;
 
@@ -23,4 +24,6 @@ public interface IPinService
     Task UnlikePinAsync(Guid pinId, ClaimsPrincipal user);
     Task<bool> IsPinSavedAsync(Guid pinId, ClaimsPrincipal user);
     Task DeletePinAsync(Guid id, ClaimsPrincipal user);
+    Task<List<BoardDto>> GetBoardsForPinAsync(Guid pinId);
+    Task SetBoardsForPinAsync(Guid pinId, List<Guid> boardIds, ClaimsPrincipal user);
 }

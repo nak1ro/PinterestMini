@@ -35,6 +35,18 @@ export const deletePin = async (pinId) => {
     return axiosClient.delete(`/pin/${pinId}`);
 };
 
+// Get boards that contain this pin
+export const getPinBoards = async (pinId) => {
+    const res = await axiosClient.get(`/pin/${pinId}/boards`);
+    return res.data;
+};
+
+// Set boards for a pin (replace all board memberships)
+export const setPinBoards = async (pinId, boardIds) => {
+    const res = await axiosClient.put(`/pin/${pinId}/boards`, { boardIds });
+    return res.data;
+};
+
 export const getPublicPins = (page = 1, pageSize = 20) => {
     return axiosClient.get('/pin/feed', {
         skipAuth: true,

@@ -203,9 +203,9 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
         setShowSaveToBoardModal(true);
     };
 
-    const handleSavedToBoard = async (boardId) => {
-        // Just save to board, don't save the pin separately
-        await refetch(); // Refresh in case we need to update UI
+    const handleSavedToBoard = async (boardIds) => {
+        // Refresh saved pins list in case we need to update UI
+        await refetch();
     };
 
     // -- Comments ----------------------------------------------------------------
@@ -348,7 +348,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                             )}
                         </div>
 
-                        {/* -- Right: Save button and Save to board button */}
+                        {/* -- Right: Save button and Add to boards button */}
                         <div className="d-flex gap-2 align-items-center">
                             <motion.button
                                 className="btn btn-sm fw-bold px-3 rounded-3 d-flex align-items-center justify-content-center"
@@ -369,7 +369,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                 {saved ? 'Saved' : 'Save'}
                             </motion.button>
                             
-                            {/* Save to board button */}
+                            {/* Add to boards button */}
                             <motion.button
                                 className="btn btn-sm fw-bold px-3 rounded-3 d-flex align-items-center justify-content-center"
                                 onClick={handleSaveToBoardClick}
@@ -382,9 +382,9 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                 }}
                                 whileHover={{scale: 1.04}}
                                 whileTap={{scale: 0.97}}
-                                title="Save to board"
+                                title="Add to boards"
                             >
-                                Save to board
+                                Add to boards
                             </motion.button>
                         </div>
                     </div>
