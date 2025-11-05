@@ -46,4 +46,20 @@ public class AccountController : ControllerBase
         var profile = await _authService.GetUserProfileByUsernameAsync(username);
         return Ok(profile);
     }
+
+    [HttpPut("profile")]
+    [Authorize]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
+    {
+        var profile = await _authService.UpdateProfileAsync(dto, User);
+        return Ok(profile);
+    }
+
+    [HttpDelete("delete")]
+    [Authorize]
+    public async Task<IActionResult> DeleteAccount()
+    {
+        await _authService.DeleteAccountAsync(User);
+        return NoContent();
+    }
 }

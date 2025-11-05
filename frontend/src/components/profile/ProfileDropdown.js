@@ -27,7 +27,7 @@ const ProfileDropdown = () => {
             </button>
             <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                 <li><Link className="dropdown-item" to="/profile">My Profile</Link></li>
-                <li><Link className="dropdown-item" to="/settings">Settings</Link></li>
+                <li><Link className="dropdown-item" to="/settings/profile">Settings</Link></li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
                     <button className="dropdown-item" onClick={handleLogout}>Log out</button>

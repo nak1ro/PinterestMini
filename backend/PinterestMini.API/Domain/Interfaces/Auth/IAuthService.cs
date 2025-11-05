@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Account;
 
@@ -9,4 +10,6 @@ public interface IAuthService
     public Task<NewUserDto> LoginAsync(LoginDto dto);
     Task<User> GetUserByLoginAsync(string login);
     Task<UserProfileDto> GetUserProfileByUsernameAsync(string username);
+    Task<UserProfileDto> UpdateProfileAsync(UpdateProfileDto dto, ClaimsPrincipal user);
+    Task DeleteAccountAsync(ClaimsPrincipal user);
 }

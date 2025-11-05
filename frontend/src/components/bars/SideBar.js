@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useAppContext } from '../../context/AppContext';
 
 const Sidebar = () => {
     const [showSettings, setShowSettings] = useState(false);
+    const { user } = useAppContext();
+    const isAuthenticated = !!user;
 
     const toggleSettings = () => {
         setShowSettings((prev) => !prev);
@@ -69,53 +72,54 @@ const Sidebar = () => {
                         </div>
                     </a>
 
-                    <a href="/create-pin" className="nav-link text-white">
-                        <div className="hover-container">
-                            <img
-                                src="/assets/add.png"
-                                alt="Add"
-                                width="35"
-                                height="35"
-                                className="rounded-3"
-                            />
-                        </div>
-                    </a>
-                </div>
-
-                <div className="mt-auto position-relative">
-                    <button
-                        onClick={toggleSettings}
-                        className="btn btn-link p-0 border-0"
-                    >
-                        <div className="hover-container">
-                            <img
-                                src="/assets/more.png"
-                                alt="Settings"
-                                width="35"
-                                height="35"
-                                className="rounded-3"
-                            />
-                        </div>
-                    </button>
-
-                    {showSettings && (
-                        <div
-                            className="position-absolute bottom-0 start-100 bg-white text-dark rounded shadow p-2"
-                            style={{ minWidth: '150px', zIndex: 1050 }}
-                        >
-                            <a href="/settings/profile" className="dropdown-item">
-                                Profile Settings
-                            </a>
-                            <a href="/settings/account" className="dropdown-item">
-                                Account Settings
-                            </a>
-                            <hr className="my-1" />
-                            <a href="/logout" className="dropdown-item text-danger">
-                                Log out
-                            </a>
-                        </div>
+                    {isAuthenticated && (
+                        <a href="/create-pin" className="nav-link text-white">
+                            <div className="hover-container">
+                                <img
+                                    src="/assets/add.png"
+                                    alt="Add"
+                                    width="35"
+                                    height="35"
+                                    className="rounded-3"
+                                />
+                            </div>
+                        </a>
                     )}
                 </div>
+
+                {isAuthenticated && (
+                    <div className="mt-auto position-relative">
+                        <button
+                            onClick={toggleSettings}
+                            className="btn btn-link p-0 border-0"
+                        >
+                            <div className="hover-container">
+                                <img
+                                    src="/assets/more.png"
+                                    alt="Settings"
+                                    width="35"
+                                    height="35"
+                                    className="rounded-3"
+                                />
+                            </div>
+                        </button>
+
+                        {showSettings && (
+                            <div
+                                className="position-absolute bottom-0 start-100 bg-white text-dark rounded shadow p-2"
+                                style={{ minWidth: '150px', zIndex: 1050 }}
+                            >
+                                <a href="/settings/profile" className="dropdown-item">
+                                    Profile Settings
+                                </a>
+                                <hr className="my-1" />
+                                <a href="/logout" className="dropdown-item text-danger">
+                                    Log out
+                                </a>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </>
     );

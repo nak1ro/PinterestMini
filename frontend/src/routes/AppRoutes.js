@@ -6,34 +6,33 @@ import Home from '../components/pages/Home';
 import Explore from '../components/pages/Explore';
 import Profile from '../components/profile/Profile';
 import PinDetail from '../components/pin/PinDetail';
-import SearchBar from '../components/bars/SearchBar';
 import CreatePin from '../components/pin/CreatePin';
 import {useAppContext} from '../context/AppContext';
-import ProfileDropdown from '../components/profile/ProfileDropdown';
 import TestBoardTag from '../components/pages/TestBoardTag';
 import TagPage from '../components/pages/Tag';
 import CreateBoard from '../components/board/CreateBoard';
 import OtherUserProfile from '../components/profile/OtherUserProfile';
+import ProfileSettings from '../components/profile/ProfileSettings';
 import useUserProfile from "../hooks/useUserProfile";
 
 const AuthenticatedLayout = ({children}) => (
     <div className="d-flex">
         <SideBar/>
-        <div className="flex-grow-1" style={{marginLeft: '80px'}}>
-            <div className="d-flex align-items-center justify-content-between px-3 py-2">
-                <SearchBar/>
-                <ProfileDropdown/>
-            </div>
-            <main>{children}</main>
+        <div className="flex-grow-1">
+            <Header/>
+            <main style={{ marginLeft: '80px' }}>{children}</main>
         </div>
     </div>
 );
 
 const UnauthenticatedLayout = ({children}) => (
-    <>
-        <Header/>
-        <main>{children}</main>
-    </>
+    <div className="d-flex">
+        <SideBar/>
+        <div className="flex-grow-1">
+            <Header/>
+            <main>{children}</main>
+        </div>
+    </div>
 );
 
 const RedirectToSelfProfile = ({children}) => {
@@ -131,13 +130,14 @@ const AppRoutes = () => {
                     }
                 />
 
-                />
+            
 
                 {isAuthenticated && (
                     <>
                         <Route path="/create-pin" element={<AuthenticatedLayout><CreatePin/></AuthenticatedLayout>}/>
                         <Route path="/create-board"
                                element={<AuthenticatedLayout><CreateBoard/></AuthenticatedLayout>}/>
+                        <Route path="/settings/profile" element={<AuthenticatedLayout><ProfileSettings/></AuthenticatedLayout>}/>
                     </>
                 )}
             </Routes>

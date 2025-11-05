@@ -2,8 +2,11 @@ import React, {useState} from 'react';
 import useSearchPins from '../../hooks/useSearchPins';
 import {Dropdown} from 'react-bootstrap';
 import Portal from 'react-overlays/Portal';
+import { useAppContext } from '../../context/AppContext';
 
 const SearchBar = () => {
+    const { user } = useAppContext();
+    const isAuthenticated = !!user;
     const [searchTerm, setSearchTerm] = useState('');
     const [searchScope, setSearchScope] = useState('all');
 
@@ -59,51 +62,53 @@ const SearchBar = () => {
                     }}
                 />
 
-                <Dropdown
-                    onSelect={(val) => {
-                        if (!val) return;
-                        setSearchScope(val);
-                        resetSearch();
-                    }}
-                    // optional: ensure the toggle’s stacking is sane
-                    style={{position: 'relative', zIndex: 1}}
-                >
-                    <Dropdown.Toggle
-                        id="search-scope-toggle"
-                        className="border-0 rounded-0"
-                        style={{
-                            width: '160px',
-                            backgroundColor: 'transparent',
-                            fontSize: '14px',
-                            color: '#555',
-                            boxShadow: 'none',
-                            textAlign: 'left',
+                {isAuthenticated && (
+                    <Dropdown
+                        onSelect={(val) => {
+                            if (!val) return;
+                            setSearchScope(val);
+                            resetSearch();
                         }}
-                        variant="light"
+                        // optional: ensure the toggle's stacking is sane
+                        style={{position: 'relative', zIndex: 1}}
                     >
-                        {SCOPE_LABELS[searchScope] || 'All Pins'}
-                    </Dropdown.Toggle>
+                        <Dropdown.Toggle
+                            id="search-scope-toggle"
+                            className="border-0 rounded-0"
+                            style={{
+                                width: '160px',
+                                backgroundColor: 'transparent',
+                                fontSize: '14px',
+                                color: '#555',
+                                boxShadow: 'none',
+                                textAlign: 'left',
+                            }}
+                            variant="light"
+                        >
+                            {SCOPE_LABELS[searchScope] || 'All Pins'}
+                        </Dropdown.Toggle>
 
-                    <Dropdown.Menu
-                        as={PortalMenu}
-                        // Popper config to position relative to viewport, not clipping ancestors
-                        popperConfig={{
-                            strategy: 'fixed',
-                            modifiers: [
-                                {name: 'offset', options: {offset: [0, 6]}},
-                                {name: 'preventOverflow', options: {boundary: 'viewport'}},
-                            ],
-                        }}
-                        align="start"
-                    >
-                        <Dropdown.Item eventKey="all" active={searchScope === 'all'}>
-                            All Pins
-                        </Dropdown.Item>
-                        <Dropdown.Item eventKey="saved" active={searchScope === 'saved'}>
-                            Saved Pins
-                        </Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
+                        <Dropdown.Menu
+                            as={PortalMenu}
+                            // Popper config to position relative to viewport, not clipping ancestors
+                            popperConfig={{
+                                strategy: 'fixed',
+                                modifiers: [
+                                    {name: 'offset', options: {offset: [0, 6]}},
+                                    {name: 'preventOverflow', options: {boundary: 'viewport'}},
+                                ],
+                            }}
+                            align="start"
+                        >
+                            <Dropdown.Item eventKey="all" active={searchScope === 'all'}>
+                                All Pins
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="saved" active={searchScope === 'saved'}>
+                                Saved Pins
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                )}
 
                 <button type="submit" className="btn d-flex align-items-center justify-content-center border-0"
                         style={{width: '48px', backgroundColor: 'transparent', padding: 0}}>
