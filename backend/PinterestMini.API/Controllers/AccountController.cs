@@ -49,7 +49,7 @@ public class AccountController : ControllerBase
 
     [HttpPut("profile")]
     [Authorize]
-    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
+    public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto dto)
     {
         var profile = await _authService.UpdateProfileAsync(dto, User);
         return Ok(profile);

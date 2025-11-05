@@ -60,11 +60,13 @@ const ProfileSettings = () => {
         setError(null);
 
         try {
+            // Create FormData like pins and boards do
             const formData = new FormData();
-            formData.append('username', form.username);
+            formData.append('name', form.username);
             if (form.bio) {
                 formData.append('bio', form.bio);
             }
+            // If a new profile picture was selected, append it to FormData
             if (profilePicture) {
                 formData.append('profilePicture', profilePicture);
             }
@@ -82,6 +84,7 @@ const ProfileSettings = () => {
                     ...user,
                     ...result.data,
                     username: form.username,
+                    name: form.username,
                     bio: form.bio,
                 };
                 login(updatedUser, user.email, localStorage.getItem('token'));

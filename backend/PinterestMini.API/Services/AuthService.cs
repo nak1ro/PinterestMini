@@ -6,6 +6,7 @@ using PinterestMini.API.Domain.Interfaces.Auth;
 using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.DTOs.Account;
+using PinterestMini.API.Helpers;
 using PinterestMini.API.Middlewares;
 using System.Security.Claims;
 
@@ -19,6 +20,7 @@ public class AuthService : IAuthService
     private readonly IMapper _mapper;
     private readonly ApplicationDbContext _context;
     private readonly IUserContextService _userContext;
+    private readonly ImageUploader _imageUploader;
 
     public AuthService(
         UserManager<User> userManager, 
@@ -26,7 +28,8 @@ public class AuthService : IAuthService
         ITokenService tokenService, 
         IMapper mapper,
         ApplicationDbContext context,
-        IUserContextService userContext)
+        IUserContextService userContext,
+        ImageUploader imageUploader)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -34,6 +37,7 @@ public class AuthService : IAuthService
         _mapper = mapper;
         _context = context;
         _userContext = userContext;
+        _imageUploader = imageUploader;
     }
 
     public async Task<NewUserDto> RegisterAsync(RegisterDto dto)
@@ -114,8 +118,12 @@ public class AuthService : IAuthService
         if (dto.Bio != null)
             currentUser.Bio = dto.Bio;
 
-        if (dto.ProfilePictureUrl != null)
-            currentUser.ProfilePictureUrl = dto.ProfilePictureUrl;
+        // Handle profile picture upload if provided
+        if (dto.ProfilePicture != null)
+        {
+            var imageUrl = await _imageUploader.UploadAsync(dto.ProfilePicture, "profiles");
+            currentUser.ProfilePictureUrl = imageUrl;
+        }
 
         var result = await _userManager.UpdateAsync(currentUser);
         if (!result.Succeeded)
