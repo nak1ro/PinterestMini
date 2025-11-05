@@ -318,7 +318,7 @@ const Profile = () => {
                         Back to My Profile
                     </motion.button>
                 </motion.div>
-                <OtherUserProfile/>
+                <OtherUserProfile username={ctrl.username || ctrl.user?.username} />
             </div>
         );
     }

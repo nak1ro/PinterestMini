@@ -14,10 +14,10 @@ import useUserFollowing from '../../hooks/useUserFollowing';
 import PinGrid from '../pin/PinGrid';
 import UserListModal from '../common/UserListModal';
 
-const OtherUserProfile = () => {
+const OtherUserProfile = ({ username: propUsername }) => {
     const { username: routeUsername } = useParams();
     const { user, userId } = useAppContext();
-    const username = routeUsername ?? user?.username ?? '';
+    const username = propUsername ?? routeUsername ?? user?.username ?? '';
     const [activeTab, setActiveTab] = useState('created');
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState(null); // 'followers' or 'following'
