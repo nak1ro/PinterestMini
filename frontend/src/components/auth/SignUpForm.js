@@ -121,6 +121,12 @@ const SignUpForm = () => {
                         onChange={handleChange}
                         onFocus={() => setFocusedField('username')}
                         onBlur={() => setFocusedField(null)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && allRequirementsMet && form.username && form.email && form.password) {
+                                e.preventDefault();
+                                handleSubmit(e);
+                            }
+                        }}
                         required
                     />
                 </motion.div>
@@ -151,6 +157,12 @@ const SignUpForm = () => {
                         onChange={handleChange}
                         onFocus={() => setFocusedField('email')}
                         onBlur={() => setFocusedField(null)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && allRequirementsMet && form.username && form.email && form.password) {
+                                e.preventDefault();
+                                handleSubmit(e);
+                            }
+                        }}
                         required
                     />
                 </motion.div>
@@ -181,6 +193,12 @@ const SignUpForm = () => {
                         onChange={handleChange}
                         onFocus={() => setFocusedField('password')}
                         onBlur={() => setFocusedField(null)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && allRequirementsMet && form.username && form.email && form.password) {
+                                e.preventDefault();
+                                handleSubmit(e);
+                            }
+                        }}
                         required
                     />
                 </motion.div>

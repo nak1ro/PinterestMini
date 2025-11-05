@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { usePopularTags, usePinsByTag } from '../../hooks/useTags';
 import PinGrid from '../pin/PinGrid';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Explore = () => {
   const { tags, loading, error } = usePopularTags(5);
@@ -30,8 +30,14 @@ const Explore = () => {
 
 const TagSection = ({ tag }) => {
   const { pins, loading, error } = usePinsByTag(tag);
+  const navigate = useNavigate();
 
   if (loading || error || pins.length === 0) return null;
+
+  const handleViewAll = (e) => {
+    e.preventDefault();
+    navigate(`/tag/${encodeURIComponent(tag)}`);
+  };
 
   return (
       <div className="mb-5">
@@ -39,9 +45,21 @@ const TagSection = ({ tag }) => {
           <h2 className="fw-semibold mb-0" style={{ fontSize: '1.5rem' }}>
             {tag.charAt(0).toUpperCase() + tag.slice(1)}
           </h2>
-          <Link to={`/tag/${encodeURIComponent(tag)}`} className="btn btn-outline-primary btn-sm">
+          <motion.button
+            onClick={handleViewAll}
+            className="btn btn-sm fw-bold px-4 rounded-3"
+            style={{
+              background: '#efefef',
+              border: 'none',
+              color: '#111',
+              height: '36px',
+              minWidth: '100px',
+            }}
+            whileHover={{ scale: 1.05, background: '#e2e2e2' }}
+            whileTap={{ scale: 0.97 }}
+          >
             View all
-          </Link>
+          </motion.button>
         </div>
         <PinGrid pins={pins.slice(0, 4)} />
       </div>

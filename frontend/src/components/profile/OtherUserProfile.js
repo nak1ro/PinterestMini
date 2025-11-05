@@ -9,13 +9,19 @@ import useCreatedPins from '../../hooks/useCreatedPins';
 import useSavedPins from '../../hooks/useSavedPins';
 import useUserProfile from '../../hooks/useUserProfile';
 import useFollowUser from '../../hooks/useFollowUser';
+import useUserFollowers from '../../hooks/useUserFollowers';
+import useUserFollowing from '../../hooks/useUserFollowing';
 import PinGrid from '../pin/PinGrid';
+import UserListModal from '../common/UserListModal';
 
 const OtherUserProfile = () => {
     const { username: routeUsername } = useParams();
     const { user, userId } = useAppContext();
     const username = routeUsername ?? user?.username ?? '';
     const [activeTab, setActiveTab] = useState('created');
+    const [showModal, setShowModal] = useState(false);
+    const [modalType, setModalType] = useState(null); // 'followers' or 'following'
+    
     const { profile, loading: loadingProfile, error: profileError } = useUserProfile(username);
     const { createdPins, loading: loadingCreated } = useCreatedPins(username);
     const { savedPins, loading: loadingSaved } = useSavedPins(username);
@@ -28,12 +34,37 @@ const OtherUserProfile = () => {
         toggleFollow,
     } = useFollowUser(profile?.id, userId);
 
+    // Load followers/following only when modal is opened
+    const { followers, loading: loadingFollowers } = useUserFollowers(
+        profile?.id,
+        showModal && modalType === 'followers'
+    );
+    const { following, loading: loadingFollowing } = useUserFollowing(
+        profile?.id,
+        showModal && modalType === 'following'
+    );
+
     const pinsToShow = activeTab === 'created' ? createdPins : savedPins;
     const isLoadingPins = activeTab === 'created' ? loadingCreated : loadingSaved;
 
     const avatarSrc = profile?.profilePictureUrl || '/assets/avatar-default.svg';
     const displayName = profile?.username || username || 'Unknown user';
     const bio = profile?.bio || 'No bio provided.';
+
+    const openFollowersModal = () => {
+        setModalType('followers');
+        setShowModal(true);
+    };
+
+    const openFollowingModal = () => {
+        setModalType('following');
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setModalType(null);
+    };
 
     if (loadingProfile) {
         return <div>Loading...</div>;
@@ -102,14 +133,26 @@ const OtherUserProfile = () => {
 
                 {/* Stats */}
                 <div className="d-flex gap-5">
-                    <div className="text-center">
+                    <motion.div
+                        className="text-center"
+                        style={{ cursor: profile?.id ? 'pointer' : 'default' }}
+                        onClick={profile?.id ? openFollowersModal : undefined}
+                        whileHover={profile?.id ? { scale: 1.05 } : {}}
+                        whileTap={profile?.id ? { scale: 0.95 } : {}}
+                    >
                         <div className="fw-bold fs-4">{followersCount ?? '-'}</div>
                         <div className="small text-muted">followers</div>
-                    </div>
-                    <div className="text-center">
+                    </motion.div>
+                    <motion.div
+                        className="text-center"
+                        style={{ cursor: profile?.id ? 'pointer' : 'default' }}
+                        onClick={profile?.id ? openFollowingModal : undefined}
+                        whileHover={profile?.id ? { scale: 1.05 } : {}}
+                        whileTap={profile?.id ? { scale: 0.95 } : {}}
+                    >
                         <div className="fw-bold fs-4">{followingCount ?? '-'}</div>
                         <div className="small text-muted">following</div>
-                    </div>
+                    </motion.div>
                     <div className="text-center">
                         <div className="fw-bold fs-4">{createdPins?.length ?? '-'}</div>
                         <div className="small text-muted">pins created</div>
@@ -182,6 +225,15 @@ const OtherUserProfile = () => {
                     </div>
                 )}
             </div>
+
+            {/* User List Modal */}
+            <UserListModal
+                show={showModal}
+                onClose={closeModal}
+                title={modalType === 'followers' ? 'Followers' : 'Following'}
+                users={modalType === 'followers' ? followers : following}
+                loading={modalType === 'followers' ? loadingFollowers : loadingFollowing}
+            />
         </motion.div>
     );
 };

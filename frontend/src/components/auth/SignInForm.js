@@ -100,6 +100,12 @@ const SignInForm = ({ onSwitchToSignUp }) => {
                         onChange={handleChange}
                         onFocus={() => setFocusedField('login')}
                         onBlur={() => setFocusedField(null)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && form.login && form.password) {
+                                e.preventDefault();
+                                handleSubmit(e);
+                            }
+                        }}
                         required
                     />
                 </motion.div>
@@ -130,6 +136,12 @@ const SignInForm = ({ onSwitchToSignUp }) => {
                         onChange={handleChange}
                         onFocus={() => setFocusedField('password')}
                         onBlur={() => setFocusedField(null)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && form.login && form.password) {
+                                e.preventDefault();
+                                handleSubmit(e);
+                            }
+                        }}
                         required
                     />
                 </motion.div>

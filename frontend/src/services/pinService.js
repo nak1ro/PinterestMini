@@ -89,7 +89,6 @@ export const fetchSavedPinsByQuery = async (query, page = DEFAULT_PAGE, pageSize
 
     try {
         return axiosClient.get('/pin/saved/search', {
-            skipAuth: true,
             params: {
                 query,
                 page,

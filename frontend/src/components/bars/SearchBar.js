@@ -51,6 +51,7 @@ const SearchBar = () => {
                     <BeautifulDropdown
                         variant="light"
                         align="start"
+                        className="rounded-3"
                         trigger={SCOPE_LABELS[searchScope] || 'All Pins'}
                         onSelect={(val) => {
                             if (!val) return;
@@ -60,6 +61,8 @@ const SearchBar = () => {
                         toggleStyle={{
                             width: '160px',
                             textAlign: 'left',
+                            height: '35px',
+
                         }}
                         style={{position: 'relative', zIndex: 1}}
                     >

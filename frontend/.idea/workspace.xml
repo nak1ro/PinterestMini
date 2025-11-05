@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend/PinterestMini.API/Controllers/PinController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/PinterestMini.API/Controllers/PinController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/axiosClient.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/axiosClient.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pin/PinCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pin/PinPreviewModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinPreviewModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hooks/useSavedPins.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/useSavedPins.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/pinService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/pinService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/bars/SearchBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/bars/SearchBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pages/Explore.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/Explore.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,6 +122,7 @@
       <workItem from="1756330990380" duration="27000" />
       <workItem from="1756331768743" duration="27000" />
       <workItem from="1762217560173" duration="961000" />
+      <workItem from="1762365427118" duration="158000" />
     </task>
     <servers />
   </component>

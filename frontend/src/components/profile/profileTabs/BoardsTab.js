@@ -11,7 +11,7 @@ import BeautifulDropdown, { BeautifulDropdownItem } from '../../common/Beautiful
 
 const BoardsTab = () => {
     const navigate = useNavigate();
-    const { boards, loading, error, patchBoard, removeBoard } = useBoards();
+    const { boards, loading, error, patchBoard, removeBoard, refetch } = useBoards();
 
     // Local view state: list vs board view
     const [openBoard, setOpenBoard] = useState(null);
@@ -43,6 +43,12 @@ const BoardsTab = () => {
                 <BoardView
                     board={openBoard}
                     onBack={() => setOpenBoard(null)}
+                    onBoardUpdated={(updated) => {
+                        // Update the board in the list and openBoard state
+                        patchBoard(updated);
+                        setOpenBoard(updated);
+                        refetch();
+                    }}
                 />
             </div>
         );
@@ -136,13 +142,26 @@ const BoardsTab = () => {
                         <div key={board.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
                             <BoardCard
                                 board={board}
-                                onUpdated={(updated) => {
+                                onUpdated={async (updated) => {
                                     // Update the board in the list immediately (name/desc/privacy/cover)
                                     patchBoard(updated);
+                                    // Also update openBoard if it's the same board
+                                    if (openBoard && openBoard.id === updated.id) {
+                                        setOpenBoard(updated);
+                                    }
+                                    // Refetch to get latest data from server (updatedAt, etc.)
+                                    // Do this in the background to avoid blocking UI
+                                    refetch().catch(err => {
+                                        console.error('Failed to refetch boards:', err);
+                                    });
                                 }}
                                 onDeleted={(deletedId) => {
                                     // Remove from list immediately
                                     removeBoard(deletedId);
+                                    // Close board view if it was the deleted board
+                                    if (openBoard && openBoard.id === deletedId) {
+                                        setOpenBoard(null);
+                                    }
                                 }}
                                 onOpen={(b) => setOpenBoard(b)}
                             />

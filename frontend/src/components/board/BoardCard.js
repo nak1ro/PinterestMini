@@ -97,11 +97,10 @@ const BoardCard = ({ board, onUpdated, onDeleted, onOpen }) => {
                             e.stopPropagation();
                             setShowEditModal(true);
                         }}
-                        className="btn btn-light border-0 position-absolute justify-content-center align-items-center"
+                        className="btn btn-light border-0 position-absolute justify-content-center align-items-center rounded-3"
                         style={{
                             top: 10,
                             right: 10,
-                            borderRadius: '12px',
                             padding: '6px 10px',
                             boxShadow: '0 .25rem .75rem rgba(0,0,0,.12)',
                             minWidth: '60px',

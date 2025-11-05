@@ -4,18 +4,22 @@ import {Link} from 'react-router-dom';
 import useSavedPins from '../../hooks/useSavedPins';
 import PinPreviewModal from './PinPreviewModal';
 import SaveToBoardModal from './SaveToBoardModal';
+import AuthModal from '../auth/AuthModal';
 import {useAppContext} from '../../context/AppContext';
 import {deletePin} from '../../services/pinService';
 
 const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
     const {savePin, unsavePin, savedPins, isPinSaved, refetch} = useSavedPins();
-    const {userId} = useAppContext();
+    const {userId, user} = useAppContext();
+    const isAuthenticated = !!user;
     const [saved, setSaved] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [checkedSavedStatus, setCheckedSavedStatus] = useState(false);
     const [showSaveToBoardModal, setShowSaveToBoardModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [authModalType, setAuthModalType] = useState('signin');
 
     // Check if current user is the owner
     const isOwner =
@@ -30,9 +34,9 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
         }
     }, [savedPins, pin.id]);
 
-    // When hovering starts, check saved status via API
+    // When hovering starts, check saved status via API (only if authenticated)
     useEffect(() => {
-        if (isHovered && !checkedSavedStatus) {
+        if (isHovered && !checkedSavedStatus && isAuthenticated) {
             setCheckedSavedStatus(true);
             isPinSaved(pin.id)
                 .then((isSaved) => {
@@ -42,7 +46,7 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
                     // Keep current saved state on error
                 });
         }
-    }, [isHovered, pin.id, isPinSaved, checkedSavedStatus]);
+    }, [isHovered, pin.id, isPinSaved, checkedSavedStatus, isAuthenticated]);
 
     // Reset checked flag when hover ends
     useEffect(() => {
@@ -54,6 +58,15 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
     const handleSaveClick = async (e) => {
         e.preventDefault();
         e.stopPropagation();
+        
+        // If not authenticated, open login modal
+        if (!isAuthenticated) {
+            setAuthModalType('signin');
+            setShowAuthModal(true);
+            return;
+        }
+        
+        // Authenticated users can save/unsave
         if (saved) {
             await unsavePin(pin.id);
             setSaved(false);
@@ -146,7 +159,7 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
 
                         {/* Top Row */}
                         <div className="d-flex fw-bold justify-content-between align-items-center p-3 gap-2">
-                            {/* Left side: Save button, Add to boards button, Remove from board (if in board view), Delete (if owner) */}
+                            {/* Left side: Save button, Add to boards button (only if authenticated), Remove from board (if in board view), Delete (if owner) */}
                             <div className="d-flex gap-2 align-items-center">
                                 <motion.button
                                     className={`btn btn-sm px-3 fw-bold rounded-3 d-flex align-items-center justify-content-center`}
@@ -164,9 +177,9 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
                                 >
                                     {saved ? 'Saved' : 'Save'}
                                 </motion.button>
-                                
-                                {/* Add to boards button (hide if already in board view) */}
-                                {!boardId && (
+
+                                {/* Add to boards button - only show if authenticated */}
+                                {isAuthenticated && !boardId && (
                                     <motion.button
                                         className="btn btn-sm px-2 rounded-3 d-flex align-items-center justify-content-center"
                                         onClick={handleSaveToBoardClick}
@@ -180,7 +193,7 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
                                         }}
                                         whileHover={{scale: 1.04}}
                                         whileTap={{scale: 0.97}}
-                                        title="Add to boards"
+                                        title="Add to board"
                                     >
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
@@ -211,37 +224,6 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
                                     </motion.button>
                                 )}
 
-                                {/* Delete button (only show if user is the owner) */}
-                                {isOwner && (
-                                    <motion.button
-                                        className="btn btn-sm px-2 rounded-3 d-flex align-items-center justify-content-center"
-                                        onClick={handleDeleteClick}
-                                        disabled={isDeleting}
-                                        style={{
-                                            fontSize: '0.9rem',
-                                            border: '1px solid rgba(255,255,255,0.5)',
-                                            height: '36px',
-                                            width: '36px',
-                                            background: 'rgba(220, 53, 69, 0.9)',
-                                            color: '#fff',
-                                            opacity: isDeleting ? 0.6 : 1,
-                                        }}
-                                        whileHover={{scale: 1.04}}
-                                        whileTap={{scale: 0.97}}
-                                        title="Delete pin"
-                                    >
-                                        {isDeleting ? (
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="spinner-border spinner-border-sm">
-                                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.3"/>
-                                                <path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" strokeWidth="2"/>
-                                            </svg>
-                                        ) : (
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                                            </svg>
-                                        )}
-                                    </motion.button>
-                                )}
                             </div>
 
                             {/* Owner link (right) */}
@@ -292,6 +274,14 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
             pinId={pin.id}
             onSaved={handleSavedToBoard}
         />
+
+        {showAuthModal && (
+            <AuthModal
+                type={authModalType}
+                onClose={() => setShowAuthModal(false)}
+                onSwitchType={(type) => setAuthModalType(type)}
+            />
+        )}
     </>);
 };
 
