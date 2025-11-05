@@ -8,7 +8,6 @@ import Profile from '../components/profile/Profile';
 import PinDetail from '../components/pin/PinDetail';
 import CreatePin from '../components/pin/CreatePin';
 import {useAppContext} from '../context/AppContext';
-import TestBoardTag from '../components/pages/TestBoardTag';
 import TagPage from '../components/pages/Tag';
 import CreateBoard from '../components/board/CreateBoard';
 import OtherUserProfile from '../components/profile/OtherUserProfile';
@@ -42,8 +41,7 @@ const RedirectToSelfProfile = ({children}) => {
     if (loading) return null;
 
     if (!user) return <Navigate to="/"/>;
-    console.log(user.username);
-    console.log(username);
+
     if (username === user.username) {
         return <Navigate to="/profile" replace/>;
     }

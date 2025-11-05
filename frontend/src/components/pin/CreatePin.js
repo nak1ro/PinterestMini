@@ -221,7 +221,6 @@ const CreatePinPage = () => {
             });
 
             setSuccessMessage('Pin was successfully created!');
-            console.log('Pin created:', res.data);
 
             // Reset form
             setTitle('');

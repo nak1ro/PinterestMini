@@ -21,7 +21,7 @@ export const unfollowUser = async (userId) => {
 };
 
 export const isFollowingUser = async (userId) => {
-    const res = await axiosClient.delete(`/follow/${userId}/check`);
+    const res = await axiosClient.get(`/follow/${userId}/check`);
     return res.data;
 };
 

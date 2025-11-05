@@ -1,20 +1,10 @@
 import React, {useMemo, useState} from 'react';
-import {Spinner, Button, Dropdown} from 'react-bootstrap';
+import {Spinner, Button} from 'react-bootstrap';
 import {useNavigate} from 'react-router-dom';
 import {Plus, SortDownAlt} from 'react-bootstrap-icons';
 import {motion} from 'framer-motion';
 import PinGrid from '../../pin/PinGrid';
-
-import Portal from 'react-overlays/Portal';
-
-const PortalMenu = React.forwardRef(({children, style, ...props}, ref) => (
-    <Portal>
-        <div ref={ref} {...props} style={{zIndex: 2000, ...style}}>
-            {children}
-        </div>
-    </Portal>
-));
-PortalMenu.displayName = 'PortalMenu';
+import BeautifulDropdown, {BeautifulDropdownItem} from '../../common/BeautifulDropdown';
 
 const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins, onDelete}) => {
     const navigate = useNavigate();
@@ -67,36 +57,22 @@ const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins, onDelete}) => {
 
                 {/* Right: Sort + Create */}
                 <div className="d-flex align-items-center gap-4">
-                    <Dropdown
+                    <BeautifulDropdown
                         align="end"
+                        variant="standard"
+                        trigger={<><SortDownAlt className="me-2"/> Sort</>}
                         onSelect={(val) => {
                             if (!val) return;
                             setSortKey(val);
                         }}
                     >
-                        <Dropdown.Toggle variant="outline-dark" className="px-3 py-2 rounded-3"
-                        >
-                            <SortDownAlt className="me-2"/> Sort
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu
-                            as={PortalMenu}
-                            popperConfig={{
-                                strategy: 'fixed',
-                                modifiers: [
-                                    {name: 'offset', options: {offset: [0, 6]}},
-                                    {name: 'preventOverflow', options: {boundary: 'viewport'}},
-                                ],
-                            }}
-                        >
-                            <Dropdown.Item eventKey="recent" active={sortKey === 'recent'}>
-                                Most recent
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="title" active={sortKey === 'title'}>
-                                Title (A–Z)
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                        <BeautifulDropdownItem eventKey="recent" active={sortKey === 'recent'}>
+                            Most recent
+                        </BeautifulDropdownItem>
+                        <BeautifulDropdownItem eventKey="title" active={sortKey === 'title'}>
+                            Title (A–Z)
+                        </BeautifulDropdownItem>
+                    </BeautifulDropdown>
 
                     <Button
                         className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center"

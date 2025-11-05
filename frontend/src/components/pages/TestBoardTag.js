@@ -29,6 +29,7 @@ const TestBoardTagPage = () => {
 
     useEffect(() => {
         fetchBoards();
+        fetchTags();
     }, []);
 
     const fetchBoards = async () => {
@@ -36,8 +37,16 @@ const TestBoardTagPage = () => {
             const res = await getMyBoards();
             setBoards(res.data);
         } catch (err) {
-            console.error(err);
-            setError('Ошибка при загрузке досок');
+            setError('Failed to load boards');
+        }
+    };
+
+    const fetchTags = async () => {
+        try {
+            const res = await getAllTags();
+            setTags(Array.isArray(res.data) ? res.data : []);
+        } catch (err) {
+            // Silently fail - tags are optional
         }
     };
 
@@ -49,19 +58,34 @@ const TestBoardTagPage = () => {
         try {
             const formData = new FormData();
             formData.append("name", boardName);
-            if (boardDescription) formData.append("description",boardDescription);
+            if (boardDescription) formData.append("description", boardDescription);
             formData.append("isPrivate", isPrivate);
-            if (coverImage) formData.append("coverImage" , coverImage);
-            console.log(formData);
+            if (coverImage) formData.append("coverImage", coverImage);
             await createBoard(formData);
             setBoardName('');
             setBoardDescription('');
             setCoverImage(null);
             setIsPrivate(false);
-            fetchBoards();
+            await fetchBoards();
         } catch (err) {
-            console.error(err);
-            setError('Ошибка при создании доски');
+            setError('Failed to create board');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleTagSubmit = async (e) => {
+        e.preventDefault();
+        if (!tagName.trim()) return;
+
+        setLoading(true);
+        setError('');
+        try {
+            await createTag(tagName.trim());
+            setTagName('');
+            await fetchTags();
+        } catch (err) {
+            setError('Failed to create tag');
         } finally {
             setLoading(false);
         }
@@ -118,7 +142,7 @@ const TestBoardTagPage = () => {
 
                 <Col md={6}>
                     <h4>🏷️ Create Tag</h4>
-                    <Form>
+                    <Form onSubmit={handleTagSubmit}>
                         <FloatingLabel label="Tag Name" className="mb-3">
                             <Form.Control
                                 type="text"

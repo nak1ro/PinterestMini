@@ -1,10 +1,9 @@
 import axiosClient from '../api/axiosClient';
+import { getMultipartHeaders } from '../utils/apiHelpers';
 
 export const createBoard = async (formData) => {
     return axiosClient.post('/board', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
+        headers: getMultipartHeaders(),
     });
 };
 
@@ -18,7 +17,7 @@ export const getPinsCountForBoard = async (boardId) => {
 
 export const changeBoardInfo = async (boardId, formData) => {
     return axiosClient.put(`/board/${boardId}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: getMultipartHeaders(),
     });
 };
 

@@ -273,20 +273,16 @@ public class PinService : IPinService
             throw new AppNotFoundException("Pin not found.");
 
         var userId = _userContext.GetUserId(user);
-        if (pin.OwnerId != userId)
-            throw new AppUnauthorizedException("You don't own this pin.");
 
-        // Remove existing PinBoards for this pin owned by the current user
         var existingPinBoards = pin.PinBoards?
             .Where(pb => pb.UserId == userId)
-            .ToList() ?? new List<PinBoard>();
+            .ToList() ?? [];
 
         foreach (var pinBoard in existingPinBoards)
         {
             await _unitOfWork.PinBoards.RemoveAsync(pinId, pinBoard.BoardId, userId);
         }
 
-        // If boardIds is empty, just remove all and return
         if (boardIds == null || boardIds.Count == 0)
         {
             await _unitOfWork.SaveChangesAsync();

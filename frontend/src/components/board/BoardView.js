@@ -1,9 +1,10 @@
 import React, {useMemo, useState} from 'react';
-import {Button, Dropdown, Alert, Spinner} from 'react-bootstrap';
+import {Button, Alert, Spinner} from 'react-bootstrap';
 import {ArrowLeft, Grid3x3GapFill, SortDownAlt} from 'react-bootstrap-icons';
 import useBoardPins from '../../hooks/useBoardPins';
 import PinGrid from '../pin/PinGrid'; // <-- reusing your existing Masonry grid
 import {removePinFromBoard} from '../../services/boardService';
+import BeautifulDropdown, {BeautifulDropdownItem} from '../common/BeautifulDropdown';
 
 const BoardView = ({board, onBack}) => {
     const [sortKey, setSortKey] = useState('recent'); // 'recent' | 'title'
@@ -75,19 +76,22 @@ const BoardView = ({board, onBack}) => {
 
                 {/* Right: Controls */}
                 <div className="d-flex align-items-center gap-2">
-                    <Dropdown align="end">
-                        <Dropdown.Toggle variant="outline-dark" className="rounded-3">
-                            <SortDownAlt className="me-2"/> Sort
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item active={sortKey === 'recent'} onClick={() => setSortKey('recent')}>
-                                Most recent
-                            </Dropdown.Item>
-                            <Dropdown.Item active={sortKey === 'title'} onClick={() => setSortKey('title')}>
-                                Title (A–Z)
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <BeautifulDropdown
+                        align="end"
+                        variant="standard"
+                        trigger={<><SortDownAlt className="me-2"/> Sort</>}
+                        onSelect={(val) => {
+                            if (!val) return;
+                            setSortKey(val);
+                        }}
+                    >
+                        <BeautifulDropdownItem eventKey="recent" active={sortKey === 'recent'}>
+                            Most recent
+                        </BeautifulDropdownItem>
+                        <BeautifulDropdownItem eventKey="title" active={sortKey === 'title'}>
+                            Title (A–Z)
+                        </BeautifulDropdownItem>
+                    </BeautifulDropdown>
 
                     <span className="text-muted small d-none d-md-inline-flex align-items-center">
             <Grid3x3GapFill size={16} className="me-1"/>

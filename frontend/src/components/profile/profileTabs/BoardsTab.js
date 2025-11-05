@@ -2,11 +2,12 @@
 import React, { useMemo, useState } from 'react';
 import { Spinner, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { Plus } from 'react-bootstrap-icons';
+import { Plus, SortDownAlt } from 'react-bootstrap-icons';
 
 import useBoards from '../../../hooks/useBoards';
 import BoardCard from '../../board/BoardCard';
 import BoardView from '../../board/BoardView';
+import BeautifulDropdown, { BeautifulDropdownItem } from '../../common/BeautifulDropdown';
 
 const BoardsTab = () => {
     const navigate = useNavigate();
@@ -14,11 +15,27 @@ const BoardsTab = () => {
 
     // Local view state: list vs board view
     const [openBoard, setOpenBoard] = useState(null);
+    const [sortKey, setSortKey] = useState('name');
 
     const sortedBoards = useMemo(() => {
-        // Keep UI deterministic: example sort by last update/name if present
-        return [...boards].sort((a, b) => (a.updatedAt || '').localeCompare(b.updatedAt || '') || a.name.localeCompare(b.name));
-    }, [boards]);
+        const arr = [...boards];
+        if (sortKey === 'name') {
+            arr.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        } else if (sortKey === 'recent') {
+            arr.sort((a, b) => {
+                const dateA = new Date(a.updatedAt || a.createdAt || 0).getTime();
+                const dateB = new Date(b.updatedAt || b.createdAt || 0).getTime();
+                return dateB - dateA;
+            });
+        } else if (sortKey === 'created') {
+            arr.sort((a, b) => {
+                const dateA = new Date(a.createdAt || 0).getTime();
+                const dateB = new Date(b.createdAt || 0).getTime();
+                return dateB - dateA;
+            });
+        }
+        return arr;
+    }, [boards, sortKey]);
 
     if (openBoard) {
         return (
@@ -33,8 +50,30 @@ const BoardsTab = () => {
 
     return (
         <div className="px-3 py-4">
-            {/* "+" Button */}
-            <div className="d-flex justify-content-end align-items-center mb-4">
+            {/* Top controls: sort + create button */}
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                {/* Left: Sort */}
+                <BeautifulDropdown
+                    align="start"
+                    variant="standard"
+                    trigger={<><SortDownAlt className="me-2"/> Sort</>}
+                    onSelect={(val) => {
+                        if (!val) return;
+                        setSortKey(val);
+                    }}
+                >
+                    <BeautifulDropdownItem eventKey="name" active={sortKey === 'name'}>
+                        Name (A–Z)
+                    </BeautifulDropdownItem>
+                    <BeautifulDropdownItem eventKey="recent" active={sortKey === 'recent'}>
+                        Most recently updated
+                    </BeautifulDropdownItem>
+                    <BeautifulDropdownItem eventKey="created" active={sortKey === 'created'}>
+                        Most recently created
+                    </BeautifulDropdownItem>
+                </BeautifulDropdown>
+
+                {/* Right: Create */}
                 <Button
                     variant="danger"
                     className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center"

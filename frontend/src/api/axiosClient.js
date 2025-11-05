@@ -1,18 +1,15 @@
-// src/api/axiosClient.js
 import axios from 'axios';
+import { API_BASE_URL } from '../utils/apiConstants';
 
 const axiosClient = axios.create({
-    baseURL: 'https://pinterestmini-g0gzcsbdb7gvgbej.polandcentral-01.azurewebsites.net/api',
+    baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
-        // добавь заголовки если есть токен
     },
     withCredentials: true,
 });
 
-
-
-// ⛨ Перехватчик для установки Authorization
+// Request interceptor to add Authorization header
 axiosClient.interceptors.request.use(
     (config) => {
         if (config.skipAuth) return config;

@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import useSearchPins from '../../hooks/useSearchPins';
-import {Dropdown} from 'react-bootstrap';
-import Portal from 'react-overlays/Portal';
 import { useAppContext } from '../../context/AppContext';
+import BeautifulDropdown, {BeautifulDropdownItem} from '../common/BeautifulDropdown';
 
 const SearchBar = () => {
     const { user } = useAppContext();
@@ -19,20 +18,6 @@ const SearchBar = () => {
         all: 'All Pins',
         saved: 'Saved Pins',
     };
-
-    const PortalMenu = React.forwardRef(({children, style, ...props}, ref) => (
-        <Portal>
-            <div
-                ref={ref}
-                {...props}
-                // high z-index to float over cards/navbars/modals, tweak if needed
-                style={{zIndex: 2000, ...style}}
-            >
-                {children}
-            </div>
-        </Portal>
-    ));
-    PortalMenu.displayName = 'PortalMenu';
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -63,51 +48,28 @@ const SearchBar = () => {
                 />
 
                 {isAuthenticated && (
-                    <Dropdown
+                    <BeautifulDropdown
+                        variant="light"
+                        align="start"
+                        trigger={SCOPE_LABELS[searchScope] || 'All Pins'}
                         onSelect={(val) => {
                             if (!val) return;
                             setSearchScope(val);
                             resetSearch();
                         }}
-                        // optional: ensure the toggle's stacking is sane
+                        toggleStyle={{
+                            width: '160px',
+                            textAlign: 'left',
+                        }}
                         style={{position: 'relative', zIndex: 1}}
                     >
-                        <Dropdown.Toggle
-                            id="search-scope-toggle"
-                            className="border-0 rounded-0"
-                            style={{
-                                width: '160px',
-                                backgroundColor: 'transparent',
-                                fontSize: '14px',
-                                color: '#555',
-                                boxShadow: 'none',
-                                textAlign: 'left',
-                            }}
-                            variant="light"
-                        >
-                            {SCOPE_LABELS[searchScope] || 'All Pins'}
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu
-                            as={PortalMenu}
-                            // Popper config to position relative to viewport, not clipping ancestors
-                            popperConfig={{
-                                strategy: 'fixed',
-                                modifiers: [
-                                    {name: 'offset', options: {offset: [0, 6]}},
-                                    {name: 'preventOverflow', options: {boundary: 'viewport'}},
-                                ],
-                            }}
-                            align="start"
-                        >
-                            <Dropdown.Item eventKey="all" active={searchScope === 'all'}>
-                                All Pins
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="saved" active={searchScope === 'saved'}>
-                                Saved Pins
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                        <BeautifulDropdownItem eventKey="all" active={searchScope === 'all'}>
+                            All Pins
+                        </BeautifulDropdownItem>
+                        <BeautifulDropdownItem eventKey="saved" active={searchScope === 'saved'}>
+                            Saved Pins
+                        </BeautifulDropdownItem>
+                    </BeautifulDropdown>
                 )}
 
                 <button type="submit" className="btn d-flex align-items-center justify-content-center border-0"

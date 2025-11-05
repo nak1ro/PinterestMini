@@ -28,7 +28,7 @@ export const SearchProvider = ({ children }) => {
             setSearchQuery(query);
             setSearchResults(pins);
         } catch (err) {
-            console.error('❌ Search error:', err);
+            console.error('Search error:', err);
             setSearchResults([]);
         } finally {
             setIsSearching(false);
