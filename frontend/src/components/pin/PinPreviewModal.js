@@ -54,7 +54,7 @@ const CommentInput = ({newComment, setNewComment, onPost}) => (
 );
 
 // -- Comment list --------------------------------------------------------------
-const CommentList = ({comments, loading}) => {
+const CommentList = ({comments, loading, currentUserId, onDeleteComment}) => {
     if (loading) return <p>Loading comments...</p>;
     if (!comments || comments.length === 0) return <p>No comments yet</p>;
 
@@ -66,6 +66,9 @@ const CommentList = ({comments, loading}) => {
                     c.userAvatarUrl ||
                     '/assets/avatar-default.svg';
                 const name = (c.user && c.user.username) || c.username || 'User';
+                const commentUserId = c.user?.id || c.userId;
+                const canDelete = currentUserId && commentUserId === currentUserId;
+
                 return (
                     <li key={c.id} className="d-flex mb-3 align-items-start">
                         <img
@@ -77,12 +80,26 @@ const CommentList = ({comments, loading}) => {
                                 e.currentTarget.src = '/assets/avatar-default.svg';
                             }}
                         />
-                        <div>
-                            <div className="fw-semibold">{name}</div>
-                            <div className="small text-muted">
-                                {new Date(c.createdAt).toLocaleDateString()}
+                        <div className="flex-grow-1">
+                            <div className="d-flex justify-content-between align-items-start">
+                                <div className="flex-grow-1">
+                                    <div className="fw-semibold">{name}</div>
+                                    <div className="small text-muted">
+                                        {new Date(c.createdAt).toLocaleDateString()}
+                                    </div>
+                                    <div>{c.content}</div>
+                                </div>
+                                {canDelete && onDeleteComment && (
+                                    <button
+                                        className="btn btn-sm btn-link text-danger p-0 ms-2"
+                                        onClick={() => onDeleteComment(c.id)}
+                                        style={{fontSize: '0.75rem'}}
+                                        title="Delete comment"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
                             </div>
-                            <div>{c.content}</div>
                         </div>
                     </li>
                 );
@@ -96,7 +113,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
     // Hooks for saved / likes / comments
     const {savePin, unsavePin, savedPins, isPinSaved, refetch} = useSavedPins();
     const {liked, likeCount, toggleLike} = usePinLike(pin?.id);
-    const {comments, loading: loadingComments, addComment} = useComments(pin?.id);
+    const {comments, loading: loadingComments, addComment, deleteComment} = useComments(pin?.id);
 
     // Local state for new comment + editor flag
     const [newComment, setNewComment] = useState('');
@@ -144,12 +161,44 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
     }, [localPin?.id, isPinSaved]);
 
     // -- Header actions ----------------------------------------------------------
-    const handleDownload = (e) => {
+    const handleShare = async (e) => {
         e.stopPropagation();
-        const a = document.createElement('a');
-        a.href = localPin.imageUrl;
-        a.download = 'pin.jpg';
-        a.click();
+        const pinUrl = `${window.location.origin}/pin/${localPin.id}`;
+        try {
+            await navigator.clipboard.writeText(pinUrl);
+            // Show temporary message
+            const shareButton = e.currentTarget;
+            const originalTitle = shareButton.getAttribute('title') || '';
+            shareButton.setAttribute('title', 'Link copied!');
+            setTimeout(() => {
+                shareButton.setAttribute('title', originalTitle || 'Share');
+            }, 2000);
+            
+            // Visual feedback - could also use a toast library here
+            const tempAlert = document.createElement('div');
+            tempAlert.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
+            tempAlert.style.zIndex = '9999';
+            tempAlert.textContent = 'Link copied to clipboard!';
+            document.body.appendChild(tempAlert);
+            setTimeout(() => {
+                tempAlert.remove();
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy link:', err);
+            alert('Failed to copy link. Please try again.');
+        }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        if (!window.confirm('Are you sure you want to delete this comment?')) {
+            return;
+        }
+        try {
+            await deleteComment(commentId);
+        } catch (err) {
+            console.error('Failed to delete comment:', err);
+            alert('Failed to delete comment. Please try again.');
+        }
     };
 
     const handleEditClick = (e) => {
@@ -300,9 +349,10 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
 
                             <ActionButton
                                 icon="/assets/share.png"
-                                onClick={handleDownload}
+                                onClick={handleShare}
                                 alt="share"
                                 animationKey="share"
+                                title="Copy link"
                             />
 
                             {isOwner && (
@@ -456,7 +506,12 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                             setNewComment={setNewComment}
                             onPost={handlePostComment}
                         />
-                        <CommentList comments={comments} loading={loadingComments}/>
+                        <CommentList 
+                            comments={comments} 
+                            loading={loadingComments}
+                            currentUserId={userId}
+                            onDeleteComment={handleDeleteComment}
+                        />
                     </div>
                 </div>
             </motion.div>

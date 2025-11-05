@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getComments, postComment } from '../services/commentService';
+import { getComments, postComment, deleteComment } from '../services/commentService';
 
 const useComments = (pinId) => {
     const [comments, setComments] = useState([]);
@@ -28,19 +28,30 @@ const useComments = (pinId) => {
             content: c.content,
             createdAt: c.createdAt,
             user: {
-                username: c.username,
-                profilePictureUrl: c.userAvatarUrl
+                id: c.userId || c.user?.id,
+                username: c.username || c.user?.username,
+                profilePictureUrl: c.userAvatarUrl || c.user?.profilePictureUrl
             }
         };
 
         setComments((prev) => [normalized, ...prev]);
     };
 
+    const removeComment = async (commentId) => {
+        try {
+            await deleteComment(pinId, commentId);
+            setComments((prev) => prev.filter(c => c.id !== commentId));
+        } catch (err) {
+            console.error('Failed to delete comment', err);
+            throw err;
+        }
+    };
 
     return {
         comments,
         loading,
-        addComment
+        addComment,
+        deleteComment: removeComment
     };
 };
 

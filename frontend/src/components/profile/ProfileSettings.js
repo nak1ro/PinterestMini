@@ -62,7 +62,7 @@ const ProfileSettings = () => {
         try {
             // Create FormData like pins and boards do
             const formData = new FormData();
-            formData.append('name', form.username);
+            formData.append('username', form.username);
             if (form.bio) {
                 formData.append('bio', form.bio);
             }

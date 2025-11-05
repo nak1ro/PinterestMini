@@ -30,7 +30,7 @@ public class PinController : ControllerBase
 
     [HttpPut("{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> Update(Guid id, [FromForm] UpdatePinDto dto)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdatePinDto dto)
     {
         await _pinService.UpdatePinAsync(id, dto, User);
         return NoContent();

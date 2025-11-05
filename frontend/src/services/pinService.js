@@ -14,8 +14,13 @@ export const getCreatedPins = async () => {
     return res.data;
 };
 
-export const updatePin = async (pinId) => {
-    const res = await axiosClient.put(`/pin/${pinId}`);
+export const getPinById = async (pinId) => {
+    const res = await axiosClient.get(`/pin/${pinId}`, { skipAuth: true });
+    return res.data;
+};
+
+export const updatePin = async (pinId, dto) => {
+    const res = await axiosClient.put(`/pin/${pinId}`, dto);
     return res.data;
 };
 

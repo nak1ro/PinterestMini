@@ -23,6 +23,11 @@ const ProfileDropdown = () => {
                     width="40"
                     height="40"
                     className="rounded-circle"
+                    style={{
+                        objectFit: 'cover',
+                        width: '40px',
+                        height: '40px'
+                    }}
                 />
             </button>
             <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">

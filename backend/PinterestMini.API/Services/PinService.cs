@@ -322,26 +322,60 @@ public class PinService : IPinService
     
     private async Task SetBoardsAsync(Pin pin, List<Guid>? boardIds, Guid userId)
     {
-        pin.PinBoards = new List<PinBoard>(); // clear existing
+        // Explicitly remove existing PinBoards for this user
+        var existingPinBoards = pin.PinBoards?
+            .Where(pb => pb.UserId == userId)
+            .ToList() ?? new List<PinBoard>();
+        
+        foreach (var pinBoard in existingPinBoards)
+        {
+            await _unitOfWork.PinBoards.RemoveAsync(pin.Id, pinBoard.BoardId, userId);
+        }
 
-        if (boardIds is not { Count: > 0 }) return;
+        if (boardIds is not { Count: > 0 })
+        {
+            pin.PinBoards = pin.PinBoards?
+                .Where(pb => pb.UserId != userId)
+                .ToList() ?? new List<PinBoard>();
+            return;
+        }
 
         var boards = await _unitOfWork.Boards.GetByIdsAsync(boardIds);
-        pin.PinBoards = boards.Select(board => new PinBoard
+        
+        // Validate that all boards belong to the user
+        var invalidBoards = boards.Where(b => b.UserId != userId).ToList();
+        if (invalidBoards.Any())
+            throw new AppUnauthorizedException("You can only add pins to your own boards.");
+
+        // Add new PinBoards
+        var existingOtherBoards = pin.PinBoards?
+            .Where(pb => pb.UserId != userId)
+            .ToList() ?? new List<PinBoard>();
+        
+        var newPinBoards = boards.Select(board => new PinBoard
         {
             PinId = pin.Id,
             BoardId = board.Id,
             UserId = userId
         }).ToList();
+
+        pin.PinBoards = existingOtherBoards.Concat(newPinBoards).ToList();
     }
 
     private async Task SetTagsByNameAsync(Pin pin, List<string>? tagNames)
     {
         var oldTagIds = pin.PinTags?.Select(pt => pt.TagId).ToHashSet() ?? new HashSet<Guid>();
-        pin.PinTags = new List<PinTag>();
+        
+        // Explicitly remove existing PinTags from context before clearing collection
+        if (pin.PinTags != null && pin.PinTags.Any())
+        {
+            await _unitOfWork.Pins.DeletePinTagsAsync(pin.Id);
+            pin.PinTags.Clear();
+        }
 
         if (tagNames == null || tagNames.Count == 0)
         {
+            pin.PinTags = new List<PinTag>();
             await DecrementUsageCountsAsync(oldTagIds);
             return;
         }
