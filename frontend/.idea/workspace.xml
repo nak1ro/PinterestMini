@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/API_ENDPOINTS_PROFILE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BACKEND_INSTRUCTIONS_FOLLOWERS_FOLLOWING.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BUG_FIXES_SUMMARY.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NEW_FEATURES_SUMMARY.md" beforeDir="false" />
-    </list>
+    <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -123,7 +118,7 @@
       <workItem from="1756330990380" duration="27000" />
       <workItem from="1756331768743" duration="27000" />
       <workItem from="1762217560173" duration="961000" />
-      <workItem from="1762365427118" duration="761000" />
+      <workItem from="1762365427118" duration="1359000" />
     </task>
     <servers />
   </component>
