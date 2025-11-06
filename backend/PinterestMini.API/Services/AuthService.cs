@@ -55,12 +55,27 @@ public class AuthService : IAuthService
             throw new AppBadRequestException(errorMessages);
         }
 
-        await _userManager.AddToRoleAsync(user, "User");
+        // If anything fails after user creation, delete the user to prevent username/email from being occupied
+        try
+        {
+            var roleResult = await _userManager.AddToRoleAsync(user, "User");
+            if (!roleResult.Succeeded)
+            {
+                var errorMessages = string.Join("; ", roleResult.Errors.Select(e => e.Description));
+                throw new AppBadRequestException($"Failed to assign role: {errorMessages}");
+            }
 
-        var token = await _tokenService.CreateToken(user);
-        var newDto = _mapper.Map<NewUserDto>(user);
-        newDto.Token = token;
-        return newDto;
+            var token = await _tokenService.CreateToken(user);
+            var newDto = _mapper.Map<NewUserDto>(user);
+            newDto.Token = token;
+            return newDto;
+        }
+        catch
+        {
+            // Rollback: delete the user if any step after creation fails
+            await _userManager.DeleteAsync(user);
+            throw;
+        }
     }
 
     public async Task<NewUserDto> LoginAsync(LoginDto dto)

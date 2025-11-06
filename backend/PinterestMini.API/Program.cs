@@ -27,6 +27,8 @@ using PinterestMini.API.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Kestrel will listen on 0.0.0.0:5005 for external access
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Serve static files like images from wwwroot
 builder.WebHost.UseWebRoot("wwwroot");
@@ -169,6 +171,35 @@ using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
     var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+    var logger = serviceProvider
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("StartupDiagnostics");
+
+    try
+    {
+        var conn = context.Database.GetDbConnection();
+        await conn.OpenAsync();
+
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+        SELECT 
+            SUSER_SNAME()       AS login_name,
+            USER_NAME()         AS db_user_name,
+            DB_NAME()           AS db_name,
+            HAS_PERMS_BY_NAME(DB_NAME(), 'DATABASE', 'CREATE TABLE') AS can_create_table";
+
+        using var r = await cmd.ExecuteReaderAsync();
+        if (await r.ReadAsync())
+        {
+            logger.LogInformation("SQL identity check → login_name={login} db_user_name={user} db={db} can_create_table={perm}",
+                r["login_name"], r["db_user_name"], r["db_name"], r["can_create_table"]);
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Failed probing SQL identity/permissions");
+    }
+
     context.Database.Migrate();
 
     await RoleSeeder.SeedAsync(serviceProvider);

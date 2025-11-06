@@ -274,24 +274,15 @@ public class PinService : IPinService
 
         var userId = _userContext.GetUserId(user);
 
-        // Get existing PinBoards for this user to track what should be removed vs kept
         var existingPinBoards = pin.PinBoards?
             .Where(pb => pb.UserId == userId)
             .ToList() ?? [];
 
-        // Track which boards we're keeping (those in the new boardIds list)
-        var boardIdsToKeep = boardIds?.ToHashSet() ?? new HashSet<Guid>();
-
-        // Remove PinBoards that are NOT in the new list
         foreach (var pinBoard in existingPinBoards)
         {
-            if (!boardIdsToKeep.Contains(pinBoard.BoardId))
-            {
-                await _unitOfWork.PinBoards.RemoveAsync(pinId, pinBoard.BoardId, userId);
-            }
+            await _unitOfWork.PinBoards.RemoveAsync(pinId, pinBoard.BoardId, userId);
         }
 
-        // If no boards to add, just save deletions and return
         if (boardIds == null || boardIds.Count == 0)
         {
             await _unitOfWork.SaveChangesAsync();
@@ -310,13 +301,11 @@ public class PinService : IPinService
         if (missingBoardIds.Any())
             throw new AppNotFoundException($"One or more boards not found: {string.Join(", ", missingBoardIds)}");
 
-        // Track which boards already exist (from the in-memory collection, not database)
-        var existingBoardIds = existingPinBoards.Select(pb => pb.BoardId).ToHashSet();
-
-        // Add new PinBoard entries only for boards that don't already exist
+        // Create new PinBoard entries
         foreach (var boardId in boardIds)
         {
-            if (!existingBoardIds.Contains(boardId))
+            var exists = await _unitOfWork.PinBoards.ExistsAsync(pinId, boardId, userId);
+            if (!exists)
             {
                 var pinBoard = new PinBoard
                 {
