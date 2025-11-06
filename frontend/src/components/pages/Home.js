@@ -3,16 +3,15 @@ import React from 'react';
 import PinGrid from '../pin/PinGrid';
 import { motion } from 'framer-motion';
 import { useSearchContext } from '../../context/SearchContext';
-import useInfinitePins from '../../hooks/useInfinitePins';
+import usePins from '../../hooks/usePins';
 
 const Home = () => {
     const { searchResults, isSearching, hasSearched } = useSearchContext();
-    const { pins: basePins, loading: baseLoading, loadingMore, hasMore, loadMore } = useInfinitePins();
+    const { pins: basePins, loading: baseLoading } = usePins();
 
     if (baseLoading) return <p className="text-center mt-5">Loading pins...</p>;
 
     const pinsToShow = hasSearched ? searchResults : basePins;
-    const showInfiniteScroll = !hasSearched && hasMore;
 
     return (
         <motion.div
@@ -24,11 +23,7 @@ const Home = () => {
             {pinsToShow.length === 0 ? (
                 <p className="text-center mt-5">No pins found.</p>
             ) : (
-                <PinGrid 
-                    pins={pinsToShow} 
-                    onLoadMore={showInfiniteScroll ? loadMore : undefined}
-                    loadingMore={loadingMore}
-                />
+                <PinGrid pins={pinsToShow} />
             )}
         </motion.div>
     );
