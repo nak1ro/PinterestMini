@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/hooks/useInfinitePins.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pin/PinGrid.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinGrid.js" afterDir="false" />
-    </list>
+    <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -78,11 +74,11 @@
       <recent name="C:\Users\max68\RiderProjects\PinterestMini\frontend\public\assets" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\max68\RiderProjects\PinterestMini\frontend\public" />
       <recent name="C:\Users\max68\RiderProjects\PinterestMini\frontend\src\components\profile" />
       <recent name="C:\Users\max68\RiderProjects\PinterestMini\frontend\src\components\common\" />
       <recent name="C:\Users\max68\RiderProjects\PinterestMini\frontend\src\components\bars" />
       <recent name="C:\Users\max68\RiderProjects\PinterestMini\frontend\src\components\common\bars" />
-      <recent name="C:\Users\max68\RiderProjects\PinterestMini\frontend\src\components\pin" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -122,7 +118,7 @@
       <workItem from="1756330990380" duration="27000" />
       <workItem from="1756331768743" duration="27000" />
       <workItem from="1762217560173" duration="961000" />
-      <workItem from="1762365427118" duration="3250000" />
+      <workItem from="1762365427118" duration="4074000" />
     </task>
     <servers />
   </component>
