@@ -29,7 +29,7 @@ const UnauthenticatedLayout = ({children}) => (
         <SideBar/>
         <div className="flex-grow-1">
             <Header/>
-            <main>{children}</main>
+            <main style={{ marginLeft: '80px' }}>{children}</main>
         </div>
     </div>
 );
