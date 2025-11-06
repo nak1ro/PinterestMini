@@ -1,9 +1,9 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.EF;
 using PinterestMini.API.Data;
 using PinterestMini.API.Domain.Interfaces.Pins;
 using PinterestMini.API.Domain.Models;
-using PinterestMini.API.Helpers;
 
 namespace PinterestMini.API.Repositories;
 
@@ -60,19 +60,14 @@ public class PinRepository : IPinRepository
         query = query.Trim().ToLower();
         var skip = (page - 1) * pageSize;
 
-        var savedIds = await _context.SavedPins
+        // Use join instead of loading IDs into memory for better performance
+        return await _context.SavedPins
             .Where(sp => sp.UserId == userId)
-            .Select(sp => sp.PinId)
-            .ToListAsync();
-
-        return await _context.Pins
+            .Join(_context.Pins, sp => sp.PinId, p => p.Id, (sp, p) => p)
             .Where(p =>
-                savedIds.Contains(p.Id) &&
-                (
-                    p.Title.ToLower().Contains(query.ToLower()) ||
-                    p.Description.ToLower().Contains(query.ToLower()) ||
-                    p.PinTags.Any(pt => pt.Tag.Name.ToLower().Contains(query.ToLower()))
-                )
+                Functions.Like(p.Title, $"%{query}%") ||
+                (p.Description != null && Functions.Like(p.Description, $"%{query}%")) ||
+                p.PinTags.Any(pt => Functions.Like(pt.Tag.Name, $"%{query}%"))
             )
             .Include(p => p.Owner)
             .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
@@ -86,13 +81,14 @@ public class PinRepository : IPinRepository
 
     public async Task<IEnumerable<Pin>> GetRecentPublicPinsAsync(int page, int pageSize)
     {
+        // Include before Skip/Take for better query optimization
         return await _context.Pins
-            .OrderByDescending(p => p.CreatedAt)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
             .Include(p => p.Owner)
             .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
             .Include(p => p.PinBoards).ThenInclude(pb => pb.Board)
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
     }
 
@@ -117,17 +113,20 @@ public class PinRepository : IPinRepository
 
     public async Task<List<Pin>> SearchPublicPinsAsync(string query, int page, int pageSize)
     {
-        query = query.Trim().ToLower();
+        query = query.Trim();
+        var skip = (page - 1) * pageSize;
 
         return await _context.Pins
             .Where(p =>
-                p.Title.Contains(query) ||
-                p.Description.Contains(query) ||
-                p.PinTags.Any(pt => pt.Tag.Name.Contains(query))
+                Functions.Like(p.Title, $"%{query}%") ||
+                (p.Description != null && Functions.Like(p.Description, $"%{query}%")) ||
+                p.PinTags.Any(pt => Functions.Like(pt.Tag.Name, $"%{query}%"))
             )
+            .Include(p => p.Owner)
             .Include(p => p.PinTags).ThenInclude(pt => pt.Tag)
+            .Include(p => p.PinBoards).ThenInclude(pb => pb.Board)
             .OrderByDescending(p => p.CreatedAt)
-            .Skip((page - 1) * pageSize)
+            .Skip(skip)
             .Take(pageSize)
             .ToListAsync();
     }
@@ -135,8 +134,9 @@ public class PinRepository : IPinRepository
 
     public async Task<List<Pin>> GetPinsByTagNameAsync(string tagName)
     {
+        var normalizedTagName = tagName.Trim().ToLower();
         return await _context.Pins
-            .Where(p => p.PinTags.Any(pt => pt.Tag.Name.ToLower() == tagName.ToLower()))
+            .Where(p => p.PinTags.Any(pt => pt.Tag.Name.ToLower() == normalizedTagName))
             .Include(p => p.PinTags)
             .ThenInclude(pt => pt.Tag)
             .Include(p => p.Owner)

@@ -73,7 +73,9 @@ public class PinService : IPinService
     {
         var userId = _userContext.GetUserId(user);
 
-        var pins = await _unitOfWork.Pins.GetPinsCreatedByFollowedUsersAsync(userId, page, pageSize);
+        // Repository already returns pageSize + 1 for HasMore check
+        var pins = await _unitOfWork.Pins.GetPinsCreatedByFollowedUsersAsync(userId, page, pageSize + 1);
+        var hasMore = pins.Count > pageSize;
         var items = _mapper.Map<List<PinDto>>(pins.Take(pageSize));
 
         return new PaginatedResult<PinDto>
@@ -81,13 +83,15 @@ public class PinService : IPinService
             Items = items,
             Page = page,
             PageSize = pageSize,
-            HasMore = pins.Count > pageSize
+            HasMore = hasMore
         };
     }
 
     public async Task<PaginatedResult<PinDto>> SearchPinsAsync(string query, int page, int pageSize)
     {
+        // Fetch one extra to check if there are more results
         var pins = await _unitOfWork.Pins.SearchPublicPinsAsync(query, page, pageSize + 1);
+        var hasMore = pins.Count > pageSize;
         var result = _mapper.Map<List<PinDto>>(pins.Take(pageSize));
 
         return new PaginatedResult<PinDto>
@@ -95,14 +99,16 @@ public class PinService : IPinService
             Items = result,
             Page = page,
             PageSize = pageSize,
-            HasMore = pins.Count > pageSize
+            HasMore = hasMore
         };
     }
 
     public async Task<PaginatedResult<PinDto>> SearchSavedPinsAsync(string query, ClaimsPrincipal user, int page, int pageSize)
     {
         var userId = _userContext.GetUserId(user);
+        // Fetch one extra to check if there are more results
         var pins = await _unitOfWork.Pins.SearchSavedPinsAsync(userId, query, page, pageSize + 1);
+        var hasMore = pins.Count > pageSize;
         var mapped = _mapper.Map<List<PinDto>>(pins.Take(pageSize));
 
         return new PaginatedResult<PinDto>
@@ -110,7 +116,7 @@ public class PinService : IPinService
             Items = mapped,
             Page = page,
             PageSize = pageSize,
-            HasMore = pins.Count > pageSize
+            HasMore = hasMore
         };
     }
 
@@ -135,15 +141,18 @@ public class PinService : IPinService
 
     public async Task<PaginatedResult<PinDto>> GetRecentPinsPaginatedAsync(int page, int pageSize)
     {
+        // Fetch one extra to check if there are more results
         var pins = await _unitOfWork.Pins.GetRecentPublicPinsAsync(page, pageSize + 1);
-        var mapped = _mapper.Map<List<PinDto>>(pins.Take(pageSize));
+        var pinsList = pins.ToList();
+        var hasMore = pinsList.Count > pageSize;
+        var mapped = _mapper.Map<List<PinDto>>(pinsList.Take(pageSize));
 
         return new PaginatedResult<PinDto>
         {
             Items = mapped,
             Page = page,
             PageSize = pageSize,
-            HasMore = pins.Count() > pageSize
+            HasMore = hasMore
         };
     }
 
@@ -225,9 +234,8 @@ public class PinService : IPinService
 
     public async Task<bool> IsPinSavedAsync(Guid pinId, ClaimsPrincipal user)
     {
-        var userId = _userContext.GetUserId(user); // or however you extract Guid
-        return await _unitOfWork.Pins
-            .AnyAsync(sp => sp.PinId == pinId && sp.UserId == userId);
+        var userId = _userContext.GetUserId(user);
+        return await _unitOfWork.Pins.IsPinSavedAsync(userId, pinId);
     }
     
     public async Task DeletePinAsync(Guid pinId, ClaimsPrincipal user)
@@ -432,19 +440,26 @@ public class PinService : IPinService
             if (tag != null) tag.UsageCount += 1;
         }
 
-        foreach (var tagId in removed)
+        // Batch load tags instead of N+1 queries
+        if (removed.Any())
         {
-            var tag = await _unitOfWork.Tags.GetByIdAsync(tagId);
-            if (tag != null) tag.UsageCount -= 1;
+            var tagsToDecrement = await _unitOfWork.Tags.GetByIdsAsync(removed.ToList());
+            foreach (var tag in tagsToDecrement)
+            {
+                tag.UsageCount -= 1;
+            }
         }
     }
 
     private async Task DecrementUsageCountsAsync(HashSet<Guid> tagIds)
     {
-        foreach (var tagId in tagIds)
+        // Batch load tags instead of N+1 queries
+        if (tagIds.Count == 0) return;
+        
+        var tags = await _unitOfWork.Tags.GetByIdsAsync(tagIds.ToList());
+        foreach (var tag in tags)
         {
-            var tag = await _unitOfWork.Tags.GetByIdAsync(tagId);
-            if (tag != null) tag.UsageCount -= 1;
+            tag.UsageCount -= 1;
         }
     }
 
