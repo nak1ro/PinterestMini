@@ -14,6 +14,7 @@ const ProfileDropdown = () => {
     const handleLogout = () => {
         setIsOpen(false);
         logout();
+        navigate('/');
     };
 
     const handleProfileClick = () => {

@@ -277,44 +277,45 @@ public class PinService : IPinService
         var existingPinBoards = pin.PinBoards?
             .Where(pb => pb.UserId == userId)
             .ToList() ?? [];
+        var existingBoardIds = existingPinBoards.Select(pb => pb.BoardId).ToHashSet();
 
-        foreach (var pinBoard in existingPinBoards)
+        // Normalize boardIds - handle null/empty case
+        var targetBoardIds = boardIds ?? new List<Guid>();
+        var targetBoardIdsSet = targetBoardIds.ToHashSet();
+
+        // Validate that all boards belong to the user (only if there are boards to add)
+        if (targetBoardIds.Count > 0)
         {
-            await _unitOfWork.PinBoards.RemoveAsync(pinId, pinBoard.BoardId, userId);
+            var boards = await _unitOfWork.Boards.GetByIdsAsync(targetBoardIds);
+            var invalidBoards = boards.Where(b => b.UserId != userId).ToList();
+            if (invalidBoards.Any())
+                throw new AppUnauthorizedException("You can only add pins to your own boards.");
+
+            // Check if all boardIds exist
+            var foundBoardIds = boards.Select(b => b.Id).ToHashSet();
+            var missingBoardIds = targetBoardIds.Where(id => !foundBoardIds.Contains(id)).ToList();
+            if (missingBoardIds.Any())
+                throw new AppNotFoundException($"One or more boards not found: {string.Join(", ", missingBoardIds)}");
         }
 
-        if (boardIds == null || boardIds.Count == 0)
+        // Remove PinBoards that are NOT in the target list (only remove what needs to be removed)
+        var boardsToRemove = existingBoardIds.Except(targetBoardIdsSet).ToList();
+        foreach (var boardId in boardsToRemove)
         {
-            await _unitOfWork.SaveChangesAsync();
-            return;
+            await _unitOfWork.PinBoards.RemoveAsync(pinId, boardId, userId);
         }
 
-        // Validate that all boards belong to the user
-        var boards = await _unitOfWork.Boards.GetByIdsAsync(boardIds);
-        var invalidBoards = boards.Where(b => b.UserId != userId).ToList();
-        if (invalidBoards.Any())
-            throw new AppUnauthorizedException("You can only add pins to your own boards.");
-
-        // Check if all boardIds exist
-        var foundBoardIds = boards.Select(b => b.Id).ToHashSet();
-        var missingBoardIds = boardIds.Where(id => !foundBoardIds.Contains(id)).ToList();
-        if (missingBoardIds.Any())
-            throw new AppNotFoundException($"One or more boards not found: {string.Join(", ", missingBoardIds)}");
-
-        // Create new PinBoard entries
-        foreach (var boardId in boardIds)
+        // Add PinBoards that are NOT already in the existing list (only add what needs to be added)
+        var boardsToAdd = targetBoardIdsSet.Except(existingBoardIds).ToList();
+        foreach (var boardId in boardsToAdd)
         {
-            var exists = await _unitOfWork.PinBoards.ExistsAsync(pinId, boardId, userId);
-            if (!exists)
+            var pinBoard = new PinBoard
             {
-                var pinBoard = new PinBoard
-                {
-                    PinId = pinId,
-                    BoardId = boardId,
-                    UserId = userId
-                };
-                await _unitOfWork.PinBoards.AddAsync(pinBoard);
-            }
+                PinId = pinId,
+                BoardId = boardId,
+                UserId = userId
+            };
+            await _unitOfWork.PinBoards.AddAsync(pinBoard);
         }
 
         await _unitOfWork.SaveChangesAsync();

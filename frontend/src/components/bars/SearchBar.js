@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useSearchPins from '../../hooks/useSearchPins';
 import { useAppContext } from '../../context/AppContext';
 import BeautifulDropdown, {BeautifulDropdownItem} from '../common/BeautifulDropdown';
@@ -8,6 +9,8 @@ const SearchBar = () => {
     const isAuthenticated = !!user;
     const [searchTerm, setSearchTerm] = useState('');
     const [searchScope, setSearchScope] = useState('all');
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const {
         searchPins,
@@ -25,6 +28,11 @@ const SearchBar = () => {
         if (!trimmed) return;
 
         searchPins(trimmed, 1, 20);
+        
+        // Navigate to home page if not already there
+        if (location.pathname !== '/') {
+            navigate('/');
+        }
     };
 
     return (

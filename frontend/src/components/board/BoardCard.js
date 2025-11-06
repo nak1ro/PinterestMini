@@ -133,6 +133,23 @@ const BoardCard = ({ board, onUpdated, onDeleted, onOpen }) => {
                     >
                         {board.name}
                     </Card.Title>
+                    {board.description && (
+                        <div
+                            className="mb-2 text-muted"
+                            style={{
+                                fontSize: '0.875rem',
+                                lineHeight: 1.4,
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                            }}
+                            title={board.description}
+                        >
+                            {board.description}
+                        </div>
+                    )}
                     <div className="d-flex align-items-center text-muted small">
                         {loading ? (
                             <span className="d-inline-flex align-items-center gap-2">

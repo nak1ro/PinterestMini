@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 
 const Sidebar = () => {
     const [showSettings, setShowSettings] = useState(false);
-    const { user } = useAppContext();
+    const { user, logout } = useAppContext();
+    const navigate = useNavigate();
     const isAuthenticated = !!user;
 
     const toggleSettings = () => {
@@ -113,9 +115,17 @@ const Sidebar = () => {
                                     Profile Settings
                                 </a>
                                 <hr className="my-1" />
-                                <a href="/logout" className="dropdown-item text-danger">
+                                <button
+                                    onClick={() => {
+                                        logout();
+                                        navigate('/');
+                                        setShowSettings(false);
+                                    }}
+                                    className="dropdown-item text-danger border-0 bg-transparent w-100 text-start"
+                                    style={{ cursor: 'pointer' }}
+                                >
                                     Log out
-                                </a>
+                                </button>
                             </div>
                         )}
                     </div>
