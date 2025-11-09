@@ -109,12 +109,18 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={onClose}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                }}
             />
             <div 
                 className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
                 style={{ zIndex: 2001, pointerEvents: 'none' }}
-                onClick={onClose}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                }}
             >
                 <motion.div
                     className="bg-white d-flex flex-column"

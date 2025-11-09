@@ -9,6 +9,7 @@ import AuthModal from '../auth/AuthModal';
 import useSavedPins from '../../hooks/useSavedPins';
 import usePinLike from '../../hooks/usePinLike';
 import useComments from '../../hooks/useComments';
+import useIsMobile from '../../hooks/useIsMobile';
 import {useAppContext} from '../../context/AppContext';
 import {deletePin} from '../../services/pinService';
 
@@ -202,6 +203,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [authModalType, setAuthModalType] = useState('signin');
     const [showEnlargedImage, setShowEnlargedImage] = useState(false);
+    const [showOwnerActions, setShowOwnerActions] = useState(false);
 
     // Local working copy so edits reflect immediately in the preview
     const [localPin, setLocalPin] = useState(pin);
@@ -220,11 +222,13 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
     }, [showEnlargedImage]);
 
     const commentRef = useRef(null);
+    const ownerActionsRef = useRef(null);
     const lastCheckedPinId = useRef(null);
     const navigate = useNavigate();
     const isOwner =
         (localPin && localPin.ownerId && localPin.ownerId === userId) ||
         (localPin && localPin.owner && localPin.owner.id === userId);
+    const isMobile = useIsMobile(768);
 
     const avatarUrl = localPin?.owner?.profilePictureUrl || '/assets/avatar-default.svg';
     const username = localPin?.owner?.username || 'Unknown';
@@ -295,13 +299,14 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
     const handleEditClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        setShowOwnerActions(false);
         setShowEdit(true);
     };
 
     const handleDeleteClick = async (e) => {
         e.preventDefault();
         e.stopPropagation();
-
+        setShowOwnerActions(false);
         if (!window.confirm('Are you sure you want to delete this pin? This action cannot be undone.')) {
             return;
         }
@@ -424,6 +429,23 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
         setShowEdit(false);
     };
 
+    useEffect(() => {
+        if (!showOwnerActions) return;
+        const handleClickOutside = (event) => {
+            if (ownerActionsRef.current && !ownerActionsRef.current.contains(event.target)) {
+                setShowOwnerActions(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [showOwnerActions]);
+
+    useEffect(() => {
+        if (!isMobile) {
+            setShowOwnerActions(false);
+        }
+    }, [isMobile]);
+
     if (!localPin) return null;
 
     return (
@@ -476,24 +498,26 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                 <span className="fw-semibold" style={{fontSize: '0.95rem'}}>{likeCount}</span>
                             </motion.button>
 
-                            <motion.button
-                                className="btn d-flex align-items-center rounded-3 px-3"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    scrollToComments();
-                                }}
-                                style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    color: '#111',
-                                    height: '48px',
-                                    width: '48px',
-                                }}
-                                whileHover={{scale: 1.05, background: 'rgba(0,0,0,0.05)'}}
-                                whileTap={{scale: 0.95}}
-                            >
-                                <img src="/assets/message.png" alt="comment" style={{width: 24, height: 24}} />
-                            </motion.button>
+                            {!isMobile && (
+                                <motion.button
+                                    className="btn d-flex align-items-center rounded-3 px-3"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        scrollToComments();
+                                    }}
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: '#111',
+                                        height: '48px',
+                                        width: '48px',
+                                    }}
+                                    whileHover={{scale: 1.05, background: 'rgba(0,0,0,0.05)'}}
+                                    whileTap={{scale: 0.95}}
+                                >
+                                    <img src="/assets/message.png" alt="comment" style={{width: 24, height: 24}} />
+                                </motion.button>
+                            )}
 
                             <motion.button
                                 className="btn d-flex align-items-center rounded-3 px-3"
@@ -513,10 +537,14 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                             </motion.button>
 
                             {isOwner && (
-                                <>
+                                <div className="position-relative" ref={ownerActionsRef}>
                                     <motion.button
                                         className="btn d-flex align-items-center rounded-3 px-3"
-                                        onClick={handleEditClick}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setShowOwnerActions((prev) => !prev);
+                                        }}
                                         style={{
                                             background: 'transparent',
                                             border: 'none',
@@ -526,44 +554,104 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                         }}
                                         whileHover={{scale: 1.05, background: 'rgba(0,0,0,0.05)'}}
                                         whileTap={{scale: 0.95}}
+                                        title="More options"
                                     >
-                                        <img src="/assets/edit-text.png" alt="edit" style={{width: 24, height: 24}} />
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="5" cy="12" r="2" />
+                                            <circle cx="12" cy="12" r="2" />
+                                            <circle cx="19" cy="12" r="2" />
+                                        </svg>
                                     </motion.button>
-                                    <motion.button
-                                        className="btn d-flex align-items-center rounded-3 px-3"
-                                        onClick={handleDeleteClick}
-                                        disabled={isDeleting}
-                                        style={{
-                                            background: 'transparent',
-                                            border: 'none',
-                                            color: '#111',
-                                            height: '48px',
-                                            width: '48px',
-                                            opacity: isDeleting ? 0.6 : 1,
-                                        }}
-                                        whileHover={{scale: 1.05, background: 'rgba(0,0,0,0.05)'}}
-                                        whileTap={{scale: 0.95}}
-                                        title="Delete pin"
-                                    >
-                                        {isDeleting ? (
+                                    <AnimatePresence>
+                                        {showOwnerActions && (
                                             <motion.div
-                                                style={{width: 24, height: 24}}
-                                                animate={{rotate: 360}}
-                                                transition={{duration: 1, repeat: Infinity, ease: 'linear'}}
+                                                initial={{opacity: 0, y: -4}}
+                                                animate={{opacity: 1, y: 0}}
+                                                exit={{opacity: 0, y: -4}}
+                                                transition={{duration: 0.15}}
+                                                className="position-absolute"
+                                                style={{
+                                                    top: '110%',
+                                                    right: isMobile ? 0 : -8,
+                                                    minWidth: isMobile ? '180px' : '200px',
+                                                    zIndex: 20,
+                                                }}
                                             >
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                </svg>
+                                                <div
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: '-6px',
+                                                        right: isMobile ? '18px' : '22px',
+                                                        width: '12px',
+                                                        height: '12px',
+                                                        background: '#fff',
+                                                        transform: 'rotate(45deg)',
+                                                        boxShadow: '-1px -1px 3px rgba(15, 15, 15, 0.1)',
+                                                    }}
+                                                />
+                                                <div
+                                                    style={{
+                                                        background: isMobile
+                                                            ? 'linear-gradient(145deg, #ffffff 0%, #f6f6f6 100%)'
+                                                            : '#fff',
+                                                        borderRadius: '16px',
+                                                        boxShadow: '0 16px 34px rgba(15, 15, 15, 0.18)',
+                                                        overflow: 'hidden',
+                                                        padding: '8px',
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        gap: '6px',
+                                                        border: isMobile ? 'none' : '1px solid rgba(0,0,0,0.08)',
+                                                    }}
+                                                >
+                                                    <motion.button
+                                                        type="button"
+                                                        onClick={handleEditClick}
+                                                        style={{
+                                                            background: '#fff',
+                                                            borderRadius: '12px',
+                                                            border: '1px solid rgba(0,0,0,0.04)',
+                                                            padding: '10px 12px',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '10px',
+                                                            fontSize: '0.92rem',
+                                                            color: '#111',
+                                                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)',
+                                                        }}
+                                                    >
+                                                        <img src="/assets/edit-text.png" alt="Edit" style={{width: 20, height: 20}} />
+                                                        <span className="fw-semibold" style={{letterSpacing: '0.01em'}}>Edit pin</span>
+                                                    </motion.button>
+                                                    <motion.button
+                                                        type="button"
+                                                        onClick={handleDeleteClick}
+                                                        disabled={isDeleting}
+                                                        style={{
+                                                            background: '#fff',
+                                                            borderRadius: '12px',
+                                                            border: '1px solid rgba(220,53,69,0.2)',
+                                                            padding: '10px 12px',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '10px',
+                                                            fontSize: '0.92rem',
+                                                            color: '#dc3545',
+                                                            opacity: isDeleting ? 0.6 : 1,
+                                                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)',
+                                                        }}
+                                                    >
+                                                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        </svg>
+                                                        <span className="fw-semibold" style={{letterSpacing: '0.01em'}}>Delete pin</span>
+                                                    </motion.button>
+                                                </div>
                                             </motion.div>
-                                        ) : (
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{color: '#111'}}>
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                            </svg>
                                         )}
-                                    </motion.button>
-                                </>
+                                    </AnimatePresence>
+                                </div>
                             )}
                         </div>
 
@@ -605,7 +693,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                     whileTap={{scale: 0.98}}
                                     title="Add to boards"
                                 >
-                                    Add to boards
+                                    {isMobile ? '+' : 'Add to boards'}
                                 </motion.button>
                             )}
                         </div>
@@ -727,6 +815,36 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                         />
                     </div>
                 </div>
+
+                {isMobile && (
+                    <div
+                        className="px-3 pb-3 pt-2 border-top"
+                        style={{
+                            backgroundColor: '#fff',
+                            boxShadow: '0 -6px 16px rgba(0,0,0,0.08)',
+                        }}
+                    >
+                        <motion.button
+                            type="button"
+                            className="btn w-100 fw-bold rounded-4"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onClose();
+                            }}
+                            style={{
+                                height: '48px',
+                                fontSize: '1rem',
+                                background: '#efefef',
+                                border: 'none',
+                                color: '#111',
+                            }}
+                            whileHover={{scale: 1.02, backgroundColor: '#e2e2e2'}}
+                            whileTap={{scale: 0.98}}
+                        >
+                            Close pin
+                        </motion.button>
+                    </div>
+                )}
             </motion.div>
 
             {/* EDITOR MODAL (portal) */}

@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
+import BeautifulDropdown, { BeautifulDropdownItem } from '../common/BeautifulDropdown';
 
 const Sidebar = () => {
-    const [showSettings, setShowSettings] = useState(false);
     const { user, logout } = useAppContext();
     const navigate = useNavigate();
     const isAuthenticated = !!user;
 
-    const toggleSettings = () => {
-        setShowSettings((prev) => !prev);
+    const handleMenuSelect = (eventKey) => {
+        if (eventKey === 'profile-settings') {
+            navigate('/settings/profile');
+        }
+
+        if (eventKey === 'logout') {
+            logout();
+            navigate('/');
+        }
     };
 
     return (
@@ -27,10 +34,26 @@ const Sidebar = () => {
                 .hover-container:hover {
                     background-color: rgba(185, 185, 185, 0.2);
                 }
+
+                .sidebar-more-toggle::after {
+                    display: none !important;
+                }
+
+                .sidebar-dropdown-divider {
+                    margin: 8px 0;
+                    border-top: 1px solid #e0e0e0;
+                }
+
+                /* Hide sidebar on mobile */
+                @media (max-width: 768px) {
+                    .desktop-sidebar {
+                        display: none !important;
+                    }
+                }
             `}</style>
 
             <div
-                className="d-flex flex-column align-items-center p-2 position-fixed top-0 start-0 h-100"
+                className="desktop-sidebar d-flex flex-column align-items-center p-2 position-fixed top-0 start-0 h-100"
                 style={{
                     width: '80px',
                     zIndex: 1000,
@@ -91,43 +114,46 @@ const Sidebar = () => {
 
                 {isAuthenticated && (
                     <div className="mt-auto position-relative">
-                        <button
-                            onClick={toggleSettings}
-                            className="btn btn-link p-0 border-0"
+                        <BeautifulDropdown
+                            trigger={(
+                                <div className="hover-container">
+                                    <img
+                                        src="/assets/more.png"
+                                        alt="Settings"
+                                        width="35"
+                                        height="35"
+                                        className="rounded-3"
+                                    />
+                                </div>
+                            )}
+                            variant="transparent"
+                            align="start"
+                            drop="end"
+                            onSelect={handleMenuSelect}
+                            className="p-0 sidebar-more-toggle"
+                            toggleStyle={{
+                                border: 'none',
+                                boxShadow: 'none',
+                                backgroundColor: 'transparent',
+                                padding: 0,
+                                minWidth: 0,
+                                display: 'flex',
+                                alignItems: 'center',
+                            }}
+                            style={{ position: 'static' }}
                         >
-                            <div className="hover-container">
-                                <img
-                                    src="/assets/more.png"
-                                    alt="Settings"
-                                    width="35"
-                                    height="35"
-                                    className="rounded-3"
-                                />
-                            </div>
-                        </button>
-
-                        {showSettings && (
-                            <div
-                                className="position-absolute bottom-0 start-100 bg-white text-dark rounded shadow p-2"
-                                style={{ minWidth: '150px', zIndex: 1050 }}
+                            <BeautifulDropdownItem eventKey="profile-settings">
+                                Profile Settings
+                            </BeautifulDropdownItem>
+                            <div className="sidebar-dropdown-divider" />
+                            <BeautifulDropdownItem
+                                eventKey="logout"
+                                className="text-danger"
+                                style={{ color: '#d32f2f', fontWeight: 500 }}
                             >
-                                <a href="/settings/profile" className="dropdown-item">
-                                    Profile Settings
-                                </a>
-                                <hr className="my-1" />
-                                <button
-                                    onClick={() => {
-                                        logout();
-                                        navigate('/');
-                                        setShowSettings(false);
-                                    }}
-                                    className="dropdown-item text-danger border-0 bg-transparent w-100 text-start"
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    Log out
-                                </button>
-                            </div>
-                        )}
+                                Log out
+                            </BeautifulDropdownItem>
+                        </BeautifulDropdown>
                     </div>
                 )}
             </div>

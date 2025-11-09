@@ -1,7 +1,6 @@
 import React from 'react';
 import {BrowserRouter as Router, Routes, Route, Navigate, useParams} from 'react-router-dom';
-import Header from '../components/common/Header';
-import SideBar from '../components/bars/SideBar';
+import SidebarLayout from '../components/bars/SidebarLayout';
 import Home from '../components/pages/Home';
 import Explore from '../components/pages/Explore';
 import Profile from '../components/profile/Profile';
@@ -12,26 +11,13 @@ import TagPage from '../components/pages/Tag';
 import CreateBoard from '../components/board/CreateBoard';
 import OtherUserProfile from '../components/profile/OtherUserProfile';
 import ProfileSettings from '../components/profile/ProfileSettings';
-import useUserProfile from "../hooks/useUserProfile";
 
 const AuthenticatedLayout = ({children}) => (
-    <div className="d-flex">
-        <SideBar/>
-        <div className="flex-grow-1">
-            <Header/>
-            <main style={{ marginLeft: '80px' }}>{children}</main>
-        </div>
-    </div>
+    <SidebarLayout>{children}</SidebarLayout>
 );
 
 const UnauthenticatedLayout = ({children}) => (
-    <div className="d-flex">
-        <SideBar/>
-        <div className="flex-grow-1">
-            <Header/>
-            <main style={{ marginLeft: '80px' }}>{children}</main>
-        </div>
-    </div>
+    <SidebarLayout>{children}</SidebarLayout>
 );
 
 const RedirectToSelfProfile = ({children}) => {

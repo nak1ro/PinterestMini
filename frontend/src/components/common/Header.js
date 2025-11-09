@@ -11,9 +11,23 @@ const Header = () => {
 
   return (
       <>
+          <style>{`
+              .app-header {
+                  margin-left: 80px;
+                  height: 64px;
+              }
+
+              @media (max-width: 768px) {
+                  .app-header {
+                      margin-left: 0 !important;
+                      height: 56px;
+                      padding: 0.5rem 1rem !important;
+                  }
+              }
+          `}</style>
+
           <motion.header
-              className="d-flex align-items-center justify-content-between px-4 py-3 sticky-top bg-white z-3"
-              style={{ marginLeft: '80px', height: '64px' }}
+              className="app-header d-flex align-items-center justify-content-between px-4 py-3 sticky-top bg-white z-3"
               initial={{ y: -50 }}
               animate={{ y: 0 }}
               transition={{ duration: 0.3 }}
@@ -21,7 +35,6 @@ const Header = () => {
          
               <SearchBar />
               {user ? <ProfileDropdown /> : <AuthButtons />}
-
 
         </motion.header>
       </>

@@ -38,6 +38,7 @@ const BeautifulDropdown = ({
     usePortal = true,
     className = '',
     style = {},
+    drop,
 }) => {
     // Base toggle styles
     const baseToggleStyle = {
@@ -126,6 +127,7 @@ const BeautifulDropdown = ({
             onSelect={onSelect}
             align={align}
             style={style}
+            drop={drop}
         >
             <Dropdown.Toggle
                 variant={toggleVariant}

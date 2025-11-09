@@ -49,33 +49,74 @@ const ProfileDropdown = () => {
     }, [isOpen]);
 
     return (
-        <div className="ms-3 position-relative" ref={dropdownRef}>
-            <motion.button
-                ref={buttonRef}
-                className="btn p-0 border-0 bg-transparent"
-                type="button"
-                onClick={() => setIsOpen(!isOpen)}
-                style={{
-                    position: 'relative',
-                    zIndex: 1001
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-            >
-                <img
-                    src={avatarUrl}
-                    alt="Profile"
-                    className="rounded-circle"
+        <>
+            <style>{`
+                .profile-dropdown-container {
+                    margin-left: 1rem;
+                }
+
+                .profile-avatar {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                .profile-dropdown-menu {
+                    min-width: 220px;
+                }
+
+                @media (max-width: 768px) {
+                    .profile-dropdown-container {
+                        margin-left: 0.5rem;
+                    }
+
+                    .profile-avatar {
+                        width: 36px;
+                        height: 36px;
+                    }
+
+                    .profile-dropdown-menu {
+                        min-width: 200px;
+                        right: 0;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .profile-avatar {
+                        width: 32px;
+                        height: 32px;
+                    }
+
+                    .profile-dropdown-menu {
+                        min-width: 180px;
+                    }
+                }
+            `}</style>
+
+            <div className="profile-dropdown-container position-relative" ref={dropdownRef}>
+                <motion.button
+                    ref={buttonRef}
+                    className="btn p-0 border-0 bg-transparent"
+                    type="button"
+                    onClick={() => setIsOpen(!isOpen)}
                     style={{
-                        objectFit: 'cover',
-                        width: '40px',
-                        height: '40px',
-                        border: '2px solid #fff',
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                        transition: 'all 0.2s ease'
+                        position: 'relative',
+                        zIndex: 1001
                     }}
-                />
-            </motion.button>
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    <img
+                        src={avatarUrl}
+                        alt="Profile"
+                        className="profile-avatar rounded-circle"
+                        style={{
+                            objectFit: 'cover',
+                            border: '2px solid #fff',
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                            transition: 'all 0.2s ease'
+                        }}
+                    />
+                </motion.button>
 
             <AnimatePresence>
                 {isOpen && (
@@ -92,11 +133,10 @@ const ProfileDropdown = () => {
 
                         {/* Dropdown Menu */}
                         <motion.div
-                            className="position-absolute end-0"
+                            className="profile-dropdown-menu position-absolute end-0"
                             style={{
                                 zIndex: 1001,
-                                marginTop: '8px',
-                                minWidth: '220px'
+                                marginTop: '8px'
                             }}
                             initial={{ opacity: 0, scale: 0.95, y: -10 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -151,8 +191,9 @@ const ProfileDropdown = () => {
                                             fontSize: '0.95rem',
                                             transition: 'all 0.2s ease'
                                         }}
-                                        whileHover={{ backgroundColor: '#f1f1f1' }}
+                                        whileHover={{ backgroundColor: '#f1f1f1', x: 4 }}
                                         whileTap={{ scale: 0.98 }}
+                                        transition={{ duration: 0.15, ease: 'easeOut' }}
                                     >
                                         <Person className="me-3" size={20} style={{ color: '#666' }} />
                                         <span className="fw-medium">My Profile</span>
@@ -166,8 +207,9 @@ const ProfileDropdown = () => {
                                             fontSize: '0.95rem',
                                             transition: 'all 0.2s ease'
                                         }}
-                                        whileHover={{ backgroundColor: '#f1f1f1' }}
+                                        whileHover={{ backgroundColor: '#f1f1f1', x: 4 }}
                                         whileTap={{ scale: 0.98 }}
+                                        transition={{ duration: 0.15, ease: 'easeOut' }}
                                     >
                                         <Gear className="me-3" size={20} style={{ color: '#666' }} />
                                         <span className="fw-medium">Settings</span>
@@ -183,8 +225,9 @@ const ProfileDropdown = () => {
                                             fontSize: '0.95rem',
                                             transition: 'all 0.2s ease'
                                         }}
-                                        whileHover={{ backgroundColor: '#fee' }}
+                                        whileHover={{ backgroundColor: '#fee', x: 4 }}
                                         whileTap={{ scale: 0.98 }}
+                                        transition={{ duration: 0.15, ease: 'easeOut' }}
                                     >
                                         <BoxArrowRight className="me-3" size={20} />
                                         <span className="fw-medium">Log out</span>
@@ -195,7 +238,8 @@ const ProfileDropdown = () => {
                     </>
                 )}
             </AnimatePresence>
-        </div>
+            </div>
+        </>
     );
 };
 
