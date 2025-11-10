@@ -45,7 +45,6 @@ const CreateBoardPage = () => {
                 setUploadPct(percent);
             });
 
-            // Reset form
             setName('');
             setDescription('');
             setIsPrivate(false);

@@ -2,7 +2,7 @@ import React, {useMemo, useState} from 'react';
 import {Button, Alert, Spinner} from 'react-bootstrap';
 import {ArrowLeft, Grid3x3GapFill, SortDownAlt} from 'react-bootstrap-icons';
 import useBoardPins from '../../hooks/useBoardPins';
-import PinGrid from '../pin/PinGrid'; // <-- reusing your existing Masonry grid
+import PinGrid from '../pin/PinGrid';
 import {removePinFromBoard} from '../../services/boardService';
 import BeautifulDropdown, {BeautifulDropdownItem} from '../common/BeautifulDropdown';
 
@@ -15,7 +15,6 @@ const BoardView = ({board, onBack}) => {
         if (sortKey === 'title') {
             arr.sort((a, b) => a.title.localeCompare(b.title));
         } else {
-            // 'recent' -> newest first by createdAt
             arr.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         }
         return arr;
@@ -26,14 +25,11 @@ const BoardView = ({board, onBack}) => {
         
         try {
             await removePinFromBoard(board.id, pinId);
-            // Optimistically update the pins list
             setPins((prevPins) => prevPins.filter(p => p.id !== pinId));
-            // Refresh to ensure consistency
             await refresh();
         } catch (err) {
             console.error('Failed to remove pin from board:', err);
             alert('Failed to remove pin from board. Please try again.');
-            // Refresh to get the correct state
             await refresh();
         }
     };

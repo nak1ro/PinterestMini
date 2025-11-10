@@ -13,7 +13,6 @@ const PinTagsControl = ({
                         }) => {
     const [input, setInput] = useState('');
 
-    // normalize incoming value into view items: { id, name }
     const viewItems = useMemo(() => {
         if (!Array.isArray(value)) return [];
         if (mode === 'object') {
@@ -26,7 +25,6 @@ const PinTagsControl = ({
                 })
                 .filter(Boolean);
         }
-        // mode === 'string'
         return value
             .map((n) => {
                 const name = String(n ?? '').trim();
@@ -70,7 +68,6 @@ const PinTagsControl = ({
             e.preventDefault();
             addName(input);
         }
-        // Optional: comma to add quickly
         if (e.key === ',' && !e.shiftKey) {
             e.preventDefault();
             addName(input);

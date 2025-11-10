@@ -1,4 +1,3 @@
-// src/components/layout/SidebarLayout.js
 import React from 'react';
 import Sidebar from './SideBar';
 import BottomNav from './BottomNav';

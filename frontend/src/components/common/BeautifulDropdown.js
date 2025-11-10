@@ -2,9 +2,6 @@ import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import Portal from 'react-overlays/Portal';
 
-/**
- * Portal wrapper for dropdown menu to ensure it renders above other elements
- */
 const PortalMenu = React.forwardRef(({ children, style, ...props }, ref) => (
     <Portal>
         <div ref={ref} {...props} style={{ zIndex: 2000, ...style }}>
@@ -14,20 +11,6 @@ const PortalMenu = React.forwardRef(({ children, style, ...props }, ref) => (
 ));
 PortalMenu.displayName = 'PortalMenu';
 
-/**
- * Beautiful dropdown component with consistent Pinterest-style design
- * 
- * @param {Object} props
- * @param {React.ReactNode} props.children - Dropdown items (should use BeautifulDropdownItem)
- * @param {React.ReactNode} props.trigger - Button content/text
- * @param {string} props.variant - Button variant ('standard' | 'light' | 'transparent')
- * @param {string} props.align - Menu alignment ('start' | 'end')
- * @param {Function} props.onSelect - Callback when item is selected (receives eventKey)
- * @param {Object} props.toggleStyle - Custom styles for toggle button
- * @param {boolean} props.usePortal - Whether to use portal for menu (default: true)
- * @param {string} props.className - Additional classes for toggle
- * @param {Object} props.style - Additional styles for container
- */
 const BeautifulDropdown = ({
     children,
     trigger,
@@ -40,14 +23,12 @@ const BeautifulDropdown = ({
     style = {},
     drop,
 }) => {
-    // Base toggle styles
     const baseToggleStyle = {
         transition: 'all 0.2s ease',
         fontSize: '14px',
         fontWeight: 500,
     };
 
-    // Variant-specific toggle styles
     const variantStyles = {
         standard: {
             border: '1px solid #ddd',
@@ -81,7 +62,6 @@ const BeautifulDropdown = ({
         ...toggleStyle,
     };
 
-    // Menu styles
     const menuStyle = {
         borderRadius: '16px',
         border: '1px solid #e0e0e0',
@@ -93,7 +73,6 @@ const BeautifulDropdown = ({
         minWidth: '180px',
     };
 
-    // Hover handlers for toggle
     const handleMouseEnter = (e) => {
         if (variant === 'standard') {
             e.currentTarget.style.transform = 'translateY(-1px)';
@@ -160,17 +139,6 @@ const BeautifulDropdown = ({
     );
 };
 
-/**
- * Beautiful dropdown item component with consistent styling
- * 
- * @param {Object} props
- * @param {React.ReactNode} props.children - Item content
- * @param {string} props.eventKey - Value for onSelect callback
- * @param {boolean} props.active - Whether this item is active/selected
- * @param {Function} props.onClick - Optional click handler
- * @param {string} props.className - Additional classes
- * @param {Object} props.style - Additional styles
- */
 export const BeautifulDropdownItem = ({
     children,
     eventKey,
