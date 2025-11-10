@@ -264,13 +264,29 @@ public class PinService : IPinService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<List<BoardDto>> GetBoardsForPinAsync(Guid pinId)
+    public async Task<List<BoardDto>> GetBoardsForPinAsync(Guid pinId, ClaimsPrincipal? user = null)
     {
         var pin = await _unitOfWork.Pins.GetByIdAsync(pinId);
         if (pin == null)
             throw new AppNotFoundException("Pin not found.");
 
-        var boards = await _unitOfWork.PinBoards.GetBoardsForPinAsync(pinId);
+        Guid? userId = null;
+        if (user?.Identity?.IsAuthenticated == true)
+        {
+            try
+            {
+                userId = _userContext.GetUserId(user);
+            }
+            catch (AppUnauthorizedException)
+            {
+                userId = null;
+            }
+        }
+
+        if (!userId.HasValue)
+            return new List<BoardDto>();
+
+        var boards = await _unitOfWork.PinBoards.GetBoardsForPinAsync(pinId, userId.Value);
         return _mapper.Map<List<BoardDto>>(boards);
     }
 

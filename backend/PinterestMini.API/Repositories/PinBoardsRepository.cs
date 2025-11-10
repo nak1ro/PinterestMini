@@ -34,12 +34,17 @@ public class PinBoardRepository : IPinBoardRepository
             _context.PinBoards.Remove(entry);
     }
 
-    public async Task<List<Board>> GetBoardsForPinAsync(Guid pinId)
+    public async Task<List<Board>> GetBoardsForPinAsync(Guid pinId, Guid? userId = null)
     {
-        return await _context.PinBoards
+        var query = _context.PinBoards
             .Where(pb => pb.PinId == pinId)
             .Include(pb => pb.Board)
-            .ThenInclude(b => b.User)
+            .ThenInclude(b => b.User);
+
+        if (userId.HasValue)
+            query = query.Where(pb => pb.Board.UserId == userId.Value);
+
+        return await query
             .Select(pb => pb.Board)
             .Distinct()
             .ToListAsync();

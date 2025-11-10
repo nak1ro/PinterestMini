@@ -48,7 +48,7 @@ public class PinController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetBoardsForPin(Guid pinId)
     {
-        var boards = await _pinService.GetBoardsForPinAsync(pinId);
+        var boards = await _pinService.GetBoardsForPinAsync(pinId, User);
         return Ok(boards);
     }
 
