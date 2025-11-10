@@ -15,6 +15,7 @@ const Header = () => {
               .app-header {
                   margin-left: 80px;
                   height: 64px;
+                  padding-left: 8px !important;
               }
 
               @media (max-width: 768px) {
@@ -27,7 +28,7 @@ const Header = () => {
           `}</style>
 
           <motion.header
-              className="app-header d-flex align-items-center justify-content-between px-4 py-3 sticky-top bg-white z-3"
+              className="app-header d-flex align-items-center justify-content-between py-3 sticky-top bg-white z-3"
               initial={{ y: -50 }}
               animate={{ y: 0 }}
               transition={{ duration: 0.3 }}

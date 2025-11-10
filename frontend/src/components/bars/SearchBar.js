@@ -40,7 +40,7 @@ const SearchBar = () => {
             <style>{`
                 .search-bar-form {
                     flex-grow: 1;
-                    margin: 0 1rem;
+                    margin: 0 1rem 0 0;
                 }
 
                 .search-bar-container {
@@ -55,7 +55,7 @@ const SearchBar = () => {
 
                 @media (max-width: 768px) {
                     .search-bar-form {
-                        margin: 0 0.5rem;
+                        margin: 0 0.5rem 0 0;
                     }
 
                     .search-bar-container {
