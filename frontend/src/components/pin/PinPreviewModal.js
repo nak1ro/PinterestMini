@@ -363,7 +363,10 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
     };
 
     // -- Comments ----------------------------------------------------------------
+    const commentsEnabled = localPin?.allowComments !== false;
+
     const scrollToComments = () => {
+        if (!commentsEnabled) return;
         commentRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
     };
 
@@ -375,6 +378,8 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
             return;
         }
         
+        if (!commentsEnabled) return;
+
         // Authenticated users can post comments
         if (newComment.trim()) {
             await addComment(newComment);
@@ -498,7 +503,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                 <span className="fw-semibold" style={{fontSize: '0.95rem'}}>{likeCount}</span>
                             </motion.button>
 
-                            {!isMobile && (
+                            {!isMobile && commentsEnabled && (
                                 <motion.button
                                     className="btn d-flex align-items-center rounded-3 px-3"
                                     onClick={(e) => {
@@ -789,31 +794,33 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                     </div>
 
                     {/* COMMENTS */}
-                    <div
-                        className="px-4 pb-4"
-                        ref={commentRef}
-                        style={{backgroundColor: '#fafafa', borderTop: '1px solid #eee'}}
-                    >
-                        <h5 className="fw-bold mb-3 pt-4" style={{color: '#111', fontSize: '1.25rem'}}>
-                            Comments {comments.length > 0 && <span className="text-muted" style={{fontSize: '0.9rem', fontWeight: 'normal'}}>({comments.length})</span>}
-                        </h5>
-                        <div className="mb-4">
-                            <CommentInput
-                                newComment={newComment}
-                                setNewComment={setNewComment}
-                                onPost={handlePostComment}
-                                isAuthenticated={isAuthenticated}
-                                onAuthRequired={handleAuthRequired}
+                    {commentsEnabled && (
+                        <div
+                            className="px-4 pb-4"
+                            ref={commentRef}
+                            style={{backgroundColor: '#fafafa', borderTop: '1px solid #eee'}}
+                        >
+                            <h5 className="fw-bold mb-3 pt-4" style={{color: '#111', fontSize: '1.25rem'}}>
+                                Comments {comments.length > 0 && <span className="text-muted" style={{fontSize: '0.9rem', fontWeight: 'normal'}}>({comments.length})</span>}
+                            </h5>
+                            <div className="mb-4">
+                                <CommentInput
+                                    newComment={newComment}
+                                    setNewComment={setNewComment}
+                                    onPost={handlePostComment}
+                                    isAuthenticated={isAuthenticated}
+                                    onAuthRequired={handleAuthRequired}
+                                />
+                            </div>
+                            <CommentList 
+                                comments={comments} 
+                                loading={loadingComments}
+                                currentUserId={userId}
+                                onDeleteComment={handleDeleteComment}
+                                onNavigateToProfile={goToUserProfile}
                             />
                         </div>
-                        <CommentList 
-                            comments={comments} 
-                            loading={loadingComments}
-                            currentUserId={userId}
-                            onDeleteComment={handleDeleteComment}
-                            onNavigateToProfile={goToUserProfile}
-                        />
-                    </div>
+                    )}
                 </div>
 
                 {isMobile && (

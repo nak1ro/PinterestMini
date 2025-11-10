@@ -1,21 +1,21 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { useAppContext } from '../../context/AppContext';
+import {motion} from 'framer-motion';
+import {useAppContext} from '../../context/AppContext';
 import AuthButtons from '../auth/AuthButtons';
 import ProfileDropdown from '../profile/ProfileDropdown';
 import SearchBar from '../bars/SearchBar';
 
 
 const Header = () => {
-  const { user } = useAppContext();
+    const {user} = useAppContext();
 
-  return (
-      <>
-          <style>{`
+    return (
+        <>
+            <style>{`
               .app-header {
-                  margin-left: 80px;
                   height: 64px;
-                  padding-left: 8px !important;
+                  padding-left: 28px !important;
+                  padding-right: 15px !important;
               }
 
               @media (max-width: 768px) {
@@ -27,19 +27,19 @@ const Header = () => {
               }
           `}</style>
 
-          <motion.header
-              className="app-header d-flex align-items-center justify-content-between py-3 sticky-top bg-white z-3"
-              initial={{ y: -50 }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.3 }}
-          >
-         
-              <SearchBar />
-              {user ? <ProfileDropdown /> : <AuthButtons />}
+            <motion.header
+                className="app-header d-flex align-items-center justify-content-between py-3 sticky-top bg-white z-3"
+                initial={{y: -50}}
+                animate={{y: 0}}
+                transition={{duration: 0.3}}
+            >
 
-        </motion.header>
-      </>
-  );
+                <SearchBar/>
+                {user ? <ProfileDropdown/> : <AuthButtons/>}
+
+            </motion.header>
+        </>
+    );
 };
 
 export default Header;

@@ -143,22 +143,16 @@ const BoardsTab = () => {
                             <BoardCard
                                 board={board}
                                 onUpdated={async (updated) => {
-                                    // Update the board in the list immediately (name/desc/privacy/cover)
                                     patchBoard(updated);
-                                    // Also update openBoard if it's the same board
                                     if (openBoard && openBoard.id === updated.id) {
                                         setOpenBoard(updated);
                                     }
-                                    // Refetch to get latest data from server (updatedAt, etc.)
-                                    // Do this in the background to avoid blocking UI
                                     refetch().catch(err => {
                                         console.error('Failed to refetch boards:', err);
                                     });
                                 }}
                                 onDeleted={(deletedId) => {
-                                    // Remove from list immediately
                                     removeBoard(deletedId);
-                                    // Close board view if it was the deleted board
                                     if (openBoard && openBoard.id === deletedId) {
                                         setOpenBoard(null);
                                     }

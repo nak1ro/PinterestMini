@@ -8,14 +8,13 @@ import { getPinBoards, setPinBoards } from '../../services/pinService';
 const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
     const navigate = useNavigate();
     const [boards, setBoards] = useState([]);
-    const [currentBoardIds, setCurrentBoardIds] = useState([]); // Boards that currently have this pin
+    const [currentBoardIds, setCurrentBoardIds] = useState([]);
     const [selectedBoardIds, setSelectedBoardIds] = useState(new Set());
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
 
-    // Load boards and current board memberships when modal opens
     useEffect(() => {
         if (show && pinId) {
             setLoading(true);
@@ -25,19 +24,18 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
 
             Promise.all([
                 getMyBoards(),
-                getPinBoards(pinId).catch(() => ({ boards: [] })) // Fallback if endpoint doesn't exist yet
+                getPinBoards(pinId).catch(() => ({ boards: [] }))
             ])
                 .then(([boardsRes, pinBoardsRes]) => {
                     const boardsList = Array.isArray(boardsRes.data) ? boardsRes.data : (Array.isArray(boardsRes) ? boardsRes : []);
                     setBoards(boardsList);
 
-                    // Extract board IDs from the pin's boards response
                     const boards = pinBoardsRes?.boards || pinBoardsRes?.data?.boards || pinBoardsRes || [];
                     const boardIds = Array.isArray(boards) 
                         ? boards.map(b => typeof b === 'string' || typeof b === 'number' ? b : b.id).filter(Boolean)
                         : [];
                     setCurrentBoardIds(boardIds);
-                    setSelectedBoardIds(new Set(boardIds)); // Initialize with current boards selected
+                    setSelectedBoardIds(new Set(boardIds));
                 })
                 .catch((err) => {
                     console.error('Failed to load boards:', err);
@@ -49,7 +47,6 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
         }
     }, [show, pinId]);
 
-    // Filter boards based on search query
     const filteredBoards = useMemo(() => {
         if (!searchQuery.trim()) return boards;
         const query = searchQuery.toLowerCase();
@@ -82,9 +79,7 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
             if (onSaved) {
                 onSaved(boardIdsArray);
             }
-            
-            // Show success toast (you might want to use a toast library here)
-            // For now, we'll just close the modal
+
             onClose();
         } catch (err) {
             console.error('Failed to save pin to boards:', err);

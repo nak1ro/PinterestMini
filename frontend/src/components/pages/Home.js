@@ -15,7 +15,7 @@ const Home = () => {
 
     return (
         <motion.div
-            className="px-0 py-4 container-fluid"
+            className="px-0 pt-2 pb-4 container-fluid"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}

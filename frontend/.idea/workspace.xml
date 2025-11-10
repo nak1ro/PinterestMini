@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/components/bars/SearchBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/bars/SearchBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/common/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pages/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pin/PinDetail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinDetail.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pin/PinEditModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinEditModal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pin/PinGrid.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinGrid.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pin/PinPreviewModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinPreviewModal.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

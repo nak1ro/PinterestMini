@@ -20,7 +20,6 @@ const PinDetail = () => {
   const [relatedPins, setRelatedPins] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
 
-  // Hooks for pin interactions
   const { savePin, unsavePin, isPinSaved } = useSavedPins();
   const { liked, likeCount, toggleLike } = usePinLike(pin?.id);
   const { followersCount } = useFollowCounts(pin?.owner?.id);
@@ -29,7 +28,6 @@ const PinDetail = () => {
   const [checkingSaved, setCheckingSaved] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
-  // Fetch pin data
   useEffect(() => {
     const fetchPin = async () => {
       if (!id) return;
@@ -41,7 +39,6 @@ const PinDetail = () => {
         const pinData = await getPinById(id);
         setPin(pinData);
         
-        // Check if pin is saved (only if user is authenticated)
         if (user && pinData.id) {
           setCheckingSaved(true);
           try {
@@ -62,18 +59,15 @@ const PinDetail = () => {
     };
 
     fetchPin();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user]);
 
-  // Fetch related pins when pin is loaded
   useEffect(() => {
     const fetchRelatedPins = async () => {
       if (!pin || !pin.tags || pin.tags.length === 0) return;
 
       setLoadingRelated(true);
       try {
-        // Get pins by the first tag
-        const firstTag = Array.isArray(pin.tags) 
+        const firstTag = Array.isArray(pin.tags)
           ? (pin.tags[0]?.name || pin.tags[0])
           : null;
         
