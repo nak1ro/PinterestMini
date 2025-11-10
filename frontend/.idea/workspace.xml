@@ -5,18 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/MOBILE_MODAL_CHANGES.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/bars/SidebarLayout.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/bars/SidebarLayout.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/board/BoardView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/board/BoardView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/board/CreateBoard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/board/CreateBoard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/BeautifulDropdown.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/BeautifulDropdown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/DropdownMenu.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/EnhancedImageViewer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/OverflowMenu.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/PinTagsControl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/PinTagsControl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/Toast.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pages/TestBoardTag.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pin/PinDetail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinDetail.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pin/PinEditModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinEditModal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pin/PinPreviewModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinPreviewModal.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

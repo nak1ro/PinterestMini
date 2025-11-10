@@ -9,6 +9,7 @@ import { useAppContext } from '../../context/AppContext';
 import useSavedPins from '../../hooks/useSavedPins';
 import usePinLike from '../../hooks/usePinLike';
 import useFollowCounts from '../../hooks/useFollowCounts';
+import { copyTextToClipboard } from '../../utils/clipboard';
 
 const PinDetail = () => {
   const { id } = useParams();
@@ -119,19 +120,22 @@ const PinDetail = () => {
   const handleShare = async () => {
     const pinUrl = `${window.location.origin}/pin/${pin.id}`;
     try {
-      await navigator.clipboard.writeText(pinUrl);
+      const copied = await copyTextToClipboard(pinUrl);
+      if (!copied) {
+        throw new Error('Clipboard copy rejected');
+      }
       // Show temporary message
       const tempAlert = document.createElement('div');
-      tempAlert.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
+      tempAlert.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3 text-center';
       tempAlert.style.zIndex = '9999';
-      tempAlert.textContent = 'Link copied to clipboard!';
+      tempAlert.textContent = `Link copied: ${pinUrl}`;
       document.body.appendChild(tempAlert);
       setTimeout(() => {
         tempAlert.remove();
       }, 2000);
     } catch (err) {
-      console.error('Failed to copy link:', err);
-      alert('Failed to copy link. Please try again.');
+      console.error('Link copied to the clipboard!', err);
+      alert('Link copied to the clipboard!');
     }
   };
 

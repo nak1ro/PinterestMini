@@ -25,7 +25,6 @@ const PinEditModal = ({ show, onClose, pin, onApply }) => {
     const [tags, setTags] = useState(Array.isArray(pin?.tags) ? pin.tags : []);
     const [errorMsg, setErrorMsg] = useState('');
 
-    // hook that talks to backend
     const { update, loading, error } = useUpdatePin(pin?.id);
 
     useEffect(() => {
@@ -36,7 +35,6 @@ const PinEditModal = ({ show, onClose, pin, onApply }) => {
         setErrorMsg('');
     }, [pin]);
 
-    // lock body scroll while open
     useEffect(() => {
         if (!show) return;
         const original = document.body.style.overflow;
@@ -47,8 +45,7 @@ const PinEditModal = ({ show, onClose, pin, onApply }) => {
     if (!show) return null;
 
     const buildDto = () => {
-        // Map to UpdatePinDto shape (PascalCase as in your C# DTO)
-        // Tag objects -> TagNames (string[])
+
         const tagNames = Array.isArray(tags)
             ? tags
                 .map(t => (typeof t?.name === 'string' ? t.name.trim() : ''))
@@ -60,8 +57,7 @@ const PinEditModal = ({ show, onClose, pin, onApply }) => {
             Description: description ?? null,
             AllowComments: typeof allowComments === 'boolean' ? allowComments : null,
             TagNames: tagNames.length > 0 ? tagNames : [],
-            // Include BoardIds only if you actually edit them in this modal. Otherwise omit:
-            // BoardIds: [...]
+
         };
     };
 
@@ -71,17 +67,13 @@ const PinEditModal = ({ show, onClose, pin, onApply }) => {
             const dto = buildDto();
             const serverPin = await update(dto);
 
-            // Keep your existing contract with parent: pass the "updates" object
-            // so PinPreviewModal can optimistically merge its local state.
+       
             onApply({
                 title,
                 description,
                 allowComments,
                 tags
             });
-
-            // If you want to prefer serverPin (normalized tags etc.), you can ALSO pass it:
-            // onApply(serverPin);
 
             onClose();
         } catch (e) {
@@ -91,7 +83,6 @@ const PinEditModal = ({ show, onClose, pin, onApply }) => {
                 e?.message ||
                 'Failed to update pin.';
             setErrorMsg(String(message));
-            // keep modal open so user can retry
         }
     };
 

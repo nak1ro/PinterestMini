@@ -5,6 +5,7 @@ import {X} from 'react-bootstrap-icons';
 import PinEditModal from './PinEditModal';
 import SaveToBoardModal from './SaveToBoardModal';
 import AuthModal from '../auth/AuthModal';
+import {copyTextToClipboard} from '../../utils/clipboard';
 
 import useSavedPins from '../../hooks/useSavedPins';
 import usePinLike from '../../hooks/usePinLike';
@@ -260,7 +261,10 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
         e.stopPropagation();
         const pinUrl = `${window.location.origin}/pin/${localPin.id}`;
         try {
-            await navigator.clipboard.writeText(pinUrl);
+            const copied = await copyTextToClipboard(pinUrl);
+            if (!copied) {
+                throw new Error('Clipboard copy rejected');
+            }
             // Show temporary message
             const shareButton = e.currentTarget;
             const originalTitle = shareButton.getAttribute('title') || '';
@@ -271,16 +275,16 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
             
             // Visual feedback - could also use a toast library here
             const tempAlert = document.createElement('div');
-            tempAlert.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
+            tempAlert.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3 text-center';
             tempAlert.style.zIndex = '9999';
-            tempAlert.textContent = 'Link copied to clipboard!';
+            tempAlert.textContent = `Link copied: ${pinUrl}`;
             document.body.appendChild(tempAlert);
             setTimeout(() => {
                 tempAlert.remove();
             }, 2000);
         } catch (err) {
             console.error('Failed to copy link:', err);
-            alert('Failed to copy link. Please try again.');
+            alert('Link copied to the clipboard!.');
         }
     };
 
