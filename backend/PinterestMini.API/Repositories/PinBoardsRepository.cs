@@ -37,14 +37,14 @@ public class PinBoardRepository : IPinBoardRepository
     public async Task<List<Board>> GetBoardsForPinAsync(Guid pinId, Guid? userId = null)
     {
         var query = _context.PinBoards
-            .Where(pb => pb.PinId == pinId)
-            .Include(pb => pb.Board)
-            .ThenInclude(b => b.User);
+            .Where(pb => pb.PinId == pinId);
 
         if (userId.HasValue)
             query = query.Where(pb => pb.Board.UserId == userId.Value);
 
         return await query
+            .Include(pb => pb.Board)
+            .ThenInclude(b => b.User)
             .Select(pb => pb.Board)
             .Distinct()
             .ToListAsync();
