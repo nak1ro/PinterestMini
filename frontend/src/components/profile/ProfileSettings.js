@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../../context/AppContext';
+import { useAppSelector, useAppDispatch } from '../../hooks/redux';
+import { selectUser, login as loginAction, logout as logoutAction, updateUser as updateUserAction } from '../../store/slices/authSlice';
 import { updateProfile, deleteAccount } from '../../services/profileService';
 import { Camera, X } from 'react-bootstrap-icons';
 
 const ProfileSettings = () => {
-    const { user, login, logout } = useAppContext();
+    const user = useAppSelector(selectUser);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
 
@@ -87,7 +89,7 @@ const ProfileSettings = () => {
                     name: form.username,
                     bio: form.bio,
                 };
-                login(updatedUser, user.email, localStorage.getItem('token'));
+                dispatch(updateUserAction(updatedUser));
             }
 
             // Show success message or navigate
@@ -117,7 +119,7 @@ const ProfileSettings = () => {
             }
 
             // Logout and redirect to home
-            logout();
+            dispatch(logoutAction());
             navigate('/');
         } catch (err) {
             setError('Failed to delete account. Please try again.');

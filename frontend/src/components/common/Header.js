@@ -1,13 +1,14 @@
 import React from 'react';
 import {motion} from 'framer-motion';
-import {useAppContext} from '../../context/AppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { selectUser } from '../../store/slices/authSlice';
 import AuthButtons from '../auth/AuthButtons';
 import ProfileDropdown from '../profile/ProfileDropdown';
 import SearchBar from '../bars/SearchBar';
 
 
 const Header = () => {
-    const {user} = useAppContext();
+    const user = useAppSelector(selectUser);
 
     return (
         <>

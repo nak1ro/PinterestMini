@@ -1,15 +1,13 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import AppRoutes from './routes/AppRoutes';
-import { AppProvider } from './context/AppContext';
-import { SearchProvider } from './context/SearchContext';
+import { store } from './store';
 
 function App() {
     return (
-        <AppProvider>
-            <SearchProvider>
-                <AppRoutes />
-            </SearchProvider>
-        </AppProvider>
+        <Provider store={store}>
+            <AppRoutes />
+        </Provider>
     );
 }
 

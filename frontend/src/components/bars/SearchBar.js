@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useSearchPins from '../../hooks/useSearchPins';
-import { useAppContext } from '../../context/AppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { selectUser } from '../../store/slices/authSlice';
 import BeautifulDropdown, {BeautifulDropdownItem} from '../common/BeautifulDropdown';
 
 const SearchBar = () => {
-    const { user } = useAppContext();
+    const user = useAppSelector(selectUser);
     const isAuthenticated = !!user;
     const [searchTerm, setSearchTerm] = useState('');
     const [searchScope, setSearchScope] = useState('all');

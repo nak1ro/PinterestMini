@@ -2,11 +2,13 @@
 import React from 'react';
 import PinGrid from '../pin/PinGrid';
 import { motion } from 'framer-motion';
-import { useSearchContext } from '../../context/SearchContext';
+import { useAppSelector } from '../../hooks/redux';
+import { selectSearchResults, selectHasSearched } from '../../store/slices/searchSlice';
 import usePins from '../../hooks/usePins';
 
 const Home = () => {
-    const { searchResults, isSearching, hasSearched } = useSearchContext();
+    const searchResults = useAppSelector(selectSearchResults);
+    const hasSearched = useAppSelector(selectHasSearched);
     const { pins: basePins, loading: baseLoading } = usePins();
 
     if (baseLoading) return <p className="text-center mt-5">Loading pins...</p>;

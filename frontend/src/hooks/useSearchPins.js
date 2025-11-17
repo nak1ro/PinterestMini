@@ -1,37 +1,41 @@
-import { useSearchContext } from '../context/SearchContext';
+import { useAppDispatch } from './redux';
+import {
+    setSearchResults,
+    setSearchQuery,
+    setIsSearching,
+    setHasSearched,
+    resetSearch,
+} from '../store/slices/searchSlice';
 import { fetchPinsByQuery, fetchSavedPinsByQuery } from '../services/pinService';
 
 const useSearchPins = (mode = 'all') => {
-    const {
-        setSearchResults,
-        setSearchQuery,
-        setIsSearching,
-        setHasSearched,
-        resetSearch,
-    } = useSearchContext();
+    const dispatch = useAppDispatch();
 
     const searchPins = async (term, page = 1, pageSize = 20) => {
         const query = term.trim();
         if (!query) return;
 
-        setIsSearching(true);
-        setHasSearched(true);
+        dispatch(setIsSearching(true));
+        dispatch(setHasSearched(true));
 
         try {
             const fetchFn = mode === 'saved' ? fetchSavedPinsByQuery : fetchPinsByQuery;
             const result = await fetchFn(query, page, pageSize);
             const pins = (result && result.data && result.data.items) || (result && result.data) || [];
-            setSearchQuery(query);
-            setSearchResults(pins);
+            dispatch(setSearchQuery(query));
+            dispatch(setSearchResults(pins));
         } catch (err) {
             console.error(`Search error (${mode}):`, err);
-            setSearchResults([]);
+            dispatch(setSearchResults([]));
         } finally {
-            setIsSearching(false);
+            dispatch(setIsSearching(false));
         }
     };
 
-    return { searchPins, resetSearch };
+    return {
+        searchPins,
+        resetSearch: () => dispatch(resetSearch())
+    };
 };
 
 export default useSearchPins;

@@ -6,7 +6,8 @@ import Explore from '../components/pages/Explore';
 import Profile from '../components/profile/Profile';
 import PinDetail from '../components/pin/PinDetail';
 import CreatePin from '../components/pin/CreatePin';
-import {useAppContext} from '../context/AppContext';
+import { useAppSelector } from '../hooks/redux';
+import { selectUser, selectAuthLoading } from '../store/slices/authSlice';
 import TagPage from '../components/pages/Tag';
 import CreateBoard from '../components/board/CreateBoard';
 import OtherUserProfile from '../components/profile/OtherUserProfile';
@@ -22,7 +23,8 @@ const UnauthenticatedLayout = ({children}) => (
 
 const RedirectToSelfProfile = ({children}) => {
     const {username} = useParams();
-    const {user, loading} = useAppContext();
+    const user = useAppSelector(selectUser);
+    const loading = useAppSelector(selectAuthLoading);
 
     if (loading) return null;
 
@@ -37,7 +39,7 @@ const RedirectToSelfProfile = ({children}) => {
 
 
 const AppRoutes = () => {
-    const {user} = useAppContext();
+    const user = useAppSelector(selectUser);
     const isAuthenticated = !!user;
 
     return (

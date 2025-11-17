@@ -1,11 +1,12 @@
 // src/components/auth/SignUpForm.js
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppContext } from '../../context/AppContext';
+import { useAppDispatch } from '../../hooks/redux';
+import { login as loginAction } from '../../store/slices/authSlice';
 import {registerUser} from '../../services/authService';
 
 const SignUpForm = () => {
-    const { login } = useAppContext();
+    const dispatch = useAppDispatch();
     const [form, setForm] = useState({ username: '', email: '', password: '' });
     const [error, setError] = useState(null);
     const [focusedField, setFocusedField] = useState(null);
@@ -42,7 +43,11 @@ const SignUpForm = () => {
             setError(resultReg.error);
             return;
         }
-        login(resultReg.data, resultReg.data.email, resultReg.data.token);
+        dispatch(loginAction({
+            userData: resultReg.data,
+            userMail: resultReg.data.email,
+            jwtToken: resultReg.data.token
+        }));
     };
 
     const allRequirementsMet = requirements.every(req => req.isValid);

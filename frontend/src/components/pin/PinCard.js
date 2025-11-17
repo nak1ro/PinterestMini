@@ -5,12 +5,14 @@ import useSavedPins from '../../hooks/useSavedPins';
 import PinPreviewModal from './PinPreviewModal';
 import SaveToBoardModal from './SaveToBoardModal';
 import AuthModal from '../auth/AuthModal';
-import {useAppContext} from '../../context/AppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { selectUserId, selectUser } from '../../store/slices/authSlice';
 import {deletePin} from '../../services/pinService';
 
 const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
     const {savePin, unsavePin, savedPins, isPinSaved, refetch} = useSavedPins();
-    const {userId, user} = useAppContext();
+    const userId = useAppSelector(selectUserId);
+    const user = useAppSelector(selectUser);
     const isAuthenticated = !!user;
     const [saved, setSaved] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -21,12 +23,10 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [authModalType, setAuthModalType] = useState('signin');
 
-    // Check if current user is the owner
     const isOwner =
         (pin && pin.ownerId && pin.ownerId === userId) ||
         (pin && pin.owner && pin.owner.id === userId);
 
-    // Check savedPins array first (optimistic check)
     useEffect(() => {
         if (savedPins && Array.isArray(savedPins)) {
             const isInSavedPins = savedPins.some(p => p.id === pin.id);
@@ -34,7 +34,6 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
         }
     }, [savedPins, pin.id]);
 
-    // When hovering starts, check saved status via API (only if authenticated)
     useEffect(() => {
         if (isHovered && !checkedSavedStatus && isAuthenticated) {
             setCheckedSavedStatus(true);
@@ -43,12 +42,10 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
                     setSaved(isSaved);
                 })
                 .catch(() => {
-                    // Keep current saved state on error
                 });
         }
     }, [isHovered, pin.id, isPinSaved, checkedSavedStatus, isAuthenticated]);
 
-    // Reset checked flag when hover ends
     useEffect(() => {
         if (!isHovered) {
             setCheckedSavedStatus(false);
@@ -59,14 +56,12 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
         e.preventDefault();
         e.stopPropagation();
         
-        // If not authenticated, open login modal
         if (!isAuthenticated) {
             setAuthModalType('signin');
             setShowAuthModal(true);
             return;
         }
         
-        // Authenticated users can save/unsave
         if (saved) {
             await unsavePin(pin.id);
             setSaved(false);
@@ -103,9 +98,7 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
         setIsDeleting(true);
         try {
             await deletePin(pin.id);
-            // Close preview modal if open
             setShowPreview(false);
-            // Call parent callback if provided
             if (onDelete) {
                 onDelete(pin.id);
             }
@@ -118,7 +111,6 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
     };
 
     const handleSavedToBoard = async (boardIds) => {
-        // Refresh saved pins list in case we need to update UI
         await refetch();
     };
 

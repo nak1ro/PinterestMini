@@ -1,10 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../../context/AppContext';
+import { useAppSelector, useAppDispatch } from '../../hooks/redux';
+import { selectUser } from '../../store/slices/authSlice';
+import { logout as logoutAction } from '../../store/slices/authSlice';
 import BeautifulDropdown, { BeautifulDropdownItem } from '../common/BeautifulDropdown';
 
 const Sidebar = () => {
-    const { user, logout } = useAppContext();
+    const user = useAppSelector(selectUser);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isAuthenticated = !!user;
 
@@ -14,7 +17,7 @@ const Sidebar = () => {
         }
 
         if (eventKey === 'logout') {
-            logout();
+            dispatch(logoutAction());
             navigate('/');
         }
     };

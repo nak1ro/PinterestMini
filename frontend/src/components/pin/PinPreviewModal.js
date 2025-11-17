@@ -11,7 +11,8 @@ import useSavedPins from '../../hooks/useSavedPins';
 import usePinLike from '../../hooks/usePinLike';
 import useComments from '../../hooks/useComments';
 import useIsMobile from '../../hooks/useIsMobile';
-import {useAppContext} from '../../context/AppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { selectUserId, selectUser } from '../../store/slices/authSlice';
 import {deletePin} from '../../services/pinService';
 
 // -- Small animated icon button ------------------------------------------------
@@ -192,7 +193,8 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
     const {savePin, unsavePin, savedPins, isPinSaved, refetch} = useSavedPins();
     const {liked, likeCount, toggleLike} = usePinLike(pin?.id);
     const {comments, loading: loadingComments, addComment, deleteComment} = useComments(pin?.id);
-    const {user, userId} = useAppContext();
+    const userId = useAppSelector(selectUserId);
+    const user = useAppSelector(selectUser);
     const isAuthenticated = !!user;
 
     // Local state for new comment + editor flag

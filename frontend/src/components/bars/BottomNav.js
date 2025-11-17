@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppContext } from '../../context/AppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { selectUser } from '../../store/slices/authSlice';
 
 const BottomNav = () => {
-    const { user } = useAppContext();
+    const user = useAppSelector(selectUser);
     const navigate = useNavigate();
     const location = useLocation();
     const isAuthenticated = !!user;

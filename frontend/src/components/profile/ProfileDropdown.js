@@ -2,10 +2,13 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Person, Gear, BoxArrowRight } from "react-bootstrap-icons";
-import { useAppContext } from '../../context/AppContext';
+import { useAppSelector, useAppDispatch } from '../../hooks/redux';
+import { selectUser, selectAvatarUrl, logout as logoutAction } from '../../store/slices/authSlice';
 
 const ProfileDropdown = () => {
-    const { avatarUrl, logout, user } = useAppContext();
+    const user = useAppSelector(selectUser);
+    const avatarUrl = useAppSelector(selectAvatarUrl);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -13,7 +16,7 @@ const ProfileDropdown = () => {
 
     const handleLogout = () => {
         setIsOpen(false);
-        logout();
+        dispatch(logoutAction());
         navigate('/');
     };
 

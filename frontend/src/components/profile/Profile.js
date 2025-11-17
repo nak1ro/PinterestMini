@@ -4,7 +4,8 @@ import {useParams} from 'react-router-dom';
 import {Button} from 'react-bootstrap';
 import {ArrowLeft, Eye} from 'react-bootstrap-icons';
 
-import {useAppContext} from '../../context/AppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { selectUser, selectUserId } from '../../store/slices/authSlice';
 import useProfileController from '../../hooks/useProfileController';
 
 import BoardsTab from './profileTabs/BoardsTab';
@@ -14,7 +15,8 @@ import UserListModal from '../common/UserListModal';
 
 const Profile = () => {
     const {username} = useParams();
-    const {user, userId} = useAppContext();
+    const user = useAppSelector(selectUser);
+    const userId = useAppSelector(selectUserId);
 
     // All logic/state lives in the controller hook
     const ctrl = useProfileController({username, user, userId});

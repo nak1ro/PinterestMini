@@ -4,7 +4,8 @@ import { useParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { PersonPlus, PersonCheck } from 'react-bootstrap-icons';
 
-import { useAppContext } from '../../context/AppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { selectUser, selectUserId } from '../../store/slices/authSlice';
 import useCreatedPins from '../../hooks/useCreatedPins';
 import useSavedPins from '../../hooks/useSavedPins';
 import useUserProfile from '../../hooks/useUserProfile';
@@ -16,7 +17,8 @@ import UserListModal from '../common/UserListModal';
 
 const OtherUserProfile = ({ username: propUsername }) => {
     const { username: routeUsername } = useParams();
-    const { user, userId } = useAppContext();
+    const user = useAppSelector(selectUser);
+    const userId = useAppSelector(selectUserId);
     const username = propUsername ?? routeUsername ?? user?.username ?? '';
     const [activeTab, setActiveTab] = useState('created');
     const [showModal, setShowModal] = useState(false);

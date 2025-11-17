@@ -5,7 +5,8 @@ import { Spinner, Alert } from 'react-bootstrap';
 import { getPinById, getPinsByTag } from '../../services/pinService';
 import PinGrid from './PinGrid';
 import PinEditModal from './PinEditModal';
-import { useAppContext } from '../../context/AppContext';
+import { useAppSelector } from '../../hooks/redux';
+import { selectUser } from '../../store/slices/authSlice';
 import useSavedPins from '../../hooks/useSavedPins';
 import usePinLike from '../../hooks/usePinLike';
 import useFollowCounts from '../../hooks/useFollowCounts';
@@ -14,7 +15,7 @@ import { copyTextToClipboard } from '../../utils/clipboard';
 const PinDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAppContext();
+  const user = useAppSelector(selectUser);
   const [pin, setPin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

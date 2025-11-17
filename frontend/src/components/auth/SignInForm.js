@@ -1,11 +1,12 @@
 // src/components/auth/SignInForm.js
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppContext } from '../../context/AppContext';
+import { useAppDispatch } from '../../hooks/redux';
+import { login as loginAction } from '../../store/slices/authSlice';
 import {loginUser} from '../../services/authService';
 
 const SignInForm = ({ onSwitchToSignUp }) => {
-    const {login} = useAppContext();
+    const dispatch = useAppDispatch();
     const [form, setForm] = useState({login: '', password: ''});
     const [error, setError] = useState(null);
     const [focusedField, setFocusedField] = useState(null);
@@ -23,7 +24,11 @@ const SignInForm = ({ onSwitchToSignUp }) => {
             setError(resultLog.error);
             return;
         }
-        login(resultLog.data, resultLog.data.email, resultLog.data.token);
+        dispatch(loginAction({
+            userData: resultLog.data,
+            userMail: resultLog.data.email,
+            jwtToken: resultLog.data.token
+        }));
     };
 
     return (
