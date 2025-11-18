@@ -233,12 +233,12 @@ const PinCard = ({pin, boardId, onRemoveFromBoard, onDelete}) => {
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     <img
-                                        src={pin.owner?.profilePictureUrl || '/assets/avatar-default.svg'}
+                                        src={pin.owner?.profilePictureUrl || `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`}
                                         alt={pin.owner?.username || 'User'}
                                         className="rounded-circle me-2"
                                         style={{width: '26px', height: '26px', objectFit: 'cover'}}
                                         onError={(e) => {
-                                            e.target.src = '/assets/avatar-default.svg';
+                                            e.target.src = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                                         }}
                                     />
                                     <span className="small">

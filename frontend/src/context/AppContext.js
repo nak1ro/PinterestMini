@@ -43,7 +43,7 @@ export const AppProvider = ({ children }) => {
         localStorage.removeItem('token');
     };
 
-    const defaultAvatar = '/assets/avatar-default.svg';
+    const defaultAvatar = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
 
     return (
         <AppContext.Provider

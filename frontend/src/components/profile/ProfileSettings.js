@@ -29,7 +29,7 @@ const ProfileSettings = () => {
                 username: user.username || '',
                 bio: user.bio || '',
             });
-            setPreviewUrl(user.profilePictureUrl || '/assets/avatar-default.svg');
+            setPreviewUrl(user.profilePictureUrl || `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`);
         }
     }, [user]);
 
@@ -50,7 +50,7 @@ const ProfileSettings = () => {
 
     const handleRemoveImage = () => {
         setProfilePicture(null);
-        setPreviewUrl(user?.profilePictureUrl || '/assets/avatar-default.svg');
+        setPreviewUrl(user?.profilePictureUrl || `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`);
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -167,7 +167,7 @@ const ProfileSettings = () => {
                                     borderColor: '#ddd',
                                 }}
                                 onError={(e) => {
-                                    e.currentTarget.src = '/assets/avatar-default.svg';
+                                    e.currentTarget.src = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                                 }}
                             />
                             {profilePicture && (

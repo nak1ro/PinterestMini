@@ -16,7 +16,7 @@ const loadInitialState = () => {
 
 const initialState = loadInitialState();
 
-const defaultAvatar = '/assets/avatar-default.svg';
+const defaultAvatar = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
 
 const authSlice = createSlice({
   name: 'auth',

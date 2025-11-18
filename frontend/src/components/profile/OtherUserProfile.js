@@ -49,7 +49,7 @@ const OtherUserProfile = ({ username: propUsername }) => {
     const pinsToShow = activeTab === 'created' ? createdPins : savedPins;
     const isLoadingPins = activeTab === 'created' ? loadingCreated : loadingSaved;
 
-    const avatarSrc = profile?.profilePictureUrl || '/assets/avatar-default.svg';
+    const avatarSrc = profile?.profilePictureUrl || `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
     const displayName = profile?.username || username || 'Unknown user';
     const bio = profile?.bio || 'No bio provided.';
 
@@ -92,7 +92,7 @@ const OtherUserProfile = ({ username: propUsername }) => {
                     className="rounded-circle mb-4 border border-3"
                     style={{ width: '140px', height: '140px', objectFit: 'cover', borderColor: '#ddd' }}
                     onError={(e) => {
-                        const fallback = '/assets/avatar-default.svg';
+                        const fallback = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                         if (!e.target.src.endsWith(fallback)) {
                             e.target.src = fallback;
                         }

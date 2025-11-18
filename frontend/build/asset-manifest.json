@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/PinterestMini/static/css/main.2544e43a.css",
-    "main.js": "/PinterestMini/static/js/main.f15314bb.js",
+    "main.js": "/PinterestMini/static/js/main.731afb05.js",
     "index.html": "/PinterestMini/index.html",
     "main.2544e43a.css.map": "/PinterestMini/static/css/main.2544e43a.css.map",
-    "main.f15314bb.js.map": "/PinterestMini/static/js/main.f15314bb.js.map"
+    "main.731afb05.js.map": "/PinterestMini/static/js/main.731afb05.js.map"
   },
   "entrypoints": [
     "static/css/main.2544e43a.css",
-    "static/js/main.f15314bb.js"
+    "static/js/main.731afb05.js"
   ]
 }

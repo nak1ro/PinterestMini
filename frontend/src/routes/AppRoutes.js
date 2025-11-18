@@ -43,7 +43,7 @@ const AppRoutes = () => {
     const isAuthenticated = !!user;
 
     return (
-        <Router>
+        <Router basename="/PinterestMini">
             <Routes>
                 <Route
                     path="/"

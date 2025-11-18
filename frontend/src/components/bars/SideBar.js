@@ -68,7 +68,7 @@ const Sidebar = () => {
                     <a href="/" className="text-white fs-3 text-decoration-none">
                         <div className="hover-container">
                             <img
-                                src="/assets/Pinterest-logo.png"
+                                src={`${process.env.PUBLIC_URL || ''}/assets/Pinterest-logo.png`}
                                 width="35"
                                 height="35"
                                 alt="Pinterest"
@@ -79,7 +79,7 @@ const Sidebar = () => {
                     <a href="/" className="nav-link text-white">
                         <div className="hover-container">
                             <img
-                                src="/assets/home.png"
+                                src={`${process.env.PUBLIC_URL || ''}/assets/home.png`}
                                 alt="Home"
                                 width="35"
                                 height="35"
@@ -91,7 +91,7 @@ const Sidebar = () => {
                     <a href="/explore" className="nav-link text-white">
                         <div className="hover-container">
                             <img
-                                src="/assets/compass.png"
+                                src={`${process.env.PUBLIC_URL || ''}/assets/compass.png`}
                                 alt="Explore"
                                 width="35"
                                 height="35"
@@ -104,7 +104,7 @@ const Sidebar = () => {
                         <a href="/create-pin" className="nav-link text-white">
                             <div className="hover-container">
                                 <img
-                                    src="/assets/add.png"
+                                    src={`${process.env.PUBLIC_URL || ''}/assets/add.png`}
                                     alt="Add"
                                     width="35"
                                     height="35"
@@ -121,7 +121,7 @@ const Sidebar = () => {
                             trigger={(
                                 <div className="hover-container">
                                     <img
-                                        src="/assets/more.png"
+                                        src={`${process.env.PUBLIC_URL || ''}/assets/more.png`}
                                         alt="Settings"
                                         width="35"
                                         height="35"

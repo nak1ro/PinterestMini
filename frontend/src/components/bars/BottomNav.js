@@ -86,7 +86,7 @@ const BottomNav = () => {
                         navigate('/');
                     }}
                 >
-                    <img src="/assets/home.png" alt="Home" className="bottom-nav-icon" />
+                    <img src={`${process.env.PUBLIC_URL || ''}/assets/home.png`} alt="Home" className="bottom-nav-icon" />
                     <span className="bottom-nav-label">Home</span>
                 </a>
 
@@ -98,7 +98,7 @@ const BottomNav = () => {
                         navigate('/explore');
                     }}
                 >
-                    <img src="/assets/compass.png" alt="Explore" className="bottom-nav-icon" />
+                    <img src={`${process.env.PUBLIC_URL || ''}/assets/compass.png`} alt="Explore" className="bottom-nav-icon" />
                     <span className="bottom-nav-label">Explore</span>
                 </a>
 
@@ -111,7 +111,7 @@ const BottomNav = () => {
                             navigate('/create-pin');
                         }}
                     >
-                        <img src="/assets/add.png" alt="Create" className="bottom-nav-icon" />
+                        <img src={`${process.env.PUBLIC_URL || ''}/assets/add.png`} alt="Create" className="bottom-nav-icon" />
                         <span className="bottom-nav-label">Create</span>
                     </a>
                 )}
@@ -125,7 +125,7 @@ const BottomNav = () => {
                             navigate('/profile');
                         }}
                     >
-                        <img src="/assets/avatar-default.svg" alt="Profile" className="bottom-nav-icon" />
+                        <img src={`${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`} alt="Profile" className="bottom-nav-icon" />
                         <span className="bottom-nav-label">Profile</span>
                     </a>
                 )}

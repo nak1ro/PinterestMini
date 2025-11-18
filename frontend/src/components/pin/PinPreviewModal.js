@@ -102,7 +102,7 @@ const CommentList = ({comments, loading, currentUserId, onDeleteComment, onNavig
                 const avatar =
                     (c.user && c.user.profilePictureUrl) ||
                     c.userAvatarUrl ||
-                    '/assets/avatar-default.svg';
+                    `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                 const name = (c.user && c.user.username) || c.username || 'User';
                 const username = (c.user && c.user.username) || c.username;
                 const commentUserId = c.user?.id || c.userId;
@@ -132,7 +132,7 @@ const CommentList = ({comments, loading, currentUserId, onDeleteComment, onNavig
                             whileHover={username ? { scale: 1.05 } : {}}
                             whileTap={username ? { scale: 0.95 } : {}}
                             onError={(e) => {
-                                e.currentTarget.src = '/assets/avatar-default.svg';
+                                e.currentTarget.src = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                             }}
                         />
                         <div className="flex-grow-1">
@@ -233,7 +233,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
         (localPin && localPin.owner && localPin.owner.id === userId);
     const isMobile = useIsMobile(768);
 
-    const avatarUrl = localPin?.owner?.profilePictureUrl || '/assets/avatar-default.svg';
+    const avatarUrl = localPin?.owner?.profilePictureUrl || `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
     const username = localPin?.owner?.username || 'Unknown';
 
     // Check savedPins array first (optimistic check)
@@ -502,7 +502,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                 whileTap={{scale: 0.95}}
                             >
                                 <img
-                                    src={liked ? '/assets/like_full.png' : '/assets/like.png'}
+                                    src={liked ? `${process.env.PUBLIC_URL || ''}/assets/like_full.png` : `${process.env.PUBLIC_URL || ''}/assets/like.png`}
                                     alt={liked ? 'Unlike' : 'Like'}
                                     style={{width: 24, height: 24}}
                                 />
@@ -526,7 +526,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                     whileHover={{scale: 1.05, background: 'rgba(0,0,0,0.05)'}}
                                     whileTap={{scale: 0.95}}
                                 >
-                                    <img src="/assets/message.png" alt="comment" style={{width: 24, height: 24}} />
+                                    <img src={`${process.env.PUBLIC_URL || ''}/assets/message.png`} alt="comment" style={{width: 24, height: 24}} />
                                 </motion.button>
                             )}
 
@@ -544,7 +544,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                 whileTap={{scale: 0.95}}
                                 title="Copy link"
                             >
-                                <img src="/assets/share.png" alt="share" style={{width: 24, height: 24}} />
+                                <img src={`${process.env.PUBLIC_URL || ''}/assets/share.png`} alt="share" style={{width: 24, height: 24}} />
                             </motion.button>
 
                             {isOwner && (
@@ -631,7 +631,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                                             boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)',
                                                         }}
                                                     >
-                                                        <img src="/assets/edit-text.png" alt="Edit" style={{width: 20, height: 20}} />
+                                                        <img src={`${process.env.PUBLIC_URL || ''}/assets/edit-text.png`} alt="Edit" style={{width: 20, height: 20}} />
                                                         <span className="fw-semibold" style={{letterSpacing: '0.01em'}}>Edit pin</span>
                                                     </motion.button>
                                                     <motion.button
@@ -728,7 +728,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                             whileHover={{ opacity: 0.9 }}
                             whileTap={{ scale: 0.98 }}
                             onError={(e) => {
-                                e.currentTarget.src = '/assets/image-fallback.jpg';
+                                e.currentTarget.src = `${process.env.PUBLIC_URL || ''}/assets/image-fallback.jpg`;
                             }}
                         />
                     </div>
@@ -748,7 +748,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                 className="rounded-circle me-3"
                                 style={{width: '48px', height: '48px', objectFit: 'cover'}}
                                 onError={(e) => {
-                                    e.currentTarget.src = '/assets/avatar-default.svg';
+                                    e.currentTarget.src = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                                 }}
                             />
                             <div>
@@ -938,7 +938,7 @@ const PinPreviewModal = ({pin, onClose, onDelete}) => {
                                     }}
                                     onClick={(e) => e.stopPropagation()}
                                     onError={(e) => {
-                                        e.currentTarget.src = '/assets/image-fallback.jpg';
+                                        e.currentTarget.src = `${process.env.PUBLIC_URL || ''}/assets/image-fallback.jpg`;
                                     }}
                                 />
                                 <motion.button

@@ -162,7 +162,7 @@ const Profile = () => {
                             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                         >
                             <img
-                                src={ctrl.user?.profilePictureUrl || '/assets/avatar-default.svg'}
+                                src={ctrl.user?.profilePictureUrl || `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`}
                                 alt={ctrl.user?.username || 'User Avatar'}
                                 className="rounded-circle mb-3"
                                 style={{
@@ -173,7 +173,7 @@ const Profile = () => {
                                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                                 }}
                                 onError={(e) => {
-                                    const fallback = '/assets/avatar-default.svg';
+                                    const fallback = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                                     if (!e.target.src.endsWith(fallback)) e.target.src = fallback;
                                 }}
                             />

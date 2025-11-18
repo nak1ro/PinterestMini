@@ -34,12 +34,12 @@ const UserListModal = ({ show, onClose, title, users = [], loading = false }) =>
                                         }}
                                     >
                                         <img
-                                            src={user.profilePictureUrl || '/assets/avatar-default.svg'}
+                                            src={user.profilePictureUrl || `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`}
                                             alt={user.username}
                                             className="rounded-circle flex-shrink-0"
                                             style={{ width: 40, height: 40, objectFit: 'cover' }}
                                             onError={(e) => {
-                                                const fallback = '/assets/avatar-default.svg';
+                                                const fallback = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                                                 if (!e.target.src.endsWith(fallback)) e.target.src = fallback;
                                             }}
                                         />

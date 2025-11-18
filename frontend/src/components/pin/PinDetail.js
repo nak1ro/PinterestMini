@@ -186,7 +186,7 @@ const PinDetail = () => {
   }
 
   const imageUrl = pin.imageUrl || pin.image || '';
-  const avatarUrl = pin.owner?.profilePictureUrl || '/assets/avatar-default.svg';
+  const avatarUrl = pin.owner?.profilePictureUrl || `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
   const username = pin.owner?.username || 'Unknown';
   const tags = Array.isArray(pin.tags) ? pin.tags : [];
 
@@ -205,7 +205,7 @@ const PinDetail = () => {
             className="w-100 h-100 object-fit-cover"
             style={{ maxHeight: '600px', objectFit: 'contain' }}
             onError={(e) => {
-              e.currentTarget.src = '/assets/avatar-default.svg';
+              e.currentTarget.src = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
             }}
           />
         </div>
@@ -235,7 +235,7 @@ const PinDetail = () => {
                 className="rounded-circle me-3"
                 style={{ width: '48px', height: '48px', objectFit: 'cover' }}
                 onError={(e) => {
-                  e.currentTarget.src = '/assets/avatar-default.svg';
+                  e.currentTarget.src = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                 }}
               />
               <div>
