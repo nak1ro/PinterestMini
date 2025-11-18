@@ -83,16 +83,15 @@ builder.Services.AddAuthentication(options =>
     });
 
 
+var allowedOrigins = builder.Configuration["CORS:AllowedOrigins"]?
+                         .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                     ?? [];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:3000",
-                "http://192.168.0.21:3000",
-                "https://happy-mud-0be13ca03.3.azurestaticapps.net"
-                // add your deployed frontend origin(s) here later
-            )
+        policy.WithOrigins(allowedOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
