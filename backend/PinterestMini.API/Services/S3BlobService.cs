@@ -31,7 +31,6 @@ public class S3BlobService : IBlobService
             Key = fileName, 
             InputStream = fileStream,
             ContentType = contentType,
-            CannedACL = S3CannedACL.PublicRead
         };
 
         await _s3Client.PutObjectAsync(putRequest);
