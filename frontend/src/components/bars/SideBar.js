@@ -65,7 +65,11 @@ const Sidebar = () => {
             >
                 <div className="d-grid gap-5">
 
-                    <a href="/" className="text-white fs-3 text-decoration-none">
+                    <div 
+                        className="text-white fs-3 text-decoration-none"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => navigate('/')}
+                    >
                         <div className="hover-container">
                             <img
                                 src={`${process.env.PUBLIC_URL || ''}/assets/Pinterest-logo.png`}
@@ -74,9 +78,13 @@ const Sidebar = () => {
                                 alt="Pinterest"
                             />
                         </div>
-                    </a>
+                    </div>
 
-                    <a href="/" className="nav-link text-white">
+                    <div 
+                        className="nav-link text-white"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => navigate('/')}
+                    >
                         <div className="hover-container">
                             <img
                                 src={`${process.env.PUBLIC_URL || ''}/assets/home.png`}
@@ -86,9 +94,13 @@ const Sidebar = () => {
                                 className="rounded-3"
                             />
                         </div>
-                    </a>
+                    </div>
 
-                    <a href="/explore" className="nav-link text-white">
+                    <div 
+                        className="nav-link text-white"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => navigate('/explore')}
+                    >
                         <div className="hover-container">
                             <img
                                 src={`${process.env.PUBLIC_URL || ''}/assets/compass.png`}
@@ -98,10 +110,14 @@ const Sidebar = () => {
                                 className="rounded-3"
                             />
                         </div>
-                    </a>
+                    </div>
 
                     {isAuthenticated && (
-                        <a href="/create-pin" className="nav-link text-white">
+                        <div 
+                            className="nav-link text-white"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => navigate('/create-pin')}
+                        >
                             <div className="hover-container">
                                 <img
                                     src={`${process.env.PUBLIC_URL || ''}/assets/add.png`}
@@ -111,7 +127,7 @@ const Sidebar = () => {
                                     className="rounded-3"
                                 />
                             </div>
-                        </a>
+                        </div>
                     )}
                 </div>
 

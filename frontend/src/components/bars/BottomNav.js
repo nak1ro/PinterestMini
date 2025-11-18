@@ -9,7 +9,11 @@ const BottomNav = () => {
     const location = useLocation();
     const isAuthenticated = !!user;
 
-    const isActive = (path) => location.pathname === path;
+    const isActive = (path) => {
+        // Remove basename from pathname for comparison
+        const pathnameWithoutBasename = location.pathname.replace(/^\/PinterestMini/, '') || '/';
+        return pathnameWithoutBasename === path;
+    };
 
     return (
         <>

@@ -31,7 +31,9 @@ const SearchBar = () => {
         searchPins(trimmed, 1, 20);
         
         // Navigate to home page if not already there
-        if (location.pathname !== '/') {
+        // Remove basename from pathname for comparison
+        const pathnameWithoutBasename = location.pathname.replace(/^\/PinterestMini/, '') || '/';
+        if (pathnameWithoutBasename !== '/') {
             navigate('/');
         }
     };
