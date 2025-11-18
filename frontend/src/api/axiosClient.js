@@ -1,15 +1,14 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../utils/apiConstants';
+const API_BASE = process.env.REACT_APP_API_BASE;
 
 const axiosClient = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: API_BASE,
     headers: {
         'Content-Type': 'application/json',
     },
     withCredentials: true,
 });
 
-// Request interceptor to add Authorization header
 axiosClient.interceptors.request.use(
     (config) => {
         if (config.skipAuth) return config;
