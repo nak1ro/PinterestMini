@@ -9,7 +9,6 @@ using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
-using PinterestMini.API.Domain.Interfaces;
 using PinterestMini.API.Domain.Interfaces.Auth;
 using PinterestMini.API.Domain.Interfaces.Boards;
 using PinterestMini.API.Domain.Interfaces.Comments;
@@ -19,25 +18,29 @@ using PinterestMini.API.Domain.Interfaces.Pins;
 using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Interfaces.Tags;
 using PinterestMini.API.Domain.Models;
-using PinterestMini.API.Extensions;
 using PinterestMini.API.Helpers;
 using PinterestMini.API.Middlewares;
 using PinterestMini.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Kestrel will listen on 0.0.0.0:5005 for external access
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-// Serve static files like images from wwwroot
 builder.WebHost.UseWebRoot("wwwroot");
 
-// Database setup
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Identity setup with basic password rules
+var connectionString =
+    builder.Configuration["DefaultConnection"] ??
+    builder.Configuration.GetConnectionString("DefaultConnection") ??
+    throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
+
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
     {
         options.Password.RequireDigit = true;
@@ -50,8 +53,16 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
     .AddDefaultTokenProviders()
     .AddRoles<IdentityRole<Guid>>();
 
-// JWT authentication
+
 var jwtSection = builder.Configuration.GetSection("JWT");
+
+var jwtIssuer = jwtSection["Issuer"]
+                ?? throw new InvalidOperationException("JWT Issuer not configured (JWT__Issuer).");
+var jwtAudience = jwtSection["Audience"]
+                  ?? throw new InvalidOperationException("JWT Audience not configured (JWT__Audience).");
+var jwtSigningKey = jwtSection["SigningKey"]
+                    ?? throw new InvalidOperationException("JWT SigningKey not configured (JWT__SigningKey).");
+
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -62,23 +73,25 @@ builder.Services.AddAuthentication(options =>
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = jwtSection["Issuer"],
+            ValidIssuer = jwtIssuer,
             ValidateAudience = true,
-            ValidAudience = jwtSection["Audience"],
-
+            ValidAudience = jwtAudience,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["SigningKey"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey)),
             ValidateLifetime = true
         };
     });
 
-// CORS for local React app (for friends too)
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "192.168.0.21:3000",
+        policy.WithOrigins(
+                "http://localhost:3000",
+                "http://192.168.0.21:3000",
                 "https://happy-mud-0be13ca03.3.azurestaticapps.net"
+                // add your deployed frontend origin(s) here later
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -86,7 +99,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Dependency injection setup
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPinRepository, PinRepository>();
@@ -102,16 +115,18 @@ builder.Services.AddScoped<IFollowService, FollowService>();
 builder.Services.AddScoped<IFollowRepository, FollowRepository>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IBlobService, BlobService>();
+
+builder.Services.AddSingleton<IBlobService, S3BlobService>();
+
 builder.Services.AddScoped<ImageUploader>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// FluentValidation
+
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 
-// Controller and middleware registration
+
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
@@ -124,7 +139,6 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 
-    // Add JWT bearer auth to Swagger
     var jwtSecurityScheme = new OpenApiSecurityScheme
     {
         Scheme = "bearer",
@@ -132,7 +146,6 @@ builder.Services.AddSwaggerGen(c =>
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
-        Description = "Put **ONLY** your JWT token here (no 'Bearer ' prefix)",
         Reference = new OpenApiReference
         {
             Id = "Bearer",
@@ -149,7 +162,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Middleware order matters
+
 app.UseStaticFiles();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
@@ -161,12 +174,12 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "PinterestMini API v1");
-    c.RoutePrefix = "swagger"; // UI at /swagger
+    c.RoutePrefix = "swagger";
 });
 
 app.MapControllers();
 
-// Ensure DB is created and roles are seeded
+
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
@@ -183,25 +196,25 @@ using (var scope = app.Services.CreateScope())
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
         SELECT 
-            SUSER_SNAME()       AS login_name,
-            USER_NAME()         AS db_user_name,
-            DB_NAME()           AS db_name,
-            HAS_PERMS_BY_NAME(DB_NAME(), 'DATABASE', 'CREATE TABLE') AS can_create_table";
+            current_user        AS login_name,
+            current_user        AS db_user_name,
+            current_database()  AS db_name,
+            has_database_privilege(current_user, current_database(), 'CREATE') AS can_create_table";
 
         using var r = await cmd.ExecuteReaderAsync();
         if (await r.ReadAsync())
         {
-            logger.LogInformation("SQL identity check → login_name={login} db_user_name={user} db={db} can_create_table={perm}",
+            logger.LogInformation(
+                "PostgreSQL identity check → login_name={login} db_user_name={user} db={db} can_create_table={perm}",
                 r["login_name"], r["db_user_name"], r["db_name"], r["can_create_table"]);
         }
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Failed probing SQL identity/permissions");
+        logger.LogError(ex, "Failed probing PostgreSQL identity/permissions");
     }
 
     context.Database.Migrate();
-
     await RoleSeeder.SeedAsync(serviceProvider);
 }
 
