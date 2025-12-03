@@ -1,14 +1,9 @@
-# .github/workflows/pages.yml
 name: Deploy frontend to GitHub Pages
 
 on:
   push:
     branches:
       - main
-    # Optional: only run when frontend or workflow changes
-    # paths:
-    #   - 'frontend/**'
-    #   - '.github/workflows/pages.yml'
 
 permissions:
   contents: read
@@ -19,7 +14,7 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-# All `run:` commands happen in frontend/ by default
+# All `run` commands below happen in frontend/ by default
 defaults:
   run:
     working-directory: ./frontend
@@ -35,22 +30,22 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20          # 18 or 20 is safe for CRA
-          cache: "npm"
+          node-version: 20
+          cache: npm
           cache-dependency-path: ./frontend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci                 # or `npm install` if you prefer
+        run: npm ci
 
       - name: Build
-        run: npm run build          # creates frontend/build
-	env:
+        env:
           CI: false
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # IMPORTANT: path is from repo root, not working-directory
+          # Path is from repo root, not working-directory
           path: ./frontend/build
 
   deploy:
@@ -59,6 +54,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

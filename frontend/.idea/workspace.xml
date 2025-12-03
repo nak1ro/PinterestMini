@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/auth/AuthButtons.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/auth/AuthButtons.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/board/CreateBoard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/board/CreateBoard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/EnhancedImageViewer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/EnhancedImageViewer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/PinTagsControl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/PinTagsControl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pin/CreatePin.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/CreatePin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pin/PinCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pin/PinDetail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinDetail.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/pin/SaveToBoardModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/SaveToBoardModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/profile/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/Profile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/profile/ProfileSettings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/ProfileSettings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/profile/profileTabs/PinsTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/profileTabs/PinsTab.js" afterDir="false" />
-    </list>
+    <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -133,7 +120,7 @@
       <workItem from="1762217560173" duration="961000" />
       <workItem from="1762365427118" duration="4999000" />
       <workItem from="1763431403791" duration="2951000" />
-      <workItem from="1764725278900" duration="11608000" />
+      <workItem from="1764725278900" duration="12016000" />
     </task>
     <servers />
   </component>
