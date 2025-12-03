@@ -8,7 +8,6 @@ import {getPinBoards, setPinBoards} from '../../services/pinService';
 const SaveToBoardModal = ({show, onClose, pinId, onSaved}) => {
     const navigate = useNavigate();
     const [boards, setBoards] = useState([]);
-    const [setCurrentBoardIds] = useState([]);
     const [selectedBoardIds, setSelectedBoardIds] = useState(new Set());
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
@@ -34,7 +33,6 @@ const SaveToBoardModal = ({show, onClose, pinId, onSaved}) => {
                     const boardIds = Array.isArray(boards)
                         ? boards.map(b => typeof b === 'string' || typeof b === 'number' ? b : b.id).filter(Boolean)
                         : [];
-                    setCurrentBoardIds(boardIds);
                     setSelectedBoardIds(new Set(boardIds));
                 })
                 .catch((err) => {
@@ -45,7 +43,7 @@ const SaveToBoardModal = ({show, onClose, pinId, onSaved}) => {
                     setLoading(false);
                 });
         }
-    }, [show, pinId, setCurrentBoardIds]);
+    }, [show, pinId]);
 
     const filteredBoards = useMemo(() => {
         if (!searchQuery.trim()) return boards;
