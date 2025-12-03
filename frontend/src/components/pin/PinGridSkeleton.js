@@ -1,20 +1,24 @@
+import React, { useMemo } from 'react';
 import Masonry from 'masonry-layout';
-import imagesLoaded from 'imagesloaded';
 import { useEffect, useRef } from 'react';
-import PinCard from './PinCard';
+import PinSkeleton from './PinSkeleton';
 import useGridColumnWidth from '../../hooks/useGridColumnWidth';
 
-const PinGrid = ({ pins, boardId, onRemoveFromBoard, onDelete }) => {
+const PinGridSkeleton = () => {
     const { containerRef, columnWidth } = useGridColumnWidth();
     const gridRef = useRef();
     const masonryInstance = useRef(null);
+
+    // Generate a fixed number of skeletons
+    const skeletons = useMemo(() => Array.from({ length: 12 }, (_, i) => i), []);
 
     useEffect(() => {
         const grid = gridRef.current;
         if (!grid) return;
 
-        // Initialize or update Masonry
-        const initMasonry = () => {
+        // Initialize Masonry
+        // We need a slight delay to ensure the DOM elements are rendered with correct widths
+        const timeoutId = setTimeout(() => {
             if (masonryInstance.current) {
                 masonryInstance.current.destroy();
             }
@@ -22,33 +26,18 @@ const PinGrid = ({ pins, boardId, onRemoveFromBoard, onDelete }) => {
             masonryInstance.current = new Masonry(grid, {
                 itemSelector: '.masonry-item',
                 gutter: 15,
-                fitWidth: false, // We're handling width via container
-                transitionDuration: '0.2s',
+                fitWidth: false,
+                transitionDuration: 0, // No transition for skeletons
             });
-        };
-
-        const imgLoad = imagesLoaded(grid);
-        imgLoad.on('progress', () => {
-            if (masonryInstance.current) {
-                masonryInstance.current.layout();
-            }
-        });
-
-        imgLoad.on('always', () => {
-            initMasonry();
-        });
-
-        // Also run immediately in case images are cached
-        initMasonry();
+        }, 50);
 
         return () => {
-            imgLoad.off('progress');
-            imgLoad.off('always');
+            clearTimeout(timeoutId);
             if (masonryInstance.current) {
                 masonryInstance.current.destroy();
             }
         };
-    }, [pins, columnWidth]);
+    }, [columnWidth]); // Re-run when column width changes
 
     return (
         <div ref={containerRef} style={{ width: '100%' }}>
@@ -68,18 +57,13 @@ const PinGrid = ({ pins, boardId, onRemoveFromBoard, onDelete }) => {
                 ref={gridRef}
                 className="masonry-grid"
             >
-                {(pins || []).map(pin => (
+                {skeletons.map(id => (
                     <div
-                        key={pin.id}
+                        key={id}
                         className="masonry-item"
                         style={{ width: `${columnWidth}px` }}
                     >
-                        <PinCard
-                            pin={pin}
-                            boardId={boardId}
-                            onRemoveFromBoard={onRemoveFromBoard}
-                            onDelete={onDelete}
-                        />
+                        <PinSkeleton />
                     </div>
                 ))}
             </div>
@@ -87,4 +71,4 @@ const PinGrid = ({ pins, boardId, onRemoveFromBoard, onDelete }) => {
     );
 };
 
-export default PinGrid;
+export default PinGridSkeleton;

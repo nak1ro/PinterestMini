@@ -1,6 +1,7 @@
 // pages/Home.jsx
 import React from 'react';
 import PinGrid from '../pin/PinGrid';
+import PinGridSkeleton from '../pin/PinGridSkeleton';
 import { motion } from 'framer-motion';
 import { useAppSelector } from '../../hooks/redux';
 import { selectSearchResults, selectHasSearched } from '../../store/slices/searchSlice';
@@ -11,7 +12,7 @@ const Home = () => {
     const hasSearched = useAppSelector(selectHasSearched);
     const { pins: basePins, loading: baseLoading } = usePins();
 
-    if (baseLoading) return <p className="text-center mt-5">Loading pins...</p>;
+    if (baseLoading) return <PinGridSkeleton />;
 
     const pinsToShow = hasSearched ? searchResults : basePins;
 

@@ -1,12 +1,13 @@
-import React, {useMemo, useState} from 'react';
-import {Spinner, Button} from 'react-bootstrap';
-import {useNavigate} from 'react-router-dom';
-import {Plus, SortDownAlt} from 'react-bootstrap-icons';
-import {motion} from 'framer-motion';
+import React, { useMemo, useState } from 'react';
+import { Spinner, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { Plus, SortDownAlt } from 'react-bootstrap-icons';
+import { motion } from 'framer-motion';
 import PinGrid from '../../pin/PinGrid';
-import BeautifulDropdown, {BeautifulDropdownItem} from '../../common/BeautifulDropdown';
+import PinGridSkeleton from '../../pin/PinGridSkeleton';
+import BeautifulDropdown, { BeautifulDropdownItem } from '../../common/BeautifulDropdown';
 
-const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins, onDelete}) => {
+const PinsTab = ({ pins, loading, onlyMyPins, setOnlyMyPins, onDelete }) => {
     const navigate = useNavigate();
 
     const [sortKey, setSortKey] = useState('recent');
@@ -49,7 +50,7 @@ const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins, onDelete}) => {
                             ? '0 6px 20px rgba(230, 0, 35, 0.3)'
                             : '0 3px 10px rgba(10, 10, 10, 0.25)',
                     }}
-                    whileTap={{scale: 0.97, y: 0}}
+                    whileTap={{ scale: 0.97, y: 0 }}
                     onClick={() => setOnlyMyPins(!onlyMyPins)}
                 >
                     Created by you
@@ -60,7 +61,7 @@ const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins, onDelete}) => {
                     <BeautifulDropdown
                         align="end"
                         variant="standard"
-                        trigger={<><SortDownAlt className="me-2"/> Sort</>}
+                        trigger={<><SortDownAlt className="me-2" /> Sort</>}
                         onSelect={(val) => {
                             if (!val) return;
                             setSortKey(val);
@@ -91,7 +92,7 @@ const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins, onDelete}) => {
                             e.currentTarget.style.boxShadow = 'none';
                         }}
                     >
-                        <Plus className="me-2 fw-bold" size={23}/>
+                        <Plus className="me-2 fw-bold" size={23} />
                         Create Pin
                     </Button>
                 </div>
@@ -99,13 +100,12 @@ const PinsTab = ({pins, loading, onlyMyPins, setOnlyMyPins, onDelete}) => {
 
             {/* Content */}
             {loading ? (
-                <div className="text-center py-5">
-                    <Spinner animation="border" variant="primary"/>
-                    <p className="text-muted mt-3">Loading pins...</p>
+                <div style={{ marginTop: '1rem' }}>
+                    <PinGridSkeleton />
                 </div>
             ) : sortedPins.length > 0 ? (
-                <div style={{marginTop: '1rem'}}>
-                    <PinGrid pins={sortedPins} onDelete={onDelete}/>
+                <div style={{ marginTop: '1rem' }}>
+                    <PinGrid pins={sortedPins} onDelete={onDelete} />
                 </div>
             ) : (
                 <div className="text-center py-5">
