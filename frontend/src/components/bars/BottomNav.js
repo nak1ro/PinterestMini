@@ -89,6 +89,7 @@ const BottomNav = () => {
                         e.preventDefault();
                         navigate('/');
                     }}
+                    title="Home"
                 >
                     <img src={`${process.env.PUBLIC_URL || ''}/assets/home.png`} alt="Home" className="bottom-nav-icon" />
                     <span className="bottom-nav-label">Home</span>
@@ -101,6 +102,7 @@ const BottomNav = () => {
                         e.preventDefault();
                         navigate('/explore');
                     }}
+                    title="Explore"
                 >
                     <img src={`${process.env.PUBLIC_URL || ''}/assets/compass.png`} alt="Explore" className="bottom-nav-icon" />
                     <span className="bottom-nav-label">Explore</span>
@@ -114,6 +116,7 @@ const BottomNav = () => {
                             e.preventDefault();
                             navigate('/create-pin');
                         }}
+                        title="Create Pin"
                     >
                         <img src={`${process.env.PUBLIC_URL || ''}/assets/add.png`} alt="Create" className="bottom-nav-icon" />
                         <span className="bottom-nav-label">Create</span>
@@ -128,6 +131,7 @@ const BottomNav = () => {
                             e.preventDefault();
                             navigate('/profile');
                         }}
+                        title="Profile"
                     >
                         <img src={`${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`} alt="Profile" className="bottom-nav-icon" />
                         <span className="bottom-nav-label">Profile</span>

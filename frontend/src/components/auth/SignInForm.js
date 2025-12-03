@@ -165,7 +165,8 @@ const SignInForm = ({ onSwitchToSignUp }) => {
                             color: '#fff',
                             height: '56px',
                             fontSize: '16px',
-                            boxShadow: '0 4px 12px rgba(230, 0, 35, 0.3)'
+                            boxShadow: '0 4px 12px rgba(230, 0, 35, 0.3)',
+                            whiteSpace: 'nowrap'
                         }}
                         type="submit"
                         whileHover={{ 
@@ -196,7 +197,8 @@ const SignInForm = ({ onSwitchToSignUp }) => {
                     style={{
                         color: '#e60023',
                         fontSize: '14px',
-                        textDecoration: 'none'
+                        textDecoration: 'none',
+                        whiteSpace: 'nowrap'
                     }}
                     whileHover={{ textDecoration: 'underline' }}
                 >

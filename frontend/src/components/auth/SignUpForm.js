@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppDispatch } from '../../hooks/redux';
 import { login as loginAction } from '../../store/slices/authSlice';
-import {registerUser} from '../../services/authService';
+import { registerUser } from '../../services/authService';
 
 const SignUpForm = () => {
     const dispatch = useAppDispatch();
@@ -115,8 +115,8 @@ const SignUpForm = () => {
                             backgroundColor: focusedField === 'username' ? '#fff' : '#efefef',
                             fontSize: '16px',
                             height: '56px',
-                            boxShadow: focusedField === 'username' 
-                                ? '0 0 0 3px rgba(230, 0, 35, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)' 
+                            boxShadow: focusedField === 'username'
+                                ? '0 0 0 3px rgba(230, 0, 35, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)'
                                 : 'none',
                             border: focusedField === 'username' ? '2px solid #e60023' : '2px solid transparent',
                             transition: 'all 0.2s ease'
@@ -151,8 +151,8 @@ const SignUpForm = () => {
                             backgroundColor: focusedField === 'email' ? '#fff' : '#efefef',
                             fontSize: '16px',
                             height: '56px',
-                            boxShadow: focusedField === 'email' 
-                                ? '0 0 0 3px rgba(230, 0, 35, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)' 
+                            boxShadow: focusedField === 'email'
+                                ? '0 0 0 3px rgba(230, 0, 35, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)'
                                 : 'none',
                             border: focusedField === 'email' ? '2px solid #e60023' : '2px solid transparent',
                             transition: 'all 0.2s ease'
@@ -187,8 +187,8 @@ const SignUpForm = () => {
                             backgroundColor: focusedField === 'password' ? '#fff' : '#efefef',
                             fontSize: '16px',
                             height: '56px',
-                            boxShadow: focusedField === 'password' 
-                                ? '0 0 0 3px rgba(230, 0, 35, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)' 
+                            boxShadow: focusedField === 'password'
+                                ? '0 0 0 3px rgba(230, 0, 35, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)'
                                 : 'none',
                             border: focusedField === 'password' ? '2px solid #e60023' : '2px solid transparent',
                             transition: 'all 0.2s ease'
@@ -280,7 +280,8 @@ const SignUpForm = () => {
                             boxShadow: allRequirementsMet && form.password
                                 ? '0 4px 12px rgba(230, 0, 35, 0.3)'
                                 : 'none',
-                            cursor: allRequirementsMet && form.password ? 'pointer' : 'not-allowed'
+                            cursor: allRequirementsMet && form.password ? 'pointer' : 'not-allowed',
+                            whiteSpace: 'nowrap'
                         }}
                         type="submit"
                         disabled={!allRequirementsMet || !form.password}

@@ -55,42 +55,85 @@ const ProfileDropdown = () => {
         <>
             <style>{`
                 .profile-dropdown-container {
-                    margin-left: 1rem;
+                    margin-left: 0;
                 }
 
                 .profile-avatar {
-                    width: 40px;
-                    height: 40px;
+                    width: 44px;
+                    height: 44px;
                 }
 
                 .profile-dropdown-menu {
-                    min-width: 220px;
+                    min-width: 240px;
+                }
+
+                .profile-menu-item {
+                    min-height: 44px;
+                    padding: 0.75rem 1rem;
                 }
 
                 @media (max-width: 768px) {
-                    .profile-dropdown-container {
-                        margin-left: 0.5rem;
-                    }
-
                     .profile-avatar {
-                        width: 36px;
-                        height: 36px;
+                        width: 42px;
+                        height: 42px;
                     }
 
                     .profile-dropdown-menu {
-                        min-width: 200px;
+                        min-width: 220px;
                         right: 0;
+                    }
+
+                    .profile-menu-item {
+                        min-height: 44px;
+                        padding: 0.75rem 1rem;
                     }
                 }
 
                 @media (max-width: 480px) {
                     .profile-avatar {
-                        width: 32px;
-                        height: 32px;
+                        width: 40px;
+                        height: 40px;
+                    }
+
+                    .profile-dropdown-menu {
+                        min-width: 200px;
+                        right: 0 !important;
+                        left: auto !important;
+                    }
+
+                    .profile-menu-item {
+                        min-height: 48px;
+                        padding: 0.875rem 1rem;
+                        font-size: 0.9rem !important;
+                    }
+
+                    .profile-user-info {
+                        padding: 0.75rem 1rem !important;
+                    }
+
+                    .profile-user-avatar-header {
+                        width: 40px !important;
+                        height: 40px !important;
+                    }
+                }
+
+                @media (max-width: 320px) {
+                    .profile-avatar {
+                        width: 38px;
+                        height: 38px;
                     }
 
                     .profile-dropdown-menu {
                         min-width: 180px;
+                    }
+
+                    .profile-menu-item {
+                        padding: 0.75rem 0.875rem;
+                        font-size: 0.85rem !important;
+                    }
+
+                    .profile-user-info {
+                        padding: 0.625rem 0.875rem !important;
                     }
                 }
             `}</style>
@@ -121,126 +164,126 @@ const ProfileDropdown = () => {
                     />
                 </motion.button>
 
-            <AnimatePresence>
-                {isOpen && (
-                    <>
-                        {/* Backdrop */}
-                        <motion.div
-                            className="position-fixed top-0 start-0 w-100 h-100"
-                            style={{ zIndex: 1000 }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsOpen(false)}
-                        />
+                <AnimatePresence>
+                    {isOpen && (
+                        <>
+                            {/* Backdrop */}
+                            <motion.div
+                                className="position-fixed top-0 start-0 w-100 h-100"
+                                style={{ zIndex: 1000 }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setIsOpen(false)}
+                            />
 
-                        {/* Dropdown Menu */}
-                        <motion.div
-                            className="profile-dropdown-menu position-absolute end-0"
-                            style={{
-                                zIndex: 1001,
-                                marginTop: '8px'
-                            }}
-                            initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                            transition={{ duration: 0.2, ease: 'easeOut' }}
-                        >
-                            <div
-                                className="bg-white rounded-3"
+                            {/* Dropdown Menu */}
+                            <motion.div
+                                className="profile-dropdown-menu position-absolute end-0"
                                 style={{
-                                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-                                    border: '1px solid rgba(0, 0, 0, 0.08)',
-                                    overflow: 'hidden'
+                                    zIndex: 1001,
+                                    marginTop: '8px'
                                 }}
+                                initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                                transition={{ duration: 0.2, ease: 'easeOut' }}
                             >
-                                {/* User Info Header */}
-                                {user && (
-                                    <div className="px-4 py-3 border-bottom" style={{ backgroundColor: '#fafafa' }}>
-                                        <div className="d-flex align-items-center">
-                                            <img
-                                                src={avatarUrl}
-                                                alt={user.username}
-                                                className="rounded-circle me-3"
-                                                style={{
-                                                    width: '48px',
-                                                    height: '48px',
-                                                    objectFit: 'cover',
-                                                    border: '2px solid #fff',
-                                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                                                }}
-                                            />
-                                            <div className="flex-grow-1 min-w-0">
-                                                <div className="fw-bold text-truncate" style={{ color: '#111', fontSize: '0.95rem' }}>
-                                                    {user.username}
-                                                </div>
-                                                {user.email && (
-                                                    <div className="text-muted text-truncate small" style={{ fontSize: '0.8rem' }}>
-                                                        {user.email}
+                                <div
+                                    className="bg-white rounded-3"
+                                    style={{
+                                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                                        border: '1px solid rgba(0, 0, 0, 0.08)',
+                                        overflow: 'hidden'
+                                    }}
+                                >
+                                    {/* User Info Header */}
+                                    {user && (
+                                        <div className="profile-user-info px-4 py-3 border-bottom" style={{ backgroundColor: '#fafafa' }}>
+                                            <div className="d-flex align-items-center">
+                                                <img
+                                                    src={avatarUrl}
+                                                    alt={user.username}
+                                                    className="profile-user-avatar-header rounded-circle me-3"
+                                                    style={{
+                                                        width: '48px',
+                                                        height: '48px',
+                                                        objectFit: 'cover',
+                                                        border: '2px solid #fff',
+                                                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                                                    }}
+                                                />
+                                                <div className="flex-grow-1 min-w-0">
+                                                    <div className="fw-bold text-truncate" style={{ color: '#111', fontSize: '0.95rem' }}>
+                                                        {user.username}
                                                     </div>
-                                                )}
+                                                    {user.email && (
+                                                        <div className="text-muted text-truncate small" style={{ fontSize: '0.8rem' }}>
+                                                            {user.email}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
+                                    )}
+
+                                    {/* Menu Items */}
+                                    <div className="py-2">
+                                        <motion.button
+                                            className="profile-menu-item w-100 btn text-start border-0 bg-transparent d-flex align-items-center"
+                                            onClick={handleProfileClick}
+                                            style={{
+                                                color: '#111',
+                                                fontSize: '0.95rem',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            whileHover={{ backgroundColor: '#f1f1f1', x: 4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            transition={{ duration: 0.15, ease: 'easeOut' }}
+                                        >
+                                            <Person className="me-3" size={20} style={{ color: '#666' }} />
+                                            <span className="fw-medium">My Profile</span>
+                                        </motion.button>
+
+                                        <motion.button
+                                            className="profile-menu-item w-100 btn text-start border-0 bg-transparent d-flex align-items-center"
+                                            onClick={handleSettingsClick}
+                                            style={{
+                                                color: '#111',
+                                                fontSize: '0.95rem',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            whileHover={{ backgroundColor: '#f1f1f1', x: 4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            transition={{ duration: 0.15, ease: 'easeOut' }}
+                                        >
+                                            <Gear className="me-3" size={20} style={{ color: '#666' }} />
+                                            <span className="fw-medium">Settings</span>
+                                        </motion.button>
+
+                                        <hr className="my-2" style={{ borderColor: '#e0e0e0', margin: '4px 0' }} />
+
+                                        <motion.button
+                                            className="profile-menu-item w-100 btn text-start border-0 bg-transparent d-flex align-items-center"
+                                            onClick={handleLogout}
+                                            style={{
+                                                color: '#e60023',
+                                                fontSize: '0.95rem',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            whileHover={{ backgroundColor: '#fee', x: 4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            transition={{ duration: 0.15, ease: 'easeOut' }}
+                                        >
+                                            <BoxArrowRight className="me-3" size={20} />
+                                            <span className="fw-medium">Log out</span>
+                                        </motion.button>
                                     </div>
-                                )}
-
-                                {/* Menu Items */}
-                                <div className="py-2">
-                                    <motion.button
-                                        className="w-100 btn text-start border-0 bg-transparent d-flex align-items-center px-4 py-3"
-                                        onClick={handleProfileClick}
-                                        style={{
-                                            color: '#111',
-                                            fontSize: '0.95rem',
-                                            transition: 'all 0.2s ease'
-                                        }}
-                                        whileHover={{ backgroundColor: '#f1f1f1', x: 4 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        transition={{ duration: 0.15, ease: 'easeOut' }}
-                                    >
-                                        <Person className="me-3" size={20} style={{ color: '#666' }} />
-                                        <span className="fw-medium">My Profile</span>
-                                    </motion.button>
-
-                                    <motion.button
-                                        className="w-100 btn text-start border-0 bg-transparent d-flex align-items-center px-4 py-3"
-                                        onClick={handleSettingsClick}
-                                        style={{
-                                            color: '#111',
-                                            fontSize: '0.95rem',
-                                            transition: 'all 0.2s ease'
-                                        }}
-                                        whileHover={{ backgroundColor: '#f1f1f1', x: 4 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        transition={{ duration: 0.15, ease: 'easeOut' }}
-                                    >
-                                        <Gear className="me-3" size={20} style={{ color: '#666' }} />
-                                        <span className="fw-medium">Settings</span>
-                                    </motion.button>
-
-                                    <hr className="my-2" style={{ borderColor: '#e0e0e0', margin: '4px 0' }} />
-
-                                    <motion.button
-                                        className="w-100 btn text-start border-0 bg-transparent d-flex align-items-center px-4 py-3"
-                                        onClick={handleLogout}
-                                        style={{
-                                            color: '#e60023',
-                                            fontSize: '0.95rem',
-                                            transition: 'all 0.2s ease'
-                                        }}
-                                        whileHover={{ backgroundColor: '#fee', x: 4 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        transition={{ duration: 0.15, ease: 'easeOut' }}
-                                    >
-                                        <BoxArrowRight className="me-3" size={20} />
-                                        <span className="fw-medium">Log out</span>
-                                    </motion.button>
                                 </div>
-                            </div>
-                        </motion.div>
-                    </>
-                )}
-            </AnimatePresence>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
             </div>
         </>
     );

@@ -1,17 +1,27 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useSearchPins from '../../hooks/useSearchPins';
 import { useAppSelector } from '../../hooks/redux';
 import { selectUser } from '../../store/slices/authSlice';
-import BeautifulDropdown, {BeautifulDropdownItem} from '../common/BeautifulDropdown';
+import BeautifulDropdown, { BeautifulDropdownItem } from '../common/BeautifulDropdown';
 
 const SearchBar = () => {
     const user = useAppSelector(selectUser);
     const isAuthenticated = !!user;
     const [searchTerm, setSearchTerm] = useState('');
     const [searchScope, setSearchScope] = useState('all');
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
     const navigate = useNavigate();
     const location = useLocation();
+
+    // Detect mobile viewport changes
+    React.useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 480);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const {
         searchPins,
@@ -29,7 +39,7 @@ const SearchBar = () => {
         if (!trimmed) return;
 
         searchPins(trimmed, 1, 20);
-        
+
         // Navigate to home page if not already there
         // Remove basename from pathname for comparison
         const pathnameWithoutBasename = location.pathname.replace(/^\/PinterestMini/, '') || '/';
@@ -43,7 +53,7 @@ const SearchBar = () => {
             <style>{`
                 .search-bar-form {
                     flex-grow: 1;
-                    margin: 0 1rem 0 0;
+                    margin: 0;
                 }
 
                 .search-bar-container {
@@ -56,18 +66,46 @@ const SearchBar = () => {
                     width: 160px;
                 }
 
-                @media (max-width: 768px) {
-                    .search-bar-form {
-                        margin: 0 0.5rem 0 0;
-                    }
+                .search-input {
+                    font-size: 16px;
+                    padding-left: 1rem;
+                }
 
+                .search-submit-btn {
+                    min-width: 48px;
+                    min-height: 48px;
+                    width: 48px;
+                }
+
+                @media (max-width: 768px) {
                     .search-bar-container {
-                        height: 42px;
+                        height: 44px;
                     }
 
                     .search-scope-dropdown {
-                        width: 100px !important;
-                        font-size: 12px !important;
+                        width: 110px !important;
+                        font-size: 13px !important;
+                    }
+
+                    .search-input {
+                        font-size: 15px !important;
+                        padding-left: 0.875rem !important;
+                    }
+
+                    .search-submit-btn {
+                        min-width: 44px !important;
+                        min-height: 44px !important;
+                        width: 44px !important;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .search-bar-container {
+                        height: 44px;
+                    }
+
+                    .search-scope-dropdown {
+                        display: none !important;
                     }
 
                     .search-input {
@@ -76,13 +114,19 @@ const SearchBar = () => {
                     }
 
                     .search-submit-btn {
-                        width: 40px !important;
+                        min-width: 44px !important;
+                        min-height: 44px !important;
                     }
                 }
 
-                @media (max-width: 480px) {
-                    .search-scope-dropdown {
-                        display: none !important;
+                @media (max-width: 320px) {
+                    .search-bar-container {
+                        height: 42px;
+                    }
+
+                    .search-input {
+                        font-size: 13px !important;
+                        padding-left: 0.625rem !important;
                     }
                 }
             `}</style>
@@ -92,16 +136,14 @@ const SearchBar = () => {
                     <input
                         type="text"
                         className="search-input form-control border-0 rounded-0"
-                        placeholder="Search for ideas..."
+                        placeholder={isMobile ? "Search..." : "Search for ideas..."}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         aria-label="Search pins"
                         style={{
                             backgroundColor: 'transparent',
                             color: '#333',
-                            fontSize: '16px',
-                            boxShadow: 'none',
-                            paddingLeft: '1rem'
+                            boxShadow: 'none'
                         }}
                     />
 
@@ -121,7 +163,7 @@ const SearchBar = () => {
                                 textAlign: 'left',
                                 height: '35px',
                             }}
-                            style={{position: 'relative', zIndex: 1}}
+                            style={{ position: 'relative', zIndex: 1 }}
                         >
                             <BeautifulDropdownItem eventKey="all" active={searchScope === 'all'}>
                                 All Pins
@@ -133,11 +175,12 @@ const SearchBar = () => {
                     )}
 
                     <button type="submit" className="search-submit-btn btn d-flex align-items-center justify-content-center border-0"
-                            style={{width: '48px', backgroundColor: 'transparent', padding: 0}}>
+                        style={{ backgroundColor: 'transparent', padding: 0 }}
+                        aria-label="Search">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                             strokeLinecap="round" strokeLinejoin="round" style={{color: '#888'}}>
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="m21 21-4.35-4.35"/>
+                            strokeLinecap="round" strokeLinejoin="round" style={{ color: '#888' }}>
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
                         </svg>
                     </button>
                 </div>

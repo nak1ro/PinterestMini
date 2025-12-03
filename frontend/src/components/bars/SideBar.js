@@ -1,9 +1,9 @@
 import React from 'react';
-import {useNavigate} from 'react-router-dom';
-import {useAppSelector, useAppDispatch} from '../../hooks/redux';
-import {selectUser} from '../../store/slices/authSlice';
-import {logout as logoutAction} from '../../store/slices/authSlice';
-import BeautifulDropdown, {BeautifulDropdownItem} from '../common/BeautifulDropdown';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector, useAppDispatch } from '../../hooks/redux';
+import { selectUser } from '../../store/slices/authSlice';
+import { logout as logoutAction } from '../../store/slices/authSlice';
+import BeautifulDropdown, { BeautifulDropdownItem } from '../common/BeautifulDropdown';
 
 const Sidebar = () => {
     const user = useAppSelector(selectUser);
@@ -67,8 +67,9 @@ const Sidebar = () => {
 
                     <div
                         className="text-white fs-3 text-decoration-none"
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => navigate('/')}
+                        title="Pinterest Home"
                     >
                         <div className="hover-container">
                             <img
@@ -82,8 +83,9 @@ const Sidebar = () => {
 
                     <div
                         className="nav-link text-white"
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => navigate('/')}
+                        title="Home"
                     >
                         <div className="hover-container">
                             <img
@@ -98,8 +100,9 @@ const Sidebar = () => {
 
                     <div
                         className="nav-link text-white"
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => navigate('/explore')}
+                        title="Explore"
                     >
                         <div className="hover-container">
                             <img
@@ -115,8 +118,9 @@ const Sidebar = () => {
                     {isAuthenticated && (
                         <div
                             className="nav-link text-white"
-                            style={{cursor: 'pointer'}}
+                            style={{ cursor: 'pointer' }}
                             onClick={() => navigate('/create-pin')}
+                            title="Create Pin"
                         >
                             <div className="hover-container">
                                 <img
@@ -135,7 +139,7 @@ const Sidebar = () => {
                     <div className="mt-auto position-relative">
                         <BeautifulDropdown
                             trigger={(
-                                <div className="hover-container">
+                                <div className="hover-container" title="More options">
                                     <img
                                         src={`${process.env.PUBLIC_URL || ''}/assets/more.png`}
                                         alt="Settings"
@@ -159,16 +163,16 @@ const Sidebar = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                             }}
-                            style={{position: 'static'}}
+                            style={{ position: 'static' }}
                         >
                             <BeautifulDropdownItem eventKey="profile-settings">
                                 Profile Settings
                             </BeautifulDropdownItem>
-                            <div className="sidebar-dropdown-divider"/>
+                            <div className="sidebar-dropdown-divider" />
                             <BeautifulDropdownItem
                                 eventKey="logout"
                                 className="text-danger"
-                                style={{color: '#d32f2f', fontWeight: 500}}
+                                style={{ color: '#d32f2f', fontWeight: 500 }}
                             >
                                 Log out
                             </BeautifulDropdownItem>

@@ -9,7 +9,6 @@ import { useAppSelector } from '../../hooks/redux';
 import { selectUserId, selectUser } from '../../store/slices/authSlice';
 
 const PinCard = ({ pin, boardId, onRemoveFromBoard, onDelete, savedPinsState }) => {
-    // ✅ Use shared savedPins state from parent
     const { savePin, unsavePin, savedPins, refetch } = savedPinsState;
     useAppSelector(selectUserId);
     const user = useAppSelector(selectUser);
@@ -21,7 +20,7 @@ const PinCard = ({ pin, boardId, onRemoveFromBoard, onDelete, savedPinsState }) 
     const [showSaveToBoardModal, setShowSaveToBoardModal] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [authModalType, setAuthModalType] = useState('signin');
-// ✅ Derive "saved" from shared savedPins list
+
     useEffect(() => {
         if (savedPins && Array.isArray(savedPins)) {
             const isInSavedPins = savedPins.some((p) => p.id === pin.id);
@@ -208,8 +207,8 @@ const PinCard = ({ pin, boardId, onRemoveFromBoard, onDelete, savedPinsState }) 
                                                 }}
                                             />
                                             <span className="small">
-                                                {pin.owner?.username?.length > 8
-                                                    ? `${pin.owner.username.slice(0, 8)}...`
+                                                {pin.owner?.username?.length > 6
+                                                    ? `${pin.owner.username.slice(0, 6)}...`
                                                     : pin.owner?.username || 'Unknown'}
                                             </span>
                                         </Link>
