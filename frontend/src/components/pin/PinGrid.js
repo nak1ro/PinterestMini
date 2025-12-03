@@ -1,19 +1,23 @@
+// components/pins/PinGrid.jsx
 import Masonry from 'masonry-layout';
 import imagesLoaded from 'imagesloaded';
 import { useEffect, useRef } from 'react';
 import PinCard from './PinCard';
 import useGridColumnWidth from '../../hooks/useGridColumnWidth';
+import useSavedPins from '../../hooks/useSavedPins';
 
 const PinGrid = ({ pins, boardId, onRemoveFromBoard, onDelete }) => {
     const { containerRef, columnWidth } = useGridColumnWidth();
     const gridRef = useRef();
     const masonryInstance = useRef(null);
 
+    // ✅ Fetch saved pins ONCE here
+    const savedPinsState = useSavedPins();
+
     useEffect(() => {
         const grid = gridRef.current;
         if (!grid) return;
 
-        // Initialize or update Masonry
         const initMasonry = () => {
             if (masonryInstance.current) {
                 masonryInstance.current.destroy();
@@ -22,7 +26,7 @@ const PinGrid = ({ pins, boardId, onRemoveFromBoard, onDelete }) => {
             masonryInstance.current = new Masonry(grid, {
                 itemSelector: '.masonry-item',
                 gutter: 15,
-                fitWidth: false, // We're handling width via container
+                fitWidth: false,
                 transitionDuration: '0.2s',
             });
         };
@@ -38,7 +42,7 @@ const PinGrid = ({ pins, boardId, onRemoveFromBoard, onDelete }) => {
             initMasonry();
         });
 
-        // Also run immediately in case images are cached
+        // In case images are cached
         initMasonry();
 
         return () => {
@@ -68,7 +72,7 @@ const PinGrid = ({ pins, boardId, onRemoveFromBoard, onDelete }) => {
                 ref={gridRef}
                 className="masonry-grid"
             >
-                {(pins || []).map(pin => (
+                {(pins || []).map((pin) => (
                     <div
                         key={pin.id}
                         className="masonry-item"
@@ -79,6 +83,8 @@ const PinGrid = ({ pins, boardId, onRemoveFromBoard, onDelete }) => {
                             boardId={boardId}
                             onRemoveFromBoard={onRemoveFromBoard}
                             onDelete={onDelete}
+                            // ✅ share hook result with every card
+                            savedPinsState={savedPinsState}
                         />
                     </div>
                 ))}
