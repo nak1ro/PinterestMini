@@ -8,6 +8,8 @@ import useBoards from '../../../hooks/useBoards';
 import BoardCard from '../../board/BoardCard';
 import BoardView from '../../board/BoardView';
 import BeautifulDropdown, { BeautifulDropdownItem } from '../../common/BeautifulDropdown';
+import BoardsSkeleton from '../../board/BoardsSkeleton';
+
 
 const BoardsTab = () => {
     const navigate = useNavigate();
@@ -115,10 +117,7 @@ const BoardsTab = () => {
 
             {/* Loading / Error / Empty / List */}
             {loading ? (
-                <div className="text-center py-5">
-                    <Spinner animation="border" />
-                    <p className="text-muted mt-3 mb-0">Loading boards…</p>
-                </div>
+                <BoardsSkeleton />
             ) : error ? (
                 <div className="py-5">
                     <Alert variant="danger">

@@ -179,6 +179,8 @@ const PinCard = ({ pin, boardId, onRemoveFromBoard, onDelete, savedPinsState }) 
                                             backgroundColor: 'rgba(255,255,255,0.3)',
                                             height: '36px',
                                             minWidth: '80px',
+                                            maxWidth: '150px',
+                                            overflow: 'hidden',
                                         }}
                                         whileHover={{ scale: 1.04 }}
                                         whileTap={{ scale: 0.97 }}
@@ -194,22 +196,19 @@ const PinCard = ({ pin, boardId, onRemoveFromBoard, onDelete, savedPinsState }) 
                                                     `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`
                                                 }
                                                 alt={pin.owner?.username || 'User'}
-                                                className="rounded-circle me-2"
+                                                className="rounded-circle me-2 flex-shrink-0"
                                                 style={{
                                                     width: '26px',
                                                     height: '26px',
                                                     objectFit: 'cover',
                                                 }}
                                                 onError={(e) => {
-                                                    e.target.src = `${
-                                                        process.env.PUBLIC_URL || ''
-                                                    }/assets/avatar-default.svg`;
+                                                    e.target.src = `${process.env.PUBLIC_URL || ''
+                                                        }/assets/avatar-default.svg`;
                                                 }}
                                             />
-                                            <span className="small">
-                                                {pin.owner?.username?.length > 6
-                                                    ? `${pin.owner.username.slice(0, 6)}...`
-                                                    : pin.owner?.username || 'Unknown'}
+                                            <span className="small text-truncate" style={{ minWidth: 0 }}>
+                                                {pin.owner?.username || 'Unknown'}
                                             </span>
                                         </Link>
                                     </motion.div>

@@ -1,14 +1,16 @@
-import React, {useMemo, useState} from 'react';
-import {Button, Alert, Spinner} from 'react-bootstrap';
-import {ArrowLeft, Grid3x3GapFill, SortDownAlt} from 'react-bootstrap-icons';
+import React, { useMemo, useState } from 'react';
+import { Button, Alert, Spinner } from 'react-bootstrap';
+import { ArrowLeft, Grid3x3GapFill, SortDownAlt } from 'react-bootstrap-icons';
 import useBoardPins from '../../hooks/useBoardPins';
 import PinGrid from '../pin/PinGrid';
-import {removePinFromBoard} from '../../services/boardService';
-import BeautifulDropdown, {BeautifulDropdownItem} from '../common/BeautifulDropdown';
+import PinGridSkeleton from '../pin/PinGridSkeleton';
+import { removePinFromBoard } from '../../services/boardService';
+import BeautifulDropdown, { BeautifulDropdownItem } from '../common/BeautifulDropdown';
 
-const BoardView = ({board, onBack}) => {
+
+const BoardView = ({ board, onBack }) => {
     const [sortKey, setSortKey] = useState('recent'); // 'recent' | 'title'
-    const {pins, loading, error, refresh, setPins} = useBoardPins(board?.id);
+    const { pins, loading, error, refresh, setPins } = useBoardPins(board?.id);
 
     const sortedPins = useMemo(() => {
         const arr = [...pins];
@@ -22,7 +24,7 @@ const BoardView = ({board, onBack}) => {
 
     const handleRemoveFromBoard = async (pinId) => {
         if (!board?.id) return;
-        
+
         try {
             await removePinFromBoard(board.id, pinId);
             setPins((prevPins) => prevPins.filter(p => p.id !== pinId));
@@ -37,7 +39,7 @@ const BoardView = ({board, onBack}) => {
     return (
         <div className="container-fluid">
             {/* Title */}
-            <h2 className="fw-bold mb-3" style={{color: '#111'}}>
+            <h2 className="fw-bold mb-3" style={{ color: '#111' }}>
                 {board?.name || 'Board'}
             </h2>
 
@@ -65,7 +67,7 @@ const BoardView = ({board, onBack}) => {
                         }}
                         aria-label="Back to Boards"
                     >
-                        <ArrowLeft size={16} className="me-2"/>
+                        <ArrowLeft size={16} className="me-2" />
                         Back to Boards
                     </Button>
                 </div>
@@ -75,7 +77,7 @@ const BoardView = ({board, onBack}) => {
                     <BeautifulDropdown
                         align="end"
                         variant="standard"
-                        trigger={<><SortDownAlt className="me-2"/> Sort</>}
+                        trigger={<><SortDownAlt className="me-2" /> Sort</>}
                         onSelect={(val) => {
                             if (!val) return;
                             setSortKey(val);
@@ -90,18 +92,15 @@ const BoardView = ({board, onBack}) => {
                     </BeautifulDropdown>
 
                     <span className="text-muted small d-none d-md-inline-flex align-items-center">
-            <Grid3x3GapFill size={16} className="me-1"/>
+                        <Grid3x3GapFill size={16} className="me-1" />
                         {sortedPins.length} pin{sortedPins.length === 1 ? '' : 's'}
-          </span>
+                    </span>
                 </div>
             </div>
 
             {/* States */}
             {loading && (
-                <div className="text-center py-5">
-                    <Spinner animation="border"/>
-                    <p className="text-muted mt-3 mb-0">Loading pins…</p>
-                </div>
+                <PinGridSkeleton />
             )}
 
             {!loading && error && (
@@ -141,7 +140,7 @@ const BoardView = ({board, onBack}) => {
 
             {/* Pins: reuse your Masonry PinGrid */}
             {!loading && !error && sortedPins.length > 0 && (
-                <PinGrid 
+                <PinGrid
                     pins={sortedPins}
                     boardId={board?.id}
                     onRemoveFromBoard={handleRemoveFromBoard}
