@@ -16,6 +16,7 @@ using PinterestMini.API.Domain.Interfaces.PinBoards;
 using PinterestMini.API.Domain.Interfaces.Pins;
 using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Interfaces.Tags;
+using PinterestMini.API.Domain.Interfaces.Users;
 using PinterestMini.API.Domain.Models;
 using PinterestMini.API.Helpers;
 using PinterestMini.API.Middlewares;
@@ -147,6 +148,7 @@ void ConfigureApplicationServices(IServiceCollection services)
     services.AddScoped<IBoardRepository, BoardRepository>();
     services.AddScoped<IBoardService, BoardService>();
     services.AddScoped<ICommentRepository, CommentRepository>();
+    services.AddScoped<IUserRepository, UserRepository>();
     services.AddScoped<ICommentService, CommentService>();
     services.AddScoped<IPinBoardRepository, PinBoardRepository>();
     services.AddScoped<IFollowService, FollowService>();

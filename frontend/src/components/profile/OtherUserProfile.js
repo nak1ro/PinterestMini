@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useParams } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
-import { PersonPlus, PersonCheck } from 'react-bootstrap-icons';
+import React, {useState} from 'react';
+import {motion} from 'framer-motion';
+import {useParams} from 'react-router-dom';
+import {Button} from 'react-bootstrap';
+import {PersonPlus, PersonCheck} from 'react-bootstrap-icons';
 
-import { useAppSelector } from '../../hooks/redux';
-import { selectUser, selectUserId } from '../../store/slices/authSlice';
+import {useAppSelector} from '../../hooks/redux';
+import {selectUser, selectUserId} from '../../store/slices/authSlice';
 import useCreatedPins from '../../hooks/useCreatedPins';
 import useSavedPins from '../../hooks/useSavedPins';
 import useUserProfile from '../../hooks/useUserProfile';
@@ -15,8 +15,8 @@ import useUserFollowing from '../../hooks/useUserFollowing';
 import PinGrid from '../pin/PinGrid';
 import UserListModal from '../common/UserListModal';
 
-const OtherUserProfile = ({ username: propUsername }) => {
-    const { username: routeUsername } = useParams();
+const OtherUserProfile = ({username: propUsername}) => {
+    const {username: routeUsername} = useParams();
     const user = useAppSelector(selectUser);
     const userId = useAppSelector(selectUserId);
     const username = propUsername ?? routeUsername ?? user?.username ?? '';
@@ -24,9 +24,9 @@ const OtherUserProfile = ({ username: propUsername }) => {
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState(null); // 'followers' or 'following'
 
-    const { profile, loading: loadingProfile, error: profileError } = useUserProfile(username);
-    const { createdPins, loading: loadingCreated } = useCreatedPins(username);
-    const { savedPins, loading: loadingSaved } = useSavedPins(username);
+    const {profile, loading: loadingProfile, error: profileError} = useUserProfile(username);
+    const {createdPins, loading: loadingCreated} = useCreatedPins(username);
+    const {savedPins, loading: loadingSaved} = useSavedPins(username);
 
     const {
         isFollowing,
@@ -37,11 +37,11 @@ const OtherUserProfile = ({ username: propUsername }) => {
     } = useFollowUser(profile?.id, userId);
 
     // Load followers/following only when modal is opened
-    const { followers, loading: loadingFollowers } = useUserFollowers(
+    const {followers, loading: loadingFollowers} = useUserFollowers(
         profile?.id,
         showModal && modalType === 'followers'
     );
-    const { following, loading: loadingFollowing } = useUserFollowing(
+    const {following, loading: loadingFollowing} = useUserFollowing(
         profile?.id,
         showModal && modalType === 'following'
     );
@@ -79,10 +79,10 @@ const OtherUserProfile = ({ username: propUsername }) => {
     return (
         <motion.div
             className="container-fluid container-lg py-5 pt-5 px-3 px-lg-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            style={{ color: '#111', minHeight: '100vh' }}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.3}}
+            style={{color: '#111', minHeight: '100vh'}}
         >
             {/* User Info */}
             <div className="d-flex flex-column align-items-center text-center mb-5">
@@ -90,7 +90,7 @@ const OtherUserProfile = ({ username: propUsername }) => {
                     src={avatarSrc}
                     alt={displayName}
                     className="rounded-circle mb-4 border border-3"
-                    style={{ width: '140px', height: '140px', objectFit: 'cover', borderColor: '#ddd' }}
+                    style={{width: '140px', height: '140px', objectFit: 'cover', borderColor: '#ddd'}}
                     onError={(e) => {
                         const fallback = `${process.env.PUBLIC_URL || ''}/assets/avatar-default.svg`;
                         if (!e.target.src.endsWith(fallback)) {
@@ -98,10 +98,10 @@ const OtherUserProfile = ({ username: propUsername }) => {
                         }
                     }}
                 />
-                <h1 className="fw-bold fs-2 mb-2" style={{ color: '#111' }}>
+                <h1 className="fw-bold fs-2 mb-2" style={{color: '#111'}}>
                     {displayName}
                 </h1>
-                <p className="text-center mx-auto mb-4" style={{ maxWidth: '500px', color: '#777' }}>
+                <p className="text-center mx-auto mb-4" style={{maxWidth: '500px', color: '#777'}}>
                     {bio}
                 </p>
 
@@ -122,12 +122,12 @@ const OtherUserProfile = ({ username: propUsername }) => {
                     >
                         {isFollowing ? (
                             <>
-                                <PersonCheck size={20} className="me-2" />
+                                <PersonCheck size={20} className="me-2"/>
                                 Following
                             </>
                         ) : (
                             <>
-                                <PersonPlus size={20} className="me-2" />
+                                <PersonPlus size={20} className="me-2"/>
                                 Follow
                             </>
                         )}
@@ -138,20 +138,20 @@ const OtherUserProfile = ({ username: propUsername }) => {
                 <div className="d-flex gap-3 gap-md-5 flex-wrap justify-content-center">
                     <motion.div
                         className="text-center"
-                        style={{ cursor: profile?.id ? 'pointer' : 'default' }}
+                        style={{cursor: profile?.id ? 'pointer' : 'default'}}
                         onClick={profile?.id ? openFollowersModal : undefined}
-                        whileHover={profile?.id ? { scale: 1.05 } : {}}
-                        whileTap={profile?.id ? { scale: 0.95 } : {}}
+                        whileHover={profile?.id ? {scale: 1.05} : {}}
+                        whileTap={profile?.id ? {scale: 0.95} : {}}
                     >
                         <div className="fw-bold fs-4">{followersCount ?? '-'}</div>
                         <div className="small text-muted">followers</div>
                     </motion.div>
                     <motion.div
                         className="text-center"
-                        style={{ cursor: profile?.id ? 'pointer' : 'default' }}
+                        style={{cursor: profile?.id ? 'pointer' : 'default'}}
                         onClick={profile?.id ? openFollowingModal : undefined}
-                        whileHover={profile?.id ? { scale: 1.05 } : {}}
-                        whileTap={profile?.id ? { scale: 0.95 } : {}}
+                        whileHover={profile?.id ? {scale: 1.05} : {}}
+                        whileTap={profile?.id ? {scale: 0.95} : {}}
                     >
                         <div className="fw-bold fs-4">{followingCount ?? '-'}</div>
                         <div className="small text-muted">following</div>
@@ -164,7 +164,8 @@ const OtherUserProfile = ({ username: propUsername }) => {
             </div>
 
             {/* Tabs */}
-            <div className="d-flex justify-content-center border-bottom mb-4 mb-md-5 flex-wrap" style={{ borderColor: '#ddd' }}>
+            <div className="d-flex justify-content-center border-bottom mb-4 mb-md-5 flex-wrap"
+                 style={{borderColor: '#ddd'}}>
                 <button
                     className={`btn fw-semibold px-3 py-2 px-md-4 py-md-3 border-0 ${activeTab === 'created' ? 'border-bottom border-3' : ''}`}
                     onClick={() => setActiveTab('created')}
@@ -201,7 +202,7 @@ const OtherUserProfile = ({ username: propUsername }) => {
                         <p className="mt-3 text-muted">Loading {activeTab} pins...</p>
                     </div>
                 ) : pinsToShow && pinsToShow.length > 0 ? (
-                    <PinGrid pins={pinsToShow} />
+                    <PinGrid pins={pinsToShow}/>
                 ) : (
                     <div className="text-center py-5">
                         <svg
@@ -213,7 +214,7 @@ const OtherUserProfile = ({ username: propUsername }) => {
                             strokeWidth="1"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            style={{ color: '#999' }}
+                            style={{color: '#999'}}
                         >
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                             <circle cx="8.5" cy="8.5" r="1.5"></circle>

@@ -6,12 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6e440066-e39d-49ae-a042-2e917804509a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/bars/SideBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/bars/SideBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/pin/PinGrid.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/pin/PinGrid.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/profile/OtherUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/OtherUserProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/profile/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/Profile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hooks/useCreatedPins.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/useCreatedPins.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hooks/useSavedPins.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/useSavedPins.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/pinService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/pinService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +124,7 @@
       <workItem from="1762217560173" duration="961000" />
       <workItem from="1762365427118" duration="4999000" />
       <workItem from="1763431403791" duration="2951000" />
-      <workItem from="1764725278900" duration="5793000" />
+      <workItem from="1764725278900" duration="7665000" />
     </task>
     <servers />
   </component>
