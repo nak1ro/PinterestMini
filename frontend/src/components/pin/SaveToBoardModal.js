@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Spinner } from 'react-bootstrap';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { getMyBoards } from '../../services/boardService';
-import { getPinBoards, setPinBoards } from '../../services/pinService';
+import React, {useState, useEffect, useMemo} from 'react';
+import {Spinner} from 'react-bootstrap';
+import {motion, AnimatePresence} from 'framer-motion';
+import {useNavigate} from 'react-router-dom';
+import {getMyBoards} from '../../services/boardService';
+import {getPinBoards, setPinBoards} from '../../services/pinService';
 
-const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
+const SaveToBoardModal = ({show, onClose, pinId, onSaved}) => {
     const navigate = useNavigate();
     const [boards, setBoards] = useState([]);
-    const [currentBoardIds, setCurrentBoardIds] = useState([]);
+    const [setCurrentBoardIds] = useState([]);
     const [selectedBoardIds, setSelectedBoardIds] = useState(new Set());
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
@@ -24,14 +24,14 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
 
             Promise.all([
                 getMyBoards(),
-                getPinBoards(pinId).catch(() => ({ boards: [] }))
+                getPinBoards(pinId).catch(() => ({boards: []}))
             ])
                 .then(([boardsRes, pinBoardsRes]) => {
                     const boardsList = Array.isArray(boardsRes.data) ? boardsRes.data : (Array.isArray(boardsRes) ? boardsRes : []);
                     setBoards(boardsList);
 
                     const boards = pinBoardsRes?.boards || pinBoardsRes?.data?.boards || pinBoardsRes || [];
-                    const boardIds = Array.isArray(boards) 
+                    const boardIds = Array.isArray(boards)
                         ? boards.map(b => typeof b === 'string' || typeof b === 'number' ? b : b.id).filter(Boolean)
                         : [];
                     setCurrentBoardIds(boardIds);
@@ -45,12 +45,12 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                     setLoading(false);
                 });
         }
-    }, [show, pinId]);
+    }, [show, pinId, setCurrentBoardIds]);
 
     const filteredBoards = useMemo(() => {
         if (!searchQuery.trim()) return boards;
         const query = searchQuery.toLowerCase();
-        return boards.filter(board => 
+        return boards.filter(board =>
             board.name?.toLowerCase().includes(query) ||
             board.description?.toLowerCase().includes(query)
         );
@@ -75,7 +75,7 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
         try {
             const boardIdsArray = Array.from(selectedBoardIds);
             await setPinBoards(pinId, boardIdsArray);
-            
+
             if (onSaved) {
                 onSaved(boardIdsArray);
             }
@@ -100,18 +100,18 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
         <>
             <motion.div
                 className="position-fixed top-0 start-0 w-100 h-100"
-                style={{ zIndex: 2000, backgroundColor: 'rgba(0, 0, 0, 0.55)' }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                style={{zIndex: 2000, backgroundColor: 'rgba(0, 0, 0, 0.55)'}}
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                exit={{opacity: 0}}
                 onClick={(e) => {
                     e.stopPropagation();
                     onClose();
                 }}
             />
-            <div 
+            <div
                 className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                style={{ zIndex: 2001, pointerEvents: 'none' }}
+                style={{zIndex: 2001, pointerEvents: 'none'}}
                 onClick={(e) => {
                     e.stopPropagation();
                     onClose();
@@ -127,14 +127,14 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                         pointerEvents: 'auto',
                     }}
                     onClick={(e) => e.stopPropagation()}
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                    initial={{opacity: 0, scale: 0.95, y: 20}}
+                    animate={{opacity: 1, scale: 1, y: 0}}
+                    exit={{opacity: 0, scale: 0.95, y: 20}}
+                    transition={{duration: 0.3, ease: 'easeOut'}}
                 >
                     {/* Header */}
                     <div className="d-flex justify-content-between align-items-center px-4 py-3 border-bottom">
-                        <h4 className="mb-0 fw-bold" style={{ color: '#111', fontSize: '1.5rem' }}>
+                        <h4 className="mb-0 fw-bold" style={{color: '#111', fontSize: '1.5rem'}}>
                             Save to board
                         </h4>
                         <motion.button
@@ -150,8 +150,8 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                             }}
-                            whileHover={{ scale: 1.1, backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
-                            whileTap={{ scale: 0.9 }}
+                            whileHover={{scale: 1.1, backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
+                            whileTap={{scale: 0.9}}
                         >
                             ✕
                         </motion.button>
@@ -161,7 +161,7 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                     <div className="px-4 py-3 flex-grow-1 overflow-hidden d-flex flex-column">
                         {loading ? (
                             <div className="d-flex justify-content-center align-items-center py-5">
-                                <Spinner animation="border" />
+                                <Spinner animation="border"/>
                                 <span className="ms-3 text-muted">Loading boards...</span>
                             </div>
                         ) : error && !loading && boards.length === 0 ? (
@@ -177,9 +177,9 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                         ) : boards.length === 0 ? (
                             <div className="text-center py-5">
                                 <motion.div
-                                    initial={{ scale: 0.8, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    transition={{ duration: 0.3 }}
+                                    initial={{scale: 0.8, opacity: 0}}
+                                    animate={{scale: 1, opacity: 1}}
+                                    transition={{duration: 0.3}}
                                 >
                                     <svg
                                         width="80"
@@ -191,13 +191,13 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         className="text-muted mb-4"
-                                        style={{ opacity: 0.5 }}
+                                        style={{opacity: 0.5}}
                                     >
                                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                         <line x1="3" y1="9" x2="21" y2="9"></line>
                                         <path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6"></path>
                                     </svg>
-                                    <h5 className="fw-bold mb-2" style={{ color: '#111' }}>No boards yet</h5>
+                                    <h5 className="fw-bold mb-2" style={{color: '#111'}}>No boards yet</h5>
                                     <p className="text-muted mb-4">Create a board to organize your pins</p>
                                     <motion.button
                                         className="btn fw-bold px-4 rounded-3"
@@ -210,8 +210,8 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                             minWidth: '150px',
                                             boxShadow: '0 4px 12px rgba(230, 0, 35, 0.3)'
                                         }}
-                                        whileHover={{ scale: 1.02, boxShadow: '0 6px 20px rgba(230, 0, 35, 0.4)' }}
-                                        whileTap={{ scale: 0.98 }}
+                                        whileHover={{scale: 1.02, boxShadow: '0 6px 20px rgba(230, 0, 35, 0.4)'}}
+                                        whileTap={{scale: 0.98}}
                                     >
                                         Create board
                                     </motion.button>
@@ -240,9 +240,9 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                 <AnimatePresence>
                                     {error && (
                                         <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            exit={{ opacity: 0, height: 0 }}
+                                            initial={{opacity: 0, height: 0}}
+                                            animate={{opacity: 1, height: 'auto'}}
+                                            exit={{opacity: 0, height: 0}}
                                             className="alert alert-danger rounded-3 mb-3"
                                             style={{
                                                 backgroundColor: '#fee',
@@ -258,16 +258,16 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                                 type="button"
                                                 className="btn-close ms-auto"
                                                 onClick={() => setError(null)}
-                                                style={{ fontSize: '0.75rem' }}
+                                                style={{fontSize: '0.75rem'}}
                                             />
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
 
                                 {/* Boards list */}
-                                <div 
+                                <div
                                     className="flex-grow-1"
-                                    style={{ 
+                                    style={{
                                         maxHeight: '400px',
                                         overflowY: 'auto',
                                         overflowX: 'hidden',
@@ -292,20 +292,20 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                                         style={{
                                                             cursor: 'pointer',
                                                             backgroundColor: isSelected ? 'rgba(230, 0, 35, 0.08)' : '#fff',
-                                                            border: isSelected 
-                                                                ? '2px solid #e60023' 
+                                                            border: isSelected
+                                                                ? '2px solid #e60023'
                                                                 : '1px solid #e0e0e0',
                                                             transition: 'all 0.2s ease',
                                                             willChange: 'transform, background-color, border-color',
                                                         }}
                                                         onClick={() => toggleBoardSelection(board.id)}
-                                                        whileHover={{ 
+                                                        whileHover={{
                                                             scale: 1.01,
                                                             backgroundColor: isSelected ? 'rgba(230, 0, 35, 0.12)' : '#f8f8f8',
                                                             borderColor: isSelected ? '#e60023' : '#ccc'
                                                         }}
-                                                        whileTap={{ scale: 0.99 }}
-                                                        transition={{ duration: 0.15, ease: 'easeOut' }}
+                                                        whileTap={{scale: 0.99}}
+                                                        transition={{duration: 0.15, ease: 'easeOut'}}
                                                     >
                                                         <div className="d-flex align-items-center">
                                                             <div
@@ -325,22 +325,25 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                                                 }}
                                                             >
                                                                 {!board.coverImageUrl && (
-                                                                    <span style={{ fontSize: '1.5rem' }}>
+                                                                    <span style={{fontSize: '1.5rem'}}>
                                                                         {board.name?.charAt(0).toUpperCase() || 'B'}
                                                                     </span>
                                                                 )}
                                                             </div>
                                                             <div className="flex-grow-1 min-w-0">
-                                                                <div className="fw-bold text-truncate mb-1" style={{ color: '#111', fontSize: '1rem' }}>
+                                                                <div className="fw-bold text-truncate mb-1"
+                                                                     style={{color: '#111', fontSize: '1rem'}}>
                                                                     {board.name}
                                                                 </div>
                                                                 {board.description && (
-                                                                    <div className="text-muted small text-truncate mb-1" style={{ fontSize: '0.875rem' }}>
+                                                                    <div className="text-muted small text-truncate mb-1"
+                                                                         style={{fontSize: '0.875rem'}}>
                                                                         {board.description}
                                                                     </div>
                                                                 )}
                                                                 {board.pinCount !== undefined && (
-                                                                    <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                                                                    <div className="text-muted"
+                                                                         style={{fontSize: '0.8rem'}}>
                                                                         {board.pinCount} pin{board.pinCount !== 1 ? 's' : ''}
                                                                     </div>
                                                                 )}
@@ -358,9 +361,13 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                                                 >
                                                                     {isSelected && (
                                                                         <motion.span
-                                                                            initial={{ scale: 0 }}
-                                                                            animate={{ scale: 1 }}
-                                                                            style={{ color: '#fff', fontSize: '14px', fontWeight: 'bold' }}
+                                                                            initial={{scale: 0}}
+                                                                            animate={{scale: 1}}
+                                                                            style={{
+                                                                                color: '#fff',
+                                                                                fontSize: '14px',
+                                                                                fontWeight: 'bold'
+                                                                            }}
                                                                         >
                                                                             ✓
                                                                         </motion.span>
@@ -379,7 +386,8 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                     </div>
 
                     {/* Footer */}
-                    <div className="border-top px-4 py-3 d-flex justify-content-end gap-2" style={{ backgroundColor: '#fff' }}>
+                    <div className="border-top px-4 py-3 d-flex justify-content-end gap-2"
+                         style={{backgroundColor: '#fff'}}>
                         <motion.button
                             className="btn fw-bold px-4 rounded-3"
                             onClick={onClose}
@@ -391,8 +399,8 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                 height: '48px',
                                 minWidth: '100px',
                             }}
-                            whileHover={{ scale: 1.02, background: '#e2e2e2' }}
-                            whileTap={{ scale: 0.98 }}
+                            whileHover={{scale: 1.02, background: '#e2e2e2'}}
+                            whileTap={{scale: 0.98}}
                         >
                             Cancel
                         </motion.button>
@@ -416,11 +424,11 @@ const SaveToBoardModal = ({ show, onClose, pinId, onSaved }) => {
                                 scale: 1.02,
                                 boxShadow: '0 6px 20px rgba(230, 0, 35, 0.4)'
                             }}
-                            whileTap={saving || boards.length === 0 ? {} : { scale: 0.98 }}
+                            whileTap={saving || boards.length === 0 ? {} : {scale: 0.98}}
                         >
                             {saving ? (
                                 <>
-                                    <Spinner animation="border" size="sm" className="me-2" />
+                                    <Spinner animation="border" size="sm" className="me-2"/>
                                     Saving...
                                 </>
                             ) : (

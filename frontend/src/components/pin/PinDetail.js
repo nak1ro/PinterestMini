@@ -61,7 +61,7 @@ const PinDetail = () => {
     };
 
     fetchPin();
-  }, [id, user]);
+  }, [id, isPinSaved, user]);
 
   useEffect(() => {
     const fetchRelatedPins = async () => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import {motion} from 'framer-motion';
 import {useParams} from 'react-router-dom';
-import {Button} from 'react-bootstrap';
 import {ArrowLeft, Eye} from 'react-bootstrap-icons';
 
 import { useAppSelector } from '../../hooks/redux';
@@ -120,8 +119,7 @@ const Profile = () => {
     }
 
     function renderPinsTab() {
-        const handlePinDelete = async (pinId) => {
-            // Refetch both lists to update the UI after deletion
+        const handlePinDelete = async () => {
             await Promise.all([ctrl.refetchCreated(), ctrl.refetchSaved()]);
         };
 

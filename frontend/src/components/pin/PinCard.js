@@ -7,13 +7,11 @@ import SaveToBoardModal from './SaveToBoardModal';
 import AuthModal from '../auth/AuthModal';
 import { useAppSelector } from '../../hooks/redux';
 import { selectUserId, selectUser } from '../../store/slices/authSlice';
-import { deletePin } from '../../services/pinService';
 
 const PinCard = ({ pin, boardId, onRemoveFromBoard, onDelete, savedPinsState }) => {
     // ✅ Use shared savedPins state from parent
     const { savePin, unsavePin, savedPins, refetch } = savedPinsState;
-
-    const userId = useAppSelector(selectUserId);
+    useAppSelector(selectUserId);
     const user = useAppSelector(selectUser);
     const isAuthenticated = !!user;
 
@@ -21,15 +19,9 @@ const PinCard = ({ pin, boardId, onRemoveFromBoard, onDelete, savedPinsState }) 
     const [isHovered, setIsHovered] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [showSaveToBoardModal, setShowSaveToBoardModal] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [authModalType, setAuthModalType] = useState('signin');
-
-    const isOwner =
-        (pin && pin.ownerId && pin.ownerId === userId) ||
-        (pin && pin.owner && pin.owner.id === userId);
-
-    // ✅ Derive "saved" from shared savedPins list
+// ✅ Derive "saved" from shared savedPins list
     useEffect(() => {
         if (savedPins && Array.isArray(savedPins)) {
             const isInSavedPins = savedPins.some((p) => p.id === pin.id);
@@ -71,30 +63,6 @@ const PinCard = ({ pin, boardId, onRemoveFromBoard, onDelete, savedPinsState }) 
             await onRemoveFromBoard(pin.id);
         }
     };
-
-    const handleDeleteClick = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (!window.confirm('Are you sure you want to delete this pin? This action cannot be undone.')) {
-            return;
-        }
-
-        setIsDeleting(true);
-        try {
-            await deletePin(pin.id);
-            setShowPreview(false);
-            if (onDelete) {
-                onDelete(pin.id);
-            }
-        } catch (err) {
-            console.error('Failed to delete pin:', err);
-            alert('Failed to delete pin. Please try again.');
-        } finally {
-            setIsDeleting(false);
-        }
-    };
-
     const handleSavedToBoard = async () => {
         await refetch();
     };

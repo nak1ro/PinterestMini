@@ -7,7 +7,6 @@ const AuthButtons = () => {
     const [authModalType, setAuthModalType] = useState(null); // 'signin' или 'signup'
 
     const openModal = (type) => setAuthModalType(type);
-    const closeModal = () => setAuthModalType(null);
     const switchType = (type) => setAuthModalType(type);
 
     return (

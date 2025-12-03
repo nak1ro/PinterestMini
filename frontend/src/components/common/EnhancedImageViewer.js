@@ -1,23 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'react-bootstrap-icons';
+import React, {useEffect, useRef, useState} from 'react';
+import {AnimatePresence, motion} from 'framer-motion';
+import {X} from 'react-bootstrap-icons';
 
 
-const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) => {
+const EnhancedImageViewer = ({show, imageUrl, imageAlt, onClose, isMobile}) => {
     const [scale, setScale] = useState(1);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [position, setPosition] = useState({x: 0, y: 0});
     const [isDragging, setIsDragging] = useState(false);
     const [swipeStartY, setSwipeStartY] = useState(0);
     const [swipeDistance, setSwipeDistance] = useState(0);
     const imageRef = useRef(null);
     const containerRef = useRef(null);
     const lastTouchDistance = useRef(null);
-    const dragStart = useRef({ x: 0, y: 0 });
+    const dragStart = useRef({x: 0, y: 0});
 
     useEffect(() => {
         if (show) {
             setScale(1);
-            setPosition({ x: 0, y: 0 });
+            setPosition({x: 0, y: 0});
             setSwipeDistance(0);
         }
     }, [show]);
@@ -26,11 +26,10 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
         if (e.touches.length === 2) {
             const touch1 = e.touches[0];
             const touch2 = e.touches[1];
-            const distance = Math.hypot(
+            lastTouchDistance.current = Math.hypot(
                 touch2.clientX - touch1.clientX,
                 touch2.clientY - touch1.clientY
             );
-            lastTouchDistance.current = distance;
         } else if (e.touches.length === 1 && scale === 1) {
             setSwipeStartY(e.touches[0].clientY);
             setIsDragging(true);
@@ -52,7 +51,7 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
                 touch2.clientX - touch1.clientX,
                 touch2.clientY - touch1.clientY
             );
-            
+
             const delta = distance / lastTouchDistance.current;
             const newScale = Math.max(1, Math.min(4, scale * delta));
             setScale(newScale);
@@ -61,14 +60,14 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
             if (scale === 1) {
                 const currentY = e.touches[0].clientY;
                 const distance = currentY - swipeStartY;
-                if (distance > 0) { 
+                if (distance > 0) {
                     setSwipeDistance(distance);
                 }
             } else {
                 e.preventDefault();
                 const newX = e.touches[0].clientX - dragStart.current.x;
                 const newY = e.touches[0].clientY - dragStart.current.y;
-                setPosition({ x: newX, y: newY });
+                setPosition({x: newX, y: newY});
             }
         }
     };
@@ -87,14 +86,14 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
     const handleDoubleTap = (e) => {
         if (scale > 1) {
             setScale(1);
-            setPosition({ x: 0, y: 0 });
+            setPosition({x: 0, y: 0});
         } else {
             setScale(2);
             const rect = imageRef.current?.getBoundingClientRect();
             if (rect) {
                 const x = e.clientX - rect.left - rect.width / 2;
                 const y = e.clientY - rect.top - rect.height / 2;
-                setPosition({ x: -x, y: -y });
+                setPosition({x: -x, y: -y});
             }
         }
     };
@@ -106,7 +105,7 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
             const newScale = Math.max(1, Math.min(4, scale * delta));
             setScale(newScale);
             if (newScale === 1) {
-                setPosition({ x: 0, y: 0 });
+                setPosition({x: 0, y: 0});
             }
         }
     };
@@ -120,24 +119,24 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
                     {/* Backdrop */}
                     <motion.div
                         className="position-fixed top-0 start-0 w-100 h-100"
-                        style={{ 
-                            zIndex: 3000, 
+                        style={{
+                            zIndex: 3000,
                             backgroundColor: `rgba(0, 0, 0, ${0.95 * opacity})`,
                             // Add safe area padding
                             paddingTop: 'env(safe-area-inset-top)',
                             paddingBottom: 'env(safe-area-inset-bottom)',
                         }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: opacity }}
-                        exit={{ opacity: 0 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: opacity}}
+                        exit={{opacity: 0}}
                         onClick={() => scale === 1 && onClose()}
                     />
-                    
+
                     {/* Image container */}
-                    <div 
+                    <div
                         ref={containerRef}
                         className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                        style={{ 
+                        style={{
                             zIndex: 3001,
                             paddingTop: 'env(safe-area-inset-top)',
                             paddingBottom: 'env(safe-area-inset-bottom)',
@@ -156,14 +155,14 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
                                 alignItems: 'center',
                                 justifyContent: 'center',
                             }}
-                            initial={{ opacity: 0, scale: 0.9, y: 0 }}
-                            animate={{ 
-                                opacity: opacity, 
+                            initial={{opacity: 0, scale: 0.9, y: 0}}
+                            animate={{
+                                opacity: opacity,
                                 scale: 1,
                                 y: swipeDistance
                             }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                            exit={{opacity: 0, scale: 0.9}}
+                            transition={{duration: 0.3, ease: 'easeOut'}}
                         >
                             <motion.img
                                 ref={imageRef}
@@ -202,7 +201,7 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
                                 }}
                             />
                         </motion.div>
-                        
+
                         {/* Close button */}
                         <motion.button
                             className="position-absolute btn btn-sm p-0 border-0 bg-white rounded-circle d-flex align-items-center justify-content-center"
@@ -218,12 +217,12 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
                                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                                 zIndex: 3002,
                             }}
-                            whileHover={{ scale: 1.1, backgroundColor: '#f8f8f8' }}
-                            whileTap={{ scale: 0.9 }}
+                            whileHover={{scale: 1.1, backgroundColor: '#f8f8f8'}}
+                            whileTap={{scale: 0.9}}
                         >
-                            <X size={20} style={{ color: '#111' }} />
+                            <X size={20} style={{color: '#111'}}/>
                         </motion.button>
-                        
+
                         {/* Zoom indicator */}
                         {scale > 1 && (
                             <motion.div
@@ -236,9 +235,9 @@ const EnhancedImageViewer = ({ show, imageUrl, imageAlt, onClose, isMobile }) =>
                                     fontWeight: '500',
                                     opacity: 0.8,
                                 }}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 0.8, y: 0 }}
-                                exit={{ opacity: 0, y: 10 }}
+                                initial={{opacity: 0, y: 10}}
+                                animate={{opacity: 0.8, y: 0}}
+                                exit={{opacity: 0, y: 10}}
                             >
                                 {Math.round(scale * 100)}%
                             </motion.div>

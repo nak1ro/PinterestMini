@@ -76,9 +76,8 @@ const PinTagsControl = ({
 
     useEffect(() => {
         if (viewItems.length >= maxTags && input) setInput('');
-    }, [viewItems.length, maxTags]);
-
-    const remaining = Math.max(0, maxTags - viewItems.length);
+    }, [viewItems.length, maxTags, input]);
+    Math.max(0, maxTags - viewItems.length);
 
     return (
         <div className={className} style={style}>

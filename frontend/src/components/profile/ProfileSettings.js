@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
-import { selectUser, login as loginAction, logout as logoutAction, updateUser as updateUserAction } from '../../store/slices/authSlice';
+import { selectUser, logout as logoutAction, updateUser as updateUserAction } from '../../store/slices/authSlice';
 import { updateProfile, deleteAccount } from '../../services/profileService';
 import { Camera, X } from 'react-bootstrap-icons';
 

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import {
-    Container, Form, Row, Col, FloatingLabel, Image,
-    Button, Alert, Spinner, ProgressBar
+    Form, Row, Col, Alert, Spinner, ProgressBar
 } from 'react-bootstrap';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Lock, Globe, Camera } from 'react-bootstrap-icons';
 import { createBoard } from '../../services/boardService';
 

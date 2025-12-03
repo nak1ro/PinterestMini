@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Container, Form, Row, Col, FloatingLabel, Image, Button, Alert, ProgressBar, Spinner} from 'react-bootstrap';
+import {Form, Row, Col, Alert, ProgressBar, Spinner} from 'react-bootstrap';
 import {createPin} from '../../services/pinService';
 import {getMyBoards} from '../../services/boardService';
 import {useDropzone} from 'react-dropzone';
@@ -7,17 +7,6 @@ import {motion, AnimatePresence} from 'framer-motion';
 import PinTagsControl from '../common/PinTagsControl';
 
 const TagInput = ({tags, setTags}) => {
-    const handleTagInput = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const value = e.target.value.trim();
-            if (value && !tags.includes(value)) {
-                setTags([...tags, value]);
-            }
-            e.target.value = '';
-        }
-    };
-
     return (
         <>
             <PinTagsControl
@@ -373,12 +362,10 @@ const CreatePinPage = () => {
             if (tags.length > 0) {
                 tags.forEach(tag => formData.append("tagNames", tag));
             }
-
-            const res = await createPin(formData, (progressEvent) => {
+            await createPin(formData, (progressEvent) => {
                 const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                 setUploadPct(percent);
             });
-
             setSuccessMessage('Pin was successfully created!');
 
             // Reset form
