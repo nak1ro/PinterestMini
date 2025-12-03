@@ -28,11 +28,18 @@ const PinsTab = ({ pins, loading, onlyMyPins, setOnlyMyPins, onDelete }) => {
 
     return (
         <div className="px-3 py-4">
+            <style>{`
+                @media (min-width: 768px) {
+                    .w-md-auto {
+                        width: auto !important;
+                    }
+                }
+            `}</style>
             {/* Top controls: toggle + sort + create button */}
-            <div className="d-flex justify-content-between align-items-center mb-4">
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
                 {/* Left: Toggle */}
                 <motion.div
-                    className="d-flex fw-bold align-items-center px-3 py-2 rounded-3 fw-medium"
+                    className="d-flex fw-bold align-items-center px-3 py-2 rounded-3 fw-medium w-100 w-md-auto justify-content-center"
                     style={{
                         cursor: 'pointer',
                         background: onlyMyPins
@@ -57,7 +64,7 @@ const PinsTab = ({ pins, loading, onlyMyPins, setOnlyMyPins, onDelete }) => {
                 </motion.div>
 
                 {/* Right: Sort + Create */}
-                <div className="d-flex align-items-center gap-4">
+                <div className="d-flex align-items-center gap-3 w-100 w-md-auto justify-content-between justify-content-md-end">
                     <BeautifulDropdown
                         align="end"
                         variant="standard"
@@ -76,12 +83,13 @@ const PinsTab = ({ pins, loading, onlyMyPins, setOnlyMyPins, onDelete }) => {
                     </BeautifulDropdown>
 
                     <Button
-                        className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center"
+                        className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
                         onClick={() => navigate('/create-pin')}
                         style={{
                             background: 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
                             border: 'none',
                             transition: 'all 0.2s ease',
+                            whiteSpace: 'nowrap',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'translateY(-1px) scale(1.02)';

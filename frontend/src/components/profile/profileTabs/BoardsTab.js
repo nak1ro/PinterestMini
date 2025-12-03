@@ -56,38 +56,48 @@ const BoardsTab = () => {
 
     return (
         <div className="px-3 py-4">
+            <style>{`
+                @media (min-width: 768px) {
+                    .w-md-auto {
+                        width: auto !important;
+                    }
+                }
+            `}</style>
             {/* Top controls: sort + create button */}
-            <div className="d-flex justify-content-between align-items-center mb-4">
+            <div className="d-flex flex-row flex-md-row justify-content-between align-items-center mb-4 gap-3">
                 {/* Left: Sort */}
-                <BeautifulDropdown
-                    align="start"
-                    variant="standard"
-                    trigger={<><SortDownAlt className="me-2"/> Sort</>}
-                    onSelect={(val) => {
-                        if (!val) return;
-                        setSortKey(val);
-                    }}
-                >
-                    <BeautifulDropdownItem eventKey="name" active={sortKey === 'name'}>
-                        Name (A–Z)
-                    </BeautifulDropdownItem>
-                    <BeautifulDropdownItem eventKey="recent" active={sortKey === 'recent'}>
-                        Most recently updated
-                    </BeautifulDropdownItem>
-                    <BeautifulDropdownItem eventKey="created" active={sortKey === 'created'}>
-                        Most recently created
-                    </BeautifulDropdownItem>
-                </BeautifulDropdown>
+                <div className="w-100 w-md-auto d-flex justify-content-start">
+                    <BeautifulDropdown
+                        align="start"
+                        variant="standard"
+                        trigger={<><SortDownAlt className="me-2" /> Sort</>}
+                        onSelect={(val) => {
+                            if (!val) return;
+                            setSortKey(val);
+                        }}
+                    >
+                        <BeautifulDropdownItem eventKey="name" active={sortKey === 'name'}>
+                            Name (A–Z)
+                        </BeautifulDropdownItem>
+                        <BeautifulDropdownItem eventKey="recent" active={sortKey === 'recent'}>
+                            Most recently updated
+                        </BeautifulDropdownItem>
+                        <BeautifulDropdownItem eventKey="created" active={sortKey === 'created'}>
+                            Most recently created
+                        </BeautifulDropdownItem>
+                    </BeautifulDropdown>
+                </div>
 
                 {/* Right: Create */}
                 <Button
                     variant="danger"
-                    className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center"
+                    className="rounded-3 fw-bold px-4 py-2 fw-semibold d-flex align-items-center justify-content-center w-100 w-md-auto"
                     onClick={() => navigate('/create-board')}
                     style={{
                         background: 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
                         border: 'none',
-                        transition: 'all 0.2s ease'
+                        transition: 'all 0.2s ease',
+                        whiteSpace: 'nowrap',
                     }}
                     onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'translateY(-1px) scale(1.02)';
