@@ -23,7 +23,7 @@ const OtherUserProfile = ({ username: propUsername }) => {
     const [activeTab, setActiveTab] = useState('created');
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState(null); // 'followers' or 'following'
-    
+
     const { profile, loading: loadingProfile, error: profileError } = useUserProfile(username);
     const { createdPins, loading: loadingCreated } = useCreatedPins(username);
     const { savedPins, loading: loadingSaved } = useSavedPins(username);
@@ -78,7 +78,7 @@ const OtherUserProfile = ({ username: propUsername }) => {
 
     return (
         <motion.div
-            className="container py-5 pt-5"
+            className="container-fluid container-lg py-5 pt-5 px-3 px-lg-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
@@ -116,7 +116,8 @@ const OtherUserProfile = ({ username: propUsername }) => {
                             background: isFollowing ? 'transparent' : 'linear-gradient(135deg, #e60023 0%, #bd081c 100%)',
                             border: isFollowing ? '2px solid #ddd' : '2px solid rgba(255,255,255)',
                             color: isFollowing ? '#111' : 'white',
-                            minWidth: '120px',
+
+                            minWidth: 'auto',
                         }}
                     >
                         {isFollowing ? (
@@ -134,7 +135,7 @@ const OtherUserProfile = ({ username: propUsername }) => {
                 )}
 
                 {/* Stats */}
-                <div className="d-flex gap-5">
+                <div className="d-flex gap-3 gap-md-5 flex-wrap justify-content-center">
                     <motion.div
                         className="text-center"
                         style={{ cursor: profile?.id ? 'pointer' : 'default' }}
@@ -163,9 +164,9 @@ const OtherUserProfile = ({ username: propUsername }) => {
             </div>
 
             {/* Tabs */}
-            <div className="d-flex justify-content-center border-bottom mb-5" style={{ borderColor: '#ddd' }}>
+            <div className="d-flex justify-content-center border-bottom mb-4 mb-md-5 flex-wrap" style={{ borderColor: '#ddd' }}>
                 <button
-                    className={`btn fw-semibold px-4 py-3 border-0 ${activeTab === 'created' ? 'border-bottom border-3' : ''}`}
+                    className={`btn fw-semibold px-3 py-2 px-md-4 py-md-3 border-0 ${activeTab === 'created' ? 'border-bottom border-3' : ''}`}
                     onClick={() => setActiveTab('created')}
                     style={{
                         borderBottomColor: activeTab === 'created' ? '#e60023' : 'transparent',
@@ -177,7 +178,7 @@ const OtherUserProfile = ({ username: propUsername }) => {
                     Created Pins
                 </button>
                 <button
-                    className={`btn fw-semibold px-4 py-3 border-0 ${activeTab === 'saved' ? 'border-bottom border-3' : ''}`}
+                    className={`btn fw-semibold px-3 py-2 px-md-4 py-md-3 border-0 ${activeTab === 'saved' ? 'border-bottom border-3' : ''}`}
                     onClick={() => setActiveTab('saved')}
                     style={{
                         borderBottomColor: activeTab === 'saved' ? '#e60023' : 'transparent',

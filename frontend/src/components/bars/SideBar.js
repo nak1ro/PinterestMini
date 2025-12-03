@@ -1,9 +1,9 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../../hooks/redux';
-import { selectUser } from '../../store/slices/authSlice';
-import { logout as logoutAction } from '../../store/slices/authSlice';
-import BeautifulDropdown, { BeautifulDropdownItem } from '../common/BeautifulDropdown';
+import {useNavigate} from 'react-router-dom';
+import {useAppSelector, useAppDispatch} from '../../hooks/redux';
+import {selectUser} from '../../store/slices/authSlice';
+import {logout as logoutAction} from '../../store/slices/authSlice';
+import BeautifulDropdown, {BeautifulDropdownItem} from '../common/BeautifulDropdown';
 
 const Sidebar = () => {
     const user = useAppSelector(selectUser);
@@ -65,9 +65,9 @@ const Sidebar = () => {
             >
                 <div className="d-grid gap-5">
 
-                    <div 
+                    <div
                         className="text-white fs-3 text-decoration-none"
-                        style={{ cursor: 'pointer' }}
+                        style={{cursor: 'pointer'}}
                         onClick={() => navigate('/')}
                     >
                         <div className="hover-container">
@@ -80,9 +80,9 @@ const Sidebar = () => {
                         </div>
                     </div>
 
-                    <div 
+                    <div
                         className="nav-link text-white"
-                        style={{ cursor: 'pointer' }}
+                        style={{cursor: 'pointer'}}
                         onClick={() => navigate('/')}
                     >
                         <div className="hover-container">
@@ -96,9 +96,9 @@ const Sidebar = () => {
                         </div>
                     </div>
 
-                    <div 
+                    <div
                         className="nav-link text-white"
-                        style={{ cursor: 'pointer' }}
+                        style={{cursor: 'pointer'}}
                         onClick={() => navigate('/explore')}
                     >
                         <div className="hover-container">
@@ -113,9 +113,9 @@ const Sidebar = () => {
                     </div>
 
                     {isAuthenticated && (
-                        <div 
+                        <div
                             className="nav-link text-white"
-                            style={{ cursor: 'pointer' }}
+                            style={{cursor: 'pointer'}}
                             onClick={() => navigate('/create-pin')}
                         >
                             <div className="hover-container">
@@ -159,16 +159,16 @@ const Sidebar = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                             }}
-                            style={{ position: 'static' }}
+                            style={{position: 'static'}}
                         >
                             <BeautifulDropdownItem eventKey="profile-settings">
                                 Profile Settings
                             </BeautifulDropdownItem>
-                            <div className="sidebar-dropdown-divider" />
+                            <div className="sidebar-dropdown-divider"/>
                             <BeautifulDropdownItem
                                 eventKey="logout"
                                 className="text-danger"
-                                style={{ color: '#d32f2f', fontWeight: 500 }}
+                                style={{color: '#d32f2f', fontWeight: 500}}
                             >
                                 Log out
                             </BeautifulDropdownItem>

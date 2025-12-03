@@ -7,6 +7,7 @@ using PinterestMini.API.Domain.Interfaces.PinBoards;
 using PinterestMini.API.Domain.Interfaces.Pins;
 using PinterestMini.API.Domain.Interfaces.Shared;
 using PinterestMini.API.Domain.Interfaces.Tags;
+using PinterestMini.API.Domain.Interfaces.Users;
 
 namespace PinterestMini.API.Repositories;
 
@@ -20,9 +21,10 @@ public class UnitOfWork : IUnitOfWork
     public ICommentRepository Comments { get; set; }
     public IPinBoardRepository PinBoards { get; set; }
     public IFollowRepository Follows { get; set; }
+    public IUserRepository Users { get; set; }
 
     public UnitOfWork(ApplicationDbContext context, IPinRepository pins, ITagRepository tags, IBoardRepository boards,
-        ICommentRepository comments, IPinBoardRepository pinBoards, IFollowRepository follows)
+        ICommentRepository comments, IPinBoardRepository pinBoards, IFollowRepository follows, IUserRepository users)
     {
         _context = context;
         Pins = pins;
@@ -31,6 +33,7 @@ public class UnitOfWork : IUnitOfWork
         Comments = comments;
         PinBoards = pinBoards;
         Follows = follows;
+        Users = users;
     }
 
     public async Task SaveChangesAsync()

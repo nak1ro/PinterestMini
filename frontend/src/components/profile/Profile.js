@@ -32,14 +32,14 @@ const Profile = () => {
             style={{color: '#111', minHeight: '100vh', backgroundColor: '#fafafa'}}
         >
             <div className="row">
-                <div className="col-lg-9">
+                <div className="col-12 col-lg-9">
                     {renderHeader()}
                     {renderTabButtons()}
                     {ctrl.activeTab === 'pins'
                         ? renderPinsTab()
                         : <BoardsTab/>}
                 </div>
-                <div className="col-lg-3">{renderSidebar()}</div>
+                <div className="d-none d-lg-block col-lg-3">{renderSidebar()}</div>
             </div>
 
             <UserListModal
@@ -57,7 +57,7 @@ const Profile = () => {
     function renderHeader() {
         return (
             <motion.div 
-                className="d-flex justify-content-between align-items-center mb-5 px-3"
+                className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 mb-md-5 px-2 px-md-3"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
@@ -77,7 +77,7 @@ const Profile = () => {
     function renderTabButtons() {
         return (
             <motion.div
-                className="d-flex justify-content-start px-3 border-bottom mb-4"
+                className="d-flex justify-content-center justify-content-lg-start px-2 px-md-3 border-bottom mb-4"
                 style={{borderColor: '#e0e0e0'}}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

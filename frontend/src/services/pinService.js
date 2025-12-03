@@ -122,3 +122,13 @@ export const getIsPinSaved = async (pinId) => {
     const res = await axiosClient.get(`/pin/${pinId}/saved/is-saved`);
     return res.data;
 };
+
+export const getCreatedPinsByUser = async (username) => {
+    const res = await axiosClient.get(`/user/${username}/created`);
+    return res.data;
+};
+
+export const getSavedPinsByUser = async (username) => {
+    const res = await axiosClient.get(`/pin/${username}/saved`);
+    return res.data;
+};

@@ -35,7 +35,7 @@ public class PinController : ControllerBase
         await _pinService.UpdatePinAsync(id, dto, User);
         return NoContent();
     }
-    
+
     [HttpDelete("{id:guid}")]
     [Authorize]
     public async Task<IActionResult> Delete(Guid id)
@@ -151,7 +151,7 @@ public class PinController : ControllerBase
         var pin = await _pinService.GetByIdAsync(id);
         return Ok(pin);
     }
-    
+
     [HttpGet("{pinId:guid}/likes/count")]
     [AllowAnonymous]
     public async Task<IActionResult> GetLikeCount(Guid pinId)
@@ -183,11 +183,28 @@ public class PinController : ControllerBase
         await _pinService.UnlikePinAsync(pinId, User);
         return Ok(new { message = "Pin unliked successfully." });
     }
+
     [HttpGet("{pinId:guid}/saved/is-saved")]
     [Authorize]
     public async Task<IActionResult> IsSaved(Guid pinId)
     {
         var isSaved = await _pinService.IsPinSavedAsync(pinId, User);
         return Ok(new { isSaved });
+    }
+
+    [HttpGet("user/{username}/created")]
+    [AllowAnonymous]
+    public async Task<ActionResult<List<PinDto>>> GetCreatedPinsByUser(string username)
+    {
+        var pins = await _pinService.GetCreatedPinsByUserAsync(username);
+        return Ok(pins);
+    }
+
+    [HttpGet("user/{username}/saved")]
+    [AllowAnonymous]
+    public async Task<ActionResult<List<PinDto>>> GetSavedPinsByUser(string username)
+    {
+        var pins = await _pinService.GetSavedPinsByUserAsync(username);
+        return Ok(pins);
     }
 }

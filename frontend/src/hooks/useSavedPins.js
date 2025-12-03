@@ -1,15 +1,18 @@
 import useAsync from './common/useAsync';
-import { getSavedPins, savePin as savePinApi, unsavePin as unsavePinApi, getIsPinSaved } from '../services/pinService';
+import { getSavedPins, getSavedPinsByUser, savePin as savePinApi, unsavePin as unsavePinApi, getIsPinSaved } from '../services/pinService';
 
-export default function useSavedPins() {
+export default function useSavedPins(username = null) {
     const { data, loading, error, execute, setData } = useAsync(
         async () => {
-            const res = await getSavedPins();
+            const res = username
+                ? await getSavedPinsByUser(username)
+                : await getSavedPins();
+
             if (Array.isArray(res && res.data)) return res.data;
             if (Array.isArray(res)) return res;
             return [];
         },
-        [],
+        [username],
         { immediate: true, initialData: [] }
     );
 

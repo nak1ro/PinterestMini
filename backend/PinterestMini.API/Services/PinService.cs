@@ -103,7 +103,8 @@ public class PinService : IPinService
         };
     }
 
-    public async Task<PaginatedResult<PinDto>> SearchSavedPinsAsync(string query, ClaimsPrincipal user, int page, int pageSize)
+    public async Task<PaginatedResult<PinDto>> SearchSavedPinsAsync(string query, ClaimsPrincipal user, int page,
+        int pageSize)
     {
         var userId = _userContext.GetUserId(user);
         // Fetch one extra to check if there are more results
@@ -237,7 +238,7 @@ public class PinService : IPinService
         var userId = _userContext.GetUserId(user);
         return await _unitOfWork.Pins.IsPinSavedAsync(userId, pinId);
     }
-    
+
     public async Task DeletePinAsync(Guid pinId, ClaimsPrincipal user)
     {
         var pin = await _unitOfWork.Pins.GetByIdWithAllRelationsAsync(pinId);
@@ -344,14 +345,38 @@ public class PinService : IPinService
 
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
+    public async Task<List<PinDto>> GetCreatedPinsByUserAsync(string username)
+    {
+        // Find user by username
+        var user = await _unitOfWork.Users.GetByUsernameAsync(username);
+        if (user == null)
+            throw new AppNotFoundException($"User '{username}' not found.");
+
+        // Get pins created by this user
+        var pins = await _unitOfWork.Pins.GetPinsByOwnerAsync(user.Id);
+        return _mapper.Map<List<PinDto>>(pins);
+    }
+
+    public async Task<List<PinDto>> GetSavedPinsByUserAsync(string username)
+    {
+        // Find user by username
+        var user = await _unitOfWork.Users.GetByUsernameAsync(username);
+        if (user == null)
+            throw new AppNotFoundException($"User '{username}' not found.");
+
+        // Get pins saved by this user
+        var savedPins = await _unitOfWork.Pins.GetSavedPinsAsync(user.Id);
+        return _mapper.Map<List<PinDto>>(savedPins);
+    }
+
     private async Task SetBoardsAsync(Pin pin, List<Guid>? boardIds, Guid userId)
     {
         // Explicitly remove existing PinBoards for this user
         var existingPinBoards = pin.PinBoards?
             .Where(pb => pb.UserId == userId)
             .ToList() ?? new List<PinBoard>();
-        
+
         foreach (var pinBoard in existingPinBoards)
         {
             await _unitOfWork.PinBoards.RemoveAsync(pin.Id, pinBoard.BoardId, userId);
@@ -366,7 +391,7 @@ public class PinService : IPinService
         }
 
         var boards = await _unitOfWork.Boards.GetByIdsAsync(boardIds);
-        
+
         // Validate that all boards belong to the user
         var invalidBoards = boards.Where(b => b.UserId != userId).ToList();
         if (invalidBoards.Any())
@@ -376,7 +401,7 @@ public class PinService : IPinService
         var existingOtherBoards = pin.PinBoards?
             .Where(pb => pb.UserId != userId)
             .ToList() ?? new List<PinBoard>();
-        
+
         var newPinBoards = boards.Select(board => new PinBoard
         {
             PinId = pin.Id,
@@ -390,7 +415,7 @@ public class PinService : IPinService
     private async Task SetTagsByNameAsync(Pin pin, List<string>? tagNames)
     {
         var oldTagIds = pin.PinTags?.Select(pt => pt.TagId).ToHashSet() ?? new HashSet<Guid>();
-        
+
         // Explicitly remove existing PinTags from context before clearing collection
         if (pin.PinTags != null && pin.PinTags.Any())
         {
@@ -471,7 +496,7 @@ public class PinService : IPinService
     {
         // Batch load tags instead of N+1 queries
         if (tagIds.Count == 0) return;
-        
+
         var tags = await _unitOfWork.Tags.GetByIdsAsync(tagIds.ToList());
         foreach (var tag in tags)
         {

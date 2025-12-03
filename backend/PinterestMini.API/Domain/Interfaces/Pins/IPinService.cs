@@ -26,4 +26,6 @@ public interface IPinService
     Task DeletePinAsync(Guid id, ClaimsPrincipal user);
     Task<List<BoardDto>> GetBoardsForPinAsync(Guid pinId, ClaimsPrincipal? user = null);
     Task SetBoardsForPinAsync(Guid pinId, List<Guid> boardIds, ClaimsPrincipal user);
+    Task<List<PinDto>> GetCreatedPinsByUserAsync(string username);
+    Task<List<PinDto>> GetSavedPinsByUserAsync(string username);
 }
