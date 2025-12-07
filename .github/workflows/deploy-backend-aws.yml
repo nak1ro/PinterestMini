@@ -53,8 +53,10 @@ jobs:
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v22
         with:
-          application_name: my-pinterestmini-api    # 👈 exact EB app name
-          environment_name: my-pinterestmini-api-env    # 👈 exact EB env name
+         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: my-pinterestmini-api
+          environment_name: my-pinterestmini-api-env
           version_label: v-${{ github.run_number }}
-          region: eu-north-1                 # 👈 same region as above
+          region: eu-north-1
           deployment_package: app.zip
