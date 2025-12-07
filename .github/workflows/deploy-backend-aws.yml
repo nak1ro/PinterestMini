@@ -35,7 +35,7 @@ jobs:
         run: dotnet build -c Release --no-restore
 
       - name: Publish
-        run: dotnet publish -c Release -o ./publish
+        run: dotnet publish ./PinterestMini.API/PinterestMini.API.csproj -c Release -o ./publish
 
       - name: Zip publish output
         run: |
